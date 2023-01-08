@@ -1,6 +1,9 @@
 /*
 Clase que representa una sección de una materia/curso
 */
+
+import { Schedule } from "./Schedule.mjs";
+
 class CourseSection {
 
     constructor({
@@ -14,26 +17,15 @@ class CourseSection {
         campus,      // Campus
         term,        // Período académico
     }) {
-
-        // Información fundamental
         this.title = title;
         this.courseCode = courseCode;
         this.credits = credits;
         this.seatsavail = seatsavail;
-        this.schedules = schedules;
-
-        // Información adicional
-        this.information = {
-            instructors,
-            nrc,
-            campus,
-            term
-        }
-    }
-
-    // Retorna una copia para no modificar el objeto original
-    get information() {
-        return {...this.information}
+        this.schedule = new Schedule(schedules);
+        this.instructors = instructors;
+        this.nrc = nrc;
+        this.campus = campus;
+        this.term = term;
     }
 }
 

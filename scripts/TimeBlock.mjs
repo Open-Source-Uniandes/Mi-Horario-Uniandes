@@ -4,23 +4,23 @@ Representa un bloque de tiempo como minutos desde el inicio del día.
 class TimeBlock {
 
     constructor({
-        startTime,
-        endTime,
-        information, // Objecto con detalles adicionales del bloque
+        startTime : time_ini,
+        endTime : time_fin,
+        // information, // Objecto con detalles adicionales del bloque
     }) {
         this.startTime = TimeBlock.calculateInstant(startTime);
         this.endTime = TimeBlock.calculateInstant(endTime);
         this.duration = TimeBlock.calculateDuration(startTime, endTime);
-        this.information = information;
+        // this.information = information;
     }
 
     // Halla la cantidad de minutos desde el inicio del día
     // time en el formato "hhmm", por ejemplo "0920"
     static calculateInstant(time) {
+        
         const hour = +time.slice(0,2);
         const minute = +time.slice(2,4);
         const instant = (hour * 60) + minute;
-
         return instant;
     }
 
