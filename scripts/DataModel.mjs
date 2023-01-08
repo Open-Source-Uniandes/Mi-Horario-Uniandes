@@ -2,6 +2,8 @@
 Este módulo se encarga de leer y procesar la información de la API
 */
 
+import { CourseSection } from "./CourseSection.mjs";
+
 class DataModel {
 
     // Endpoint de cursos registrados en Banner
@@ -27,11 +29,14 @@ class DataModel {
         const lastTime = new Date().toLocaleString();
         const dataModel = await fetch(DataModel.API)
             .then(response => response.json())
+            // Añadir el atributo courseCode = class + course
+            .then(response => response.map(response => ({...response, courseCode : response.class + response.course})))
+            .then(response => response.map(response => new CourseSection(response)))
             .then(response => JSON.stringify(response));
 
         // Guardarlos en localStorage
-        localStorage.setItem('Uniandes-dataModel', dataModel)
-        localStorage.setItem('Uniandes-lastDataTime', lastTime)
+        localStorage.setItem('Uniandes-dataModel', dataModel);
+        localStorage.setItem('Uniandes-lastDataTime', lastTime);
     }
 }
 
