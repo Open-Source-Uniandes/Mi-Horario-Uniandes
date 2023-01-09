@@ -1,23 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap" rel="stylesheet">
+    <title>Mi Horario Uniandes</title>
     <link rel="stylesheet" href="./style.css">
-    <title>Horario</title>
+    <!-- Ícono de navegación -->
+    <link rel="shortcut icon" type="image/png" href="https://registroapps.uniandes.edu.co/SisAdmisiones/Pregrado/img/Seneca-01.png"/>
 </head>
 <body>
-    <h1>Uniandes Schedule Options</h1>
-    <main>
-        <header></header>
-        <aside></aside>
-        <article></article>
-    </main>
-    <h2><span id="current-number"></span> of <span id="total-number"></span></h2>
-    <script src="./script.js"></script>
+    <!-- Modal de bienvenida -->
+    <section id="welcome" class="modal ">
+        <header>
+            <img src="https://medicina.uniandes.edu.co/sites/default/files/campus-uniandes.jpg" alt="Application Banner">
+            <div class="container-center">
+                <h1>¿Problemas con el horario?</h1>
+            </div>
+        </header>
+
+        <main>
+
+            <h2>Planear nunca había sido tan fácil </h2>
+            <p>¡Bienvenidx a Mi Horario Uniandes!</p>
+            <p>Creamos esta herramienta para hacer más fácil tu inscripción de materias. Con un solo click podrás ver todas las posibilidades para encontrar el horario de tus sueños. ¡Es tan sencillo como agregar los cursos que planeas ver!</p>
+
+            <h2>A tu medida</h2>
+            <p>Personaliza las opciones de búsqueda para considerar solo las secciones que tú quieres, en los horarios que tú quieres. Añade bloques de tiempo para reservar tus horas de almuerzo y de parchar con tus amigos. Optimiza tu horario para minimizar huecos o para salir más temprano. ¡Tu semestre perfecto a un solo click de distancia!</p>
+
+            <h2>Open Source</h2>
+            <p>Este es un proyecto de la comunidad Uniandina para la comunidad Uniandina. El código que hace posible esta herramienta es tuyo. Anímate a proponer nuevas funcionalidades, cambios de diseño, optimizaciones, o lo que tú quieras. ¡Tu aporte impactará toda la comunidad Uniandina!</p>
+
+            <h2>Inicia aquí 👇</h2>
+            <p>Queremos ofrecerte la información más actualizada desde Banner. Por esto, cada vez que recargues la página se descargará nuevamente la información de los cursos. Esto no suele tomar más de 20 segundos.</p>            
+        </main>
+
+        <!-- Animación de carga -->
+        <div class="container-center">
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            <p style="text-align: center;"><em>Un momento por favor <br> Estamos Hackeando Banner</em> 😎</p>
+        </div>
+        <!-- Botón para iniciar la aplicación -->
+        <div class="container-center">
+            <button id="btn-start" class="inactive" type="button">Continuar</button>
+        </div>
+
+        <footer class="container-center">
+            <p>Hecho con 💛 en Uniandes</p>
+            <p><strong><a href="https://github.com/jsurrea/Uniandes-Schedule">Sé parte de este proyecto aquí</a></strong></p>
+        </footer>
+    </section>
+
+    <!-- Panel del calendario -->
+    <section id="calendar">
+
+    </section>
+    
+    <!-- Panel de configuración -->
+    <section id="config" class="modal inactive">
+
+    </section>
+
+    <!--
+        <div id="calendar-view" style="width: 800px; height: 800px; background-color: peru; position: relative;"></div>
+    -->
+    <script type="module" src="./script.js"></script>
 </body>
 </html>
