@@ -1,7 +1,8 @@
 :root {
-    --light-gray: #f4f1f1;
+    --light-gray: #dadce0;
     --dark-gray: #494951;
     --yellow: #fff353;
+    --strong-yellow: #f6c551;
 }
 
 *  {
@@ -16,7 +17,7 @@
 }
 
 body {
-    background-color: var(--light-gray);
+    background-color: white;
 }
 
 a {
@@ -36,6 +37,8 @@ button {
     color: var(--dark-gray);
     font-weight: 700;
     font-size: 20px;
+
+    cursor: pointer;
 }
 
 .modal {
@@ -44,10 +47,17 @@ button {
     z-index: 1;
 }
 
-.container-center {
+.container-column {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center; 
+}
+
+.container-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center; 
 }
 
@@ -71,7 +81,7 @@ button {
     display: block;
 }
 
-#welcome header .container-center {
+#welcome header .container-column {
     position: absolute;
     top: 0;
     left: 0;
@@ -104,6 +114,108 @@ button {
     }
     #welcome header h1 {
         font-size: 48px;
+    }
+}
+
+/* Calendario */
+
+#calendar header {
+    width: 100%;
+    height: 80px;
+    padding: 0 20px;
+    background-color: var(--yellow);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
+#calendar header svg {
+    fill: var(--dark-gray);
+    stroke: var(--dark-gray);
+    cursor: pointer;
+}
+
+#calendar main {
+    width: 100%;
+    height: calc(16*40px + 50px);
+    display: grid;
+    grid-template-columns: 80px 1fr;
+}
+
+#calendar main aside {
+    height: 100%;
+}
+
+#calendar main aside .container-column {
+    height: 40px;
+    position: relative;
+}
+
+#calendar main aside .container-column::before {
+    content: "";
+    position: absolute;
+    left: 75px;
+    top: 0;
+    height: 1px;
+    width: calc(100vw - 75px);
+    border-top: 1px solid var(--light-gray);
+}
+
+#calendar main aside .container-column p {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 14px;
+    position: absolute;
+    bottom: 50%; /* Mueve los elementos para que se alineen con el borde superior */
+}
+
+#calendar main .table {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 50px 1fr;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#calendar main .table .table-header {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(120px, 1fr));
+    justify-content: center;
+    align-items: center;
+}
+
+#calendar main .table .table-header .container-column {
+    height: 100%;
+    position: relative;
+}
+
+#calendar main .table .table-header .container-column h2 {
+    font-size: 20px;
+    text-align: center;
+}
+
+
+#calendar main .table .table-header .container-column::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 45px;
+    height: calc(15*40px + 5px);
+    width: 1px;
+    border-left: 1px solid var(--light-gray);
+}
+
+#calendar main .table .table-content {
+    position: relative;
+    background-color: transparent;
+}
+
+@media (min-width: 1024px) {
+    #calendar header {
+        font-size: 16px;
     }
 }
 

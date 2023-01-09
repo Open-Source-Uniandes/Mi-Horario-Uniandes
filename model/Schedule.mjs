@@ -21,6 +21,9 @@ class Schedule {
 
         schedules?.forEach(schedule => {
 
+            // Ignorar schedules que no tengan hora de inicio o de fin
+            if(!schedule.time_ini || !schedule.time_fin) return;
+
             // Hallar días válidos para el schedule
             const days = Schedule.DAYS_OF_THE_WEEK.filter(day => schedule[day]);
 

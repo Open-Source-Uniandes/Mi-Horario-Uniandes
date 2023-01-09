@@ -7,6 +7,17 @@ import { Schedule } from "../model/Schedule.mjs";
 
 class ViewModel {
 
+    constructor() {
+        this.dataModel = new DataModel();
+    }
+
+    // Inicia la descarga de datos y devuelve la fecha de actualización de los datos
+    async loadData() {
+        await this.dataModel.loadData();
+        return this.dataModel.lastTime;
+    }
+
+
     static getValidSchedules() {
 
         // Generar todas las posibles combinaciones
@@ -22,9 +33,9 @@ class ViewModel {
 NECESITO:
 - Recibir lista de cursos (con opciones)
 - Llamar métodos necesarios para:
-  Generar todos los posibles horarios
-  Devolver aquellos horarios válidos
-  (implementar funcionalidades extra)
+    Generar todos los posibles horarios
+    Devolver aquellos horarios válidos
+    (implementar funcionalidades extra)
 - Interactuar con la interfaz para actualizar la info
 */
 
