@@ -10,20 +10,20 @@ class DataModel {
     static API = 'https://ofertadecursos.uniandes.edu.co/api/courses';
 
     // Devuelve fecha de la última carga de datos, o undefined si no existe
-    lastDataTime() {
+    static lastDataTime() {
         const lastTime = localStorage.getItem('Uniandes-lastDataTime');
         return lastTime;
     }
 
     // Devuelve los últimos datos cargados
     // Los datos deben existir en localStorage
-    getData() {
+    static getData() {
         const dataModel = localStorage.getItem('Uniandes-dataModel');
         return JSON.parse(dataModel);
     }
 
     // Vuelve a cargar los datos desde la API y los guarda en localStorage
-    async reloadData() {
+    static async reloadData() {
 
         // Obtener datos (aprox 20 segundos)
         const lastTime = new Date().toLocaleString();
