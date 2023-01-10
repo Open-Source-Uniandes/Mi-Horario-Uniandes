@@ -6,7 +6,7 @@ import { TimeBlock } from "../model/TimeBlock.mjs";
 
 class CalendarView {
 
-    static COLORS = ["#E1628B", "#9595ff", "#C78A6B", "#E1A557", "#67A6D4", "#A05CD4", "#82BA6D", "#62E1C9"];
+    COLORS = ["#E1628B", "#9595ff", "#C78A6B", "#E1A557", "#67A6D4", "#A05CD4", "#82BA6D", "#62E1C9"];
 
     constructor({
         days, // Array para mapear días en índices, en orden
@@ -21,11 +21,14 @@ class CalendarView {
 
         // Variables del DOM
         this.calendarDOM = document.querySelector(".table-content");
-        this.calendarWidth = this.calendarDOM.style.width;
-        this.calendarHeight = this.calendarDOM.style.height;
+        this.calendarWidth = this.calendarDOM.clientWidth;
+        this.calendarHeight = 15*40;
+
+        // Cíclo de colores
+        this.idxCurrentColor = 0;
     }
 
-    showTimeBlock(timeBlock, day, color) {
+    showTimeBlock(timeBlock, day, color, courseSection) {
 
         const {
             startTime, // Como instante, es decir, minutos desde el inicio del día
@@ -34,24 +37,48 @@ class CalendarView {
 
         // Calcular el offset
         const top = (startTime - this.timeZero) * this.calendarHeight / this.timeSpan;
-        const left = this.day2idx[day] * this.calendarWidth / totalDays;
+        const left = this.day2idx[day] * this.calendarWidth / this.totalDays;
         const height = duration * this.calendarHeight / this.timeSpan;
 
         // Crear el nodo y agregarlo al DOM
         const node = document.createElement("div");
         node.classList.add("time-block");
-        node.style.top = top;
-        node.style.left = left;
-        node.style.height = height;
+        node.style.top = top + "px";
+        node.style.left = left + "px";
+        node.style.height = height + "px";
         node.style.backgroundColor = color;
         this.calendarDOM.appendChild(node);
+
+        // Añadir texto
+        let p = document.createElement("p");
+        p.innerText = `${courseSection.courseCode}\nSección ${courseSection.section}`;
+        node.appendChild(p);
     }
 
-    showSchedule(schedule) {
-        // Agregar colores no repetidos...
+    // Muestra un Schedule de bloque 
+    showBlocks(blocks) {
+
     }
 
+    // Muestra un Schedule de un Course Section
+    showCourseSchedule(courseSection) {
+        
+        const color = this.COLORS[this.idxCurrentColor];
+        Object.entries(courseSection.schedule.timeBlocks).forEach(
+            ([day, timeBlocks]) => timeBlocks.forEach(
+                timeBlock => this.showTimeBlock(timeBlock, day, color, courseSection)
+            )
+        );
+
+        // Ciclo de colores
+        this.idxCurrentColor = (this.idxCurrentColor + 1) % this.COLORS.length;
+    }
+
+    // Limpia todos los objetos en el calendario
     clearCalendar() {
+        // Recalcular variables
+        this.calendarWidth = this.calendarDOM.clientWidth;
+
         while (this.calendarDOM.firstChild)
             this.calendarDOM.removeChild(this.calendarDOM.firstChild);
     }

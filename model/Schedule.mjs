@@ -61,23 +61,15 @@ class Schedule {
 
     // Crea un único horario a partir de varios horarios
     // schedulesArray es un array de schedules, as described above
-    static merge(...schedulesArray) {
+    static merge(schedulesArray) {
 
         // Crea un horario vacío
         const merged = new Schedule();
 
-        // Llena la información de todos los schedules
-        merged.timeBlocks = schedulesArray.reduce(
-            // Crea un objeto
-            (previous, current) => Object.fromEntries(
-                // Para cada día de la semana
-                Schedule.DAYS_OF_THE_WEEK.map(
-                    // Que contiene el valor anterior y el valor actual
-                    day => [day, [...previous[day], ...current[day]]]
-                )
-            // Inicializa con el Object de empty arrays del nuevo horario
-            ), merged.timeBlocks
-        );
+        // Llena los bloques de los demás horarios
+        schedulesArray
+            .forEach(schedule => Object.entries(schedule.timeBlocks)
+                .forEach(([day, blocks]) => merged.timeBlocks[day] = [...merged.timeBlocks[day], ...blocks]));
 
         return merged;
     }
@@ -95,7 +87,7 @@ class Schedule {
         });
 
         // Hacerlo válido
-        schedule.timeBlocks = Object.entries(schedule.timeBlocks)
+        Object.entries(schedule.timeBlocks)
             .forEach(([day, timeBlocksArray]) => schedule.timeBlocks[day] = schedule.#mergeBlocks(timeBlocksArray));
         
         return schedule;

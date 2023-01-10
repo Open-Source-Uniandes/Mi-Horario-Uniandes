@@ -6,12 +6,10 @@ class TimeBlock {
     constructor({
         time_ini : startTime,
         time_fin : endTime,
-        // information, // Objecto con detalles adicionales del bloque
     }) {
         this.startTime = TimeBlock.calculateInstant(startTime);
         this.endTime = TimeBlock.calculateInstant(endTime);
         this.duration = TimeBlock.calculateDuration(startTime, endTime);
-        // this.information = information;
     }
 
     toString() {

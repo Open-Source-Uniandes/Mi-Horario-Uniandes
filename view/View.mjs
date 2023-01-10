@@ -15,12 +15,42 @@ class View {
             endTime : "2100",
         });
 
+        // Configuración del usuario
+        this.config = {
+            courses : [],
+            blocks : [],
+            metric : "",
+        }
+        // Calendarios generados
+        this.calendars = undefined;
+        this.idxCalendar = 0; // índice del actual
+
+        document.querySelectorAll('.date-last-fetch').forEach(el => el.innerText = new Date().toLocaleString());
+
         // Agregar event listeners
         // Welcome
         document.querySelector("#btn-start").addEventListener('click', this.openConfig.bind(this));
         // Config
         document.querySelector("#config-courseCode").addEventListener('input', this.showSearchedCourse.bind(this));
+        document.querySelector("#btn-open-calendar").addEventListener('click', this.openCalendar.bind(this));
         // Calendar
+        document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
+        document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(--this.idxCalendar));
+        document.querySelector("#next-calendar").addEventListener('click', () => this.showSchedule(++this.idxCalendar));
+        window.addEventListener('resize', () => this.showSchedule(this.idxCalendar));
+        // Movimiento con las teclas de dirección
+        window.addEventListener('keydown', event => {
+            switch(event.key) {
+            
+                case 'ArrowLeft':
+                    this.showSchedule(--this.idxCalendar)
+                    break;
+            
+                case 'ArrowRight':
+                    this.showSchedule(++this.idxCalendar)
+                    break;
+            }
+        })
     }
 
     // Establece la interfaz como lista para ejecutarse
@@ -41,10 +71,41 @@ class View {
 
     // Abre el modal del calendario
     openCalendar() {
+        // Obtener los calendarios válidos
+        this.calendars = this.viewModel.getSchedules(this.config);
+
+        // En caso que no existan horarios con la configuración actual
+        if(!this.calendars.length) {
+            document.querySelector("#no-calendars").classList.remove("inactive");
+            return; // Parar la ejecución de la función
+        }
+        document.querySelector("#no-calendars").classList.add("inactive")
+
         // Cerrar otros modales y abrir calendario
         document.querySelector("#welcome").classList.add("inactive");
         document.querySelector("#config").classList.add("inactive");
         document.querySelector("#calendar").classList.remove("inactive");
+
+        // Actualizar interfaz
+        document.querySelector("#calendar-total").innerText = this.calendars.length;
+
+        // Mostrar el primer calendario 
+// TODO BLOQUE
+        this.idxCalendar = 0;
+        this.showSchedule(this.idxCalendar);
+    }
+
+    showSchedule(idx) {
+        // Ajustar índice si se sale de los rangos
+        this.idxCalendar = Math.max(Math.min(this.calendars.length - 1, idx), 0);
+        idx = this.idxCalendar;
+        // Limpiar si es necesario
+        this.calendarView.clearCalendar();
+        // Mostrar los schedules de todos los cursos de la opción seleccionada
+        let calendarCourses = this.calendars[idx];
+        calendarCourses.forEach(courseSection => this.calendarView.showCourseSchedule(courseSection));
+        // Actualizar interfaz
+        document.querySelector("#calendar-current").innerText = idx + 1;
     }
 
     // Muestra la información del curso buscado en el panel de configuración
@@ -52,9 +113,8 @@ class View {
 
         // Normalizar input
         const courseCode = event.target.value.replace(" ", "").toUpperCase();
-        const sections = ["1", "2", "3", "4", "5"];//TODO
 
-        const courseSections = this.viewModel.getCourseSections({courseCode, sections});
+        const courseSections = this.viewModel.getCourseSections({courseCode});
         if(courseSections.length) {
 
             // Actualizar info del curso recuperado
@@ -64,13 +124,23 @@ class View {
             document.querySelector("#course-courseCode").innerText = courseSectionSample.courseCode;
             document.querySelector("#course-term").innerText = courseSectionSample.term;
 
+            // Borrar secciones si existe algún elemento
+            document.querySelector("#course-options").innerHTML = ""; // Elimina todos los hijos
+
             // Añadir info de cada sección
             courseSections.forEach(courseSection => {
 
                 // Se crea un nodo nuevo por cada sección
                 let node = document.createElement("div");
+                // Clases
                 node.classList.add("course-option");
                 if(courseSection.seatsavail <= 0) node.classList.add("unavailable-option");
+                if(this.config.courses.find(course => course.courseCode === courseSection.courseCode)?.sections.includes(courseSection.section)) node.classList.add("selected-option");
+                // Event listeners
+                node.addEventListener('click', (() => {
+                    node.classList.toggle('selected-option');
+                    this.toggleCourseSection(courseSection.courseCode, courseSection.section);
+                }));
 
                 let h4 = document.createElement("h4");
                 h4.innerText = `Sección ${courseSection.section} - NRC ${courseSection.nrc}`
@@ -124,6 +194,27 @@ class View {
             document.querySelector('#course-not-found').classList.remove("inactive");
             document.querySelector('#course-not-found > span').innerText = courseCode;
             document.querySelector('#course-details').classList.add("inactive");
+        }
+    }
+
+    // (des)Selecciona una sección de un curso
+    toggleCourseSection(courseCode, courseSection) {
+        // Hallar configuración previa, si existe
+        let courseConfig = this.config.courses.find(course => course.courseCode === courseCode);
+        // Añadir config del curso si no existe
+        if(!courseConfig) {
+            courseConfig = {courseCode, sections: []};
+            this.config.courses.push(courseConfig);
+        }
+        // Si no existe la sección, se agrega
+        const idx = courseConfig.sections.indexOf(courseSection);
+        if(idx === -1) {
+            courseConfig.sections.push(courseSection);
+        }
+        // Si existe la sección dentro del config, se elimina y, si no queda nada, se borra el curso
+        else {
+            courseConfig.sections.splice(idx, 1);
+            if(!courseConfig.sections.length) this.config.courses = this.config.courses.filter(course => course.courseCode !== courseConfig.courseCode);
         }
     }
 }

@@ -25,12 +25,13 @@ class ViewModel {
         courseCode,     // Código del curso, ejemplo "ISIS1105"
         sections,       // Array de secciones a considerar
     }) {
-        // De todos los cursos
-        return this.dataModel.data
-            // Filtrar los que correspondan al course code
-            .filter(course => (course.courseCode === courseCode))
-            // Y que estén dentro de las secciones consideradas
-            .filter(course => sections.includes(course.section));
+        // De todos los cursos, filtrar los que correspondan al course code
+        let courses =  this.dataModel.data
+            .filter(course => (course.courseCode === courseCode));
+        // Y si se solicita, filtrar las secciones pedidas
+        if(sections)
+            courses = courses.filter(course => sections.includes(course.section));
+        return courses;
     }
 
     getSchedules({
@@ -48,12 +49,12 @@ class ViewModel {
         // Filtrar aquellas secciones que se cruzan con algún bloque predefinido
         courseOptions = courseOptions.map(
             optionsList => optionsList.filter(
-                option => Schedule.merge(option.schedule, blocks).isValid()
+                option => Schedule.merge([option.schedule, blocks]).isValid()
             )
         );
         
         // Generar todas las posibles combinaciones válidas
-        console.info({numCombinations: courseOptions.reduce((prev,cur) => prev*cur, 1)});  // LOG
+        console.info({numCombinations: courseOptions.reduce((prev,cur) => prev*cur.length, 1)});  // LOG
         courseOptions = this.#getValidSchedules(courseOptions);
 
         // Organizar según la métrica a optimizar
@@ -67,14 +68,22 @@ class ViewModel {
     // Recibe un array que contiene arrays con las opciones para cada curso
     #getValidSchedules(courseOptions) {
 
+        // Caso en que no llega ninguna opción
+        if(!courseOptions.length) return [];
+
         // Función que genera un producto cartesiano entre todos los conjuntos que se le pasan
-        const cartesianProduct = (...sets) => sets.reduce((resultSet, currentSet) => resultSet.flatMap(resultTuple => currentSet.map(currentElement => [resultTuple, currentElement].flat())));
-        const allOptions = cartesianProduct(...courseOptions);
+        const cartesianProduct = (sets) => sets.reduce((resultSet, currentSet) => resultSet.flatMap(resultTuple => currentSet.map(currentElement => [resultTuple, currentElement].flat())));
+        let allOptions = cartesianProduct(courseOptions);
+
+        /// Cuando es un solo curso, el código anterior devuelve [opcion1, opcion2, ...] cuando debería ser [[opcion1], [opcion2], ...]
+        if(courseOptions.length === 1) allOptions = allOptions.map(element => [element]);
 
         // Generar los Schedules de cada opción y filtrar aquellos que son válidos
         return allOptions
-            .map(option => Schedule.merge(...option))
-            .filter(schedule => schedule.isValid());
+            .filter(option => {
+                const schedules = option.map(courseSection => courseSection.schedule);
+                return Schedule.merge(schedules).isValid();
+            });
     }
 }
 

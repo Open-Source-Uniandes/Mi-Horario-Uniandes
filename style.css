@@ -71,7 +71,7 @@ a {
 }
 
 .inactive {
-    display: none;
+    display: none !important;
 }
 
 /* Modal de bienvenida */
@@ -216,6 +216,10 @@ a {
     background-color: rgba(255, 0, 0, 0.3);
 }
 
+#config main > :nth-child(1) #course-options .course-option.selected-option {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
 #config main > :nth-child(1) #course-options .course-option > div {
     display: grid;
     justify-content: center;
@@ -232,12 +236,29 @@ a {
 }
 
 #config main > :last-child {
-    grid-area: step3;
+    grid-area: btn;
+}
+
+#config main article #btn-open-calendar {
+    width: 100%;
+}
+
+#config main article #no-calendars {
+    padding: 30px 20px;
+    width: 100%;
+    color: #731c24;
+    background-color: #f8d8da;
+    border: 1px solid #731c24;
+    border-radius: 5px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 #config footer p {
     width: fit-content;
-    padding: 0px 30px 20px;
+    padding: 20px 30px;
     margin: 0 auto;
     text-align: center;
 }
@@ -253,13 +274,13 @@ a {
         border-radius: 5px;
         border: 1px solid var(--light-gray);
     }
-    #config main {
+    /* #config main {
         grid-template-columns: 1fr 1fr;
         grid-template-areas: 
             "step1 step2"
             "step1 step3"
             "step1  btn";
-    }
+    } */
 }
 
 /* Calendario */
@@ -361,8 +382,30 @@ a {
 #calendar main .table .table-content .time-block {
     position: absolute;
     width: calc(100%/6);
+    border: 1px solid var(--dark-gray);
     border-radius: 4px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#calendar main .table .table-content .time-block p {
+    font-size: 12px;
+    text-align: center;
+}
+
+#calendar footer {
+    padding: 0px 30px 20px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#calendar footer p {
+    text-align: center;
+    font-weight: 700;
 }
 
 @media (min-width: 1024px) {
