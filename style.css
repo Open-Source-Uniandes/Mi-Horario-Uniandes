@@ -41,6 +41,19 @@ a {
     cursor: pointer;
 }
 
+.btn-secondary {
+    padding: 10px 20px;
+    border: 1px solid var(--strong-yellow);
+    border-radius: 5px;
+    background-color: white;
+
+    color: var(--dark-gray);
+    font-weight: 700;
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
 .small-em-text {
     display: block;
     padding-top: 20px;
@@ -48,6 +61,23 @@ a {
     font-size: 16px;
     font-style: italic;
     font-weight: 700;
+}
+
+.checkbox {
+    background-color: var(--light-gray);
+    border: 1px solid var(--dark-gray);
+    border-radius: 5px;
+    font-weight: 700;
+    text-align: center;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkbox.chkbox-selected {
+    background-color: #d4edda;
+    color: #275825;
+    border: 1px solid #275825;
 }
 
 .modal {
@@ -142,10 +172,16 @@ a {
     width: 100%;
     display: grid;
     grid-template-areas: 
-        "step1"
-        "step2"
-        "step3"
-        "btn";
+        "left"
+        "right";
+}
+
+#config main > :first-child {
+    grid-area: left;
+}
+
+#config main > :last-child {
+    grid-area: right;
 }
 
 #config main article {
@@ -162,11 +198,7 @@ a {
     text-align: justify;
 }
 
-#config main > :nth-child(1) {
-    grid-area: step1;
-}
-
-#config main > :nth-child(1) #config-courseCode {
+#config main #step1 #config-courseCode {
     width: 100%;
     padding: 10px 5px;
     margin-bottom: 20px;
@@ -179,11 +211,11 @@ a {
     font-style: italic;
 }
 
-#config main > :nth-child(1) #config-courseCode:focus {
+#config main #step1 #config-courseCode:focus {
     border-color: var(--strong-yellow);
 }
 
-#config main > :nth-child(1) .course-info {
+#config main #step1 .course-info {
     padding: 20px;
     text-align: center;
     display: flex;
@@ -193,14 +225,15 @@ a {
     gap: 10px;
 }
 
-#config main > :nth-child(1) .course-info .container-row {
+#config main #step1 .course-info .container-row {
     width: 100%;
 }
-#config main > :nth-child(1) #course-options {
+
+#config main #step1 #course-options {
     gap: 10px;
 }
 
-#config main > :nth-child(1) #course-options .course-option {
+#config main #step1 #course-options .course-option {
     width: 100%;
     padding: 20px;
     background-color: var(--light-gray);
@@ -212,34 +245,94 @@ a {
     gap: 10px;
 }
 
-#config main > :nth-child(1) #course-options .course-option.unavailable-option {
+#config main #step1 #course-options .course-option.unavailable-option {
     background-color: rgba(255, 0, 0, 0.3);
 }
 
-#config main > :nth-child(1) #course-options .course-option.selected-option {
+#config main #step1 #course-options .course-option.selected-option {
     background-color: rgba(0, 255, 0, 0.3);
 }
 
-#config main > :nth-child(1) #course-options .course-option > div {
+#config main #step1 #course-options .course-option > div {
     display: grid;
     justify-content: center;
     align-items: center;
     gap: 5px;
 }
 
-#config main > :nth-child(2) {
-    grid-area: step2;
+#config main #step2 .container-row {
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
-#config main > :nth-child(3) {
-    grid-area: step3;
+#config main #step2 .checkbox {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
 }
 
-#config main > :last-child {
-    grid-area: btn;
+#config main #step2 input[type="time"] {
+    width: 100px;
+    padding: 5px 10px;
+    border: 1px solid var(--dark-gray);
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+#config main #step2 button {
+    margin-top: 10px;
+}
+
+#config main #step3 ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+}
+
+#config main #step3 li {
+    height: 25px;
+    display: flex;
+    align-items: center;
+}
+
+#config main #step3 li label {
+    padding: 0 10px;
+}
+
+#config main #step3 #my-courses .my-course {
+    width: 100%;
+    padding: 20px;
+    background-color: rgba(0, 255, 0, 0.3);
+    border: 1px solid var(--dark-gray);
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#config main #step3 #my-blocks .my-block {
+    width: 100%;
+    padding: 20px;
+    background-color: var(--light-gray);
+    border: 1px solid var(--dark-gray);
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#config main #step3 #my-blocks .my-block .checkbox {
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
 }
 
 #config main article #btn-open-calendar {
+    margin-top: 30px;
+    padding: 20px 30px;
     width: 100%;
 }
 
@@ -274,13 +367,11 @@ a {
         border-radius: 5px;
         border: 1px solid var(--light-gray);
     }
-    /* #config main {
+    #config main {
         grid-template-columns: 1fr 1fr;
         grid-template-areas: 
-            "step1 step2"
-            "step1 step3"
-            "step1  btn";
-    } */
+            "left right";
+    }
 }
 
 /* Calendario */

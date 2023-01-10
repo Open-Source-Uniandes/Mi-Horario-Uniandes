@@ -5,13 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Horario Uniandes</title>
+    <meta name="description" content="Construye el horario de tus sueños con un solo click 💛">
     <link rel="stylesheet" href="./style.css">
     <!-- Ícono de navegación -->
     <link rel="shortcut icon" type="image/png" href="https://registroapps.uniandes.edu.co/SisAdmisiones/Pregrado/img/Seneca-01.png"/>
 </head>
 <body>
     <!-- Modal de bienvenida -->
-    <section id="welcome" class="modal">
+    <section id="welcome" class="modal inactive">
         <header>
             <img src="https://medicina.uniandes.edu.co/sites/default/files/campus-uniandes.jpg" alt="Application Banner">
             <div class="container-column">
@@ -52,7 +53,7 @@
     </section>
 
     <!-- Modal de configuración -->
-    <section id="config" class="modal inactive">
+    <section id="config" class="modal">
 
         <header class="container-column">
             <h1>Personaliza tu Horario</h1>
@@ -60,47 +61,116 @@
 
         <main>
 
-            <!-- Paso 1 -->
-            <article>
-                <h2>Paso 1: Elige tus cursos</h2>
-                <p>Empieza por ingresar el código de uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu horario ideal.</p>
-                <label class="small-em-text" for="config-courseCode">Ingresa el código del curso:</label>
-                <input type="search" id="config-courseCode" placeholder="DECA1101">
-                <p id="course-not-found" class="small-em-text inactive">No encontramos el curso <span></span></p>
-                <div id="course-details" class="inactive">
-                    <p class="small-em-text">Detalles del curso:</p>
-                    <div class="course-info">
-                        <h3 id="course-title"></h3>
-                        <div class="container-row" style="justify-content: space-around;">
-                            <p><span id="course-credits"></span> créditos</p>
-                            <p id="course-courseCode"></p>
-                            <p id="course-term"></p>
+            <div>
+
+                <!-- Paso 1 -->
+                <article id="step1">
+                    <h2>Paso 1: Elige tus cursos</h2>
+                    <p>Empieza por ingresar el código de uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu horario ideal.</p>
+                    <label class="small-em-text" for="config-courseCode">Ingresa el código del curso:</label>
+                    <input type="search" id="config-courseCode" placeholder="DECA1101">
+                    <p id="course-not-found" class="small-em-text inactive">No encontramos el curso <span></span></p>
+                    <div id="course-details" class="inactive">
+                        <p class="small-em-text">Detalles del curso:</p>
+                        <div class="course-info">
+                            <h3 id="course-title"></h3>
+                            <div class="container-row" style="justify-content: space-around;">
+                                <p><span id="course-credits"></span> créditos</p>
+                                <p id="course-courseCode"></p>
+                                <p id="course-term"></p>
+                            </div>
+                        </div>
+                        <p class="small-em-text">Secciones disponibles:</p>
+                        <div id="course-options" class="container-column">
+                            <!-- Aquí van las secciones a mostrar al usuario -->
                         </div>
                     </div>
-                    <p class="small-em-text">Secciones disponibles:</p>
-                    <div id="course-options" class="container-column">
-                        <!-- Aquí van las secciones a mostrar al usuario -->
+                    
+                </article>
+
+            </div>
+
+            <div>
+
+                <!-- Paso 2 -->
+                <article id="step2">
+                    <h2>Paso 2: Añade tus bloques</h2>
+                    <p>¿No quieres madrugar a las 6:30? ¿Quieres almorzar con tus amigos a las 12:30? ¡Agrega esos momentos en los cuales, por ningún motivo, quieres que se te cruce una clase!</p>
+                    <label class="small-em-text">¿Qué días aplica?</label>
+                    <div class="container-row" style="justify-content: space-around;">
+                        <div id="block-chkbox-l" class="checkbox">L</div>
+                        <div id="block-chkbox-m" class="checkbox">M</div>
+                        <div id="block-chkbox-i" class="checkbox">I</div>
+                        <div id="block-chkbox-j" class="checkbox">J</div>
+                        <div id="block-chkbox-v" class="checkbox">V</div>
+                        <div id="block-chkbox-s" class="checkbox">S</div>
                     </div>
-                </div>
-                
-            </article>
+                    <label class="small-em-text" for="block-time-start">¿Entre qué horas?</label>
+                    <div class="container-row" style="justify-content: center; gap: 20px;">
+                        <input type="time" id="block-time-start" min="06:00" max="21:00" required>
+                        <div style="height: 1px; width: 10px; border-top: 1px solid black;"></div>
+                        <input type="time" id="block-time-start" min="06:00" max="21:00" required>
+                    </div>
+                    <div class="container-column">
+                        <button type="button" class="btn-secondary">Crear Bloque</button>
+                    </div>
+                </article>
+    
+                <!-- Paso 3 -->
+                <article id="step3">
+                    <h2>Paso 3: Optimiza</h2>
+                    <p>¿Quieres un horario con menos huecos? ¿O quizás buscas salir más temprano de clases? Solo selecciona qué deseas y los resultados se ordenarán para ti. ¡Recuerda revisar que hayas agregado todos tus cursos y bloques!</p>
+                    <p class="small-em-text">¿Qué deseas optimizar?</p>
+                    <ul>
+                        <li>
+                            <input type="radio" id="opt-min-huecos" value="MinHuecos" name="optimizar" checked>
+                            <label for="opt-min-huecos">Quiero un horario sin huecos</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="opt-min-salida" value="MinHuecos" name="optimizar">
+                            <label for="opt-min-salida">Quiero salir temprano todos los días</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="opt-aleatorio" value="Aleatorio" name="optimizar">
+                            <label for="opt-aleatorio">¡Sorpréndeme! (aleatorio 😉)</label>
+                        </li>
+                    </ul>
+                    <p class="small-em-text">Tus cursos:</p>
+                    <div id="my-courses">
+                        <div class="my-course">
+                            <h3>Fundamentos de administración para no administradores</h3>
+                            <div class="container-row">
+                                <p>
+                                    <strong>Secciones:</strong> 1,2,3
+                                </p>
+                                <strong>ADMI1001</strong>
+                            </div>
+                        </div>
+                        <!-- Aquí van los cursos agregados -->
+                    </div>
+                    <p class="small-em-text">Tus bloques:</p>
+                    <div id="my-blocks">
+                        <div class="my-block">
+                            <div class="container-row" style="justify-content: space-around;">
+                                <div class="checkbox">L</div>
+                                <div class="checkbox">M</div>
+                                <div class="checkbox">I</div>
+                                <div class="checkbox">J</div>
+                                <div class="checkbox">V</div>
+                                <div class="checkbox chkbox-selected">S</div>
+                            </div>
+                            <strong>9:30 - 11:00</strong>
+                        </div>
+                        <!-- Aquí van los bloques agregados -->
+                    </div>
+                    <div class="container-column">
+                        <button id="btn-open-calendar" class="btn-primary">Construir tu horario</button>
+                        <p id="no-calendars" class="inactive"><strong style="color: #731c24;">No encontramos horarios para ti :(</strong> <br> Te recomendamos incluir más secciones de los cursos que ya tienes, o reducir la cantidad de cursos únicos y bloques.</p>
+                    </div>
+    
+                </article>
 
-            <!-- Paso 2 -->
-            <article class="inactive">
-                <h2>Paso 2: Añade tus bloques</h2>
-                <p></p>
-            </article>
-
-            <!-- Paso 3 -->
-            <article class="inactive">
-                <h2>Paso 3: Optimiza</h2>
-                <p></p>
-            </article>
-
-            <article class="container-column">
-                <button id="btn-open-calendar" class="btn-primary">Construir tu horario</button>
-                <p id="no-calendars" class="inactive"><strong style="color: #731c24;">No encontramos horarios para ti :(</strong> <br> Te recomendamos incluir más secciones de los cursos que ya tienes, o reducir la cantidad de cursos únicos y bloques.</p>
-            </article>
+            </div>
 
         </main>
 
