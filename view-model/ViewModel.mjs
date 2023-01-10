@@ -10,7 +10,7 @@ class ViewModel {
 
     constructor() {
         this.dataModel = new DataModel();
-        this.view = new View();
+        this.view = new View(this);
     }
 
     // Punto de entrada para inicializar la aplicación
@@ -43,7 +43,7 @@ class ViewModel {
         blocks = Schedule.fromBlocks(blocks);
 
         // Obtener las opciones por cada curso
-        let courseOptions = courses.map(course => getCourseSections(course));
+        let courseOptions = courses.map(course => this.getCourseSections(course));
 
         // Filtrar aquellas secciones que se cruzan con algún bloque predefinido
         courseOptions = courseOptions.map(
@@ -54,7 +54,7 @@ class ViewModel {
         
         // Generar todas las posibles combinaciones válidas
         console.info({numCombinations: courseOptions.reduce((prev,cur) => prev*cur, 1)});  // LOG
-        courseOptions = getValidSchedules(courseOptions);
+        courseOptions = this.#getValidSchedules(courseOptions);
 
         // Organizar según la métrica a optimizar
         // TODO
@@ -65,7 +65,7 @@ class ViewModel {
     }
 
     // Recibe un array que contiene arrays con las opciones para cada curso
-    getValidSchedules(courseOptions) {
+    #getValidSchedules(courseOptions) {
 
         // Función que genera un producto cartesiano entre todos los conjuntos que se le pasan
         const cartesianProduct = (...sets) => sets.reduce((resultSet, currentSet) => resultSet.flatMap(resultTuple => currentSet.map(currentElement => [resultTuple, currentElement].flat())));

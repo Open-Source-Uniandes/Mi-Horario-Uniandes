@@ -23,7 +23,7 @@ class CourseSection {
         this.credits = credits;
         this.seatsavail = seatsavail;
         this.schedule = new Schedule(schedules);
-        this.instructors = instructors;
+        this.instructors = instructors.map(element => element.name);
         this.section = section;
         this.nrc = nrc;
         this.campus = campus;

@@ -11,7 +11,7 @@
 </head>
 <body>
     <!-- Modal de bienvenida -->
-    <section id="welcome" class="modal inactive">
+    <section id="welcome" class="modal">
         <header>
             <img src="https://medicina.uniandes.edu.co/sites/default/files/campus-uniandes.jpg" alt="Application Banner">
             <div class="container-column">
@@ -52,7 +52,7 @@
     </section>
 
     <!-- Modal de configuración -->
-    <section id="config" class="modal">
+    <section id="config" class="modal inactive">
 
         <header class="container-column">
             <h1>Personaliza tu Horario</h1>
@@ -66,72 +66,20 @@
                 <p>Empieza por ingresar el código de uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu horario ideal.</p>
                 <label class="small-em-text" for="config-courseCode">Ingresa el código del curso:</label>
                 <input type="search" id="config-courseCode" placeholder="DECA1101">
-                <div>
+                <p id="course-not-found" class="small-em-text inactive">No encontramos el curso <span></span></p>
+                <div id="course-details" class="inactive">
                     <p class="small-em-text">Detalles del curso:</p>
                     <div class="course-info">
-                        <h3>Fundamentos de administración para no administradores</h3>
+                        <h3 id="course-title"></h3>
                         <div class="container-row" style="justify-content: space-around;">
-                            <p>3 créditos</p>
-                            <p>ADMI1001</p>
-                            <p>202310</p>
+                            <p><span id="course-credits"></span> créditos</p>
+                            <p id="course-courseCode"></p>
+                            <p id="course-term"></p>
                         </div>
                     </div>
                     <p class="small-em-text">Secciones disponibles:</p>
                     <div id="course-options" class="container-column">
-                        <div class="course-option">
-                            <h4>Sección 1 - NRC 41356</h4>
-                            <div>
-                                <div>
-                                    <h5>Profesores</h5>
-                                    <p>Andrés Botero</p>
-                                    <p>Hernán Gutierrez</p>
-                                    <p>Olga Lopez</p>
-                                </div>
-                                <div>
-                                    <h5>Horarios</h5>
-                                    <p>Lunes: 8:00 - 9:30</p>
-                                    <p>Jueves: 8:00 - 9:30</p>
-                                    <p>Viernes: 8:00 - 9:30</p>
-                                </div>
-                            </div>
-                            <h5>8 cupos disponibles</h5>
-                        </div>
-                        <div class="course-option unavailable-option">
-                            <h4>Sección 1 - NRC 41356</h4>
-                            <div>
-                                <div>
-                                    <h5>Profesores</h5>
-                                    <p>Andrés Botero</p>
-                                    <p>Hernán Gutierrez</p>
-                                    <p>Olga Lopez</p>
-                                </div>
-                                <div>
-                                    <h5>Horarios</h5>
-                                    <p>Lunes: 8:00 - 9:30</p>
-                                    <p>Jueves: 8:00 - 9:30</p>
-                                    <p>Viernes: 8:00 - 9:30</p>
-                                </div>
-                            </div>
-                            <h5>8 cupos disponibles</h5>
-                        </div>
-                        <div class="course-option" style="background-color: rgba(0, 255, 0, 0.3);">
-                            <h4>Sección 1 - NRC 41356</h4>
-                            <div>
-                                <div>
-                                    <h5>Profesores</h5>
-                                    <p>Andrés Botero Botero Botero</p>
-                                    <p>Hernán Gutierrez</p>
-                                    <p>Olga Lopez</p>
-                                </div>
-                                <div>
-                                    <h5>Horarios</h5>
-                                    <p>Lunes: 8:00 - 9:30</p>
-                                    <p>Jueves: 8:00 - 9:30</p>
-                                    <p>Viernes: 8:00 - 9:30</p>
-                                </div>
-                            </div>
-                            <h5>8 cupos disponibles</h5>
-                        </div>
+                        <!-- Aquí van las secciones a mostrar al usuario -->
                     </div>
                 </div>
                 

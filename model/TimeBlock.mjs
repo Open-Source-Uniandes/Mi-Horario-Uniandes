@@ -14,6 +14,10 @@ class TimeBlock {
         // this.information = information;
     }
 
+    toString() {
+        return `${TimeBlock.calculateTime(this.startTime)} - ${TimeBlock.calculateTime(this.endTime)}`
+    }
+
     // Halla la cantidad de minutos desde el inicio del día
     // time en el formato "hhmm", por ejemplo "0920"
     static calculateInstant(time) {
@@ -24,12 +28,12 @@ class TimeBlock {
         return instant;
     }
 
-    // Halla el tiempo en formato "hhmm" a partir de un instante de tiempo
+    // Halla el tiempo en formato "hh:mm" a partir de un instante de tiempo
     static calculateTime(instant) {
         
         const hour = Math.floor(instant / 60);
-        const minute = instant % 60;
-        const time = `${hour}${minute}`;
+        const minute = String(instant % 60).padStart(2, '0');  // Padding para casos como '0'
+        const time = hour + ":" + minute;
         return time;
     }
 
