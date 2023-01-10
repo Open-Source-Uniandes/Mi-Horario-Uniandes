@@ -213,6 +213,13 @@ button {
     background-color: transparent;
 }
 
+#calendar main .table .table-content .time-block {
+    position: absolute;
+    width: calc(100%/6);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
 @media (min-width: 1024px) {
     #calendar header {
         font-size: 16px;

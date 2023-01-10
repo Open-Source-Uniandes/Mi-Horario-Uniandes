@@ -13,6 +13,7 @@ class CourseSection {
         seatsavail,  // Cupos disponibles
         schedules,   // Horarios
         instructors, // Profesores
+        section,     // Número de sección
         nrc,         // Número único de registro 
         campus,      // Campus
         term,        // Período académico
@@ -23,6 +24,7 @@ class CourseSection {
         this.seatsavail = seatsavail;
         this.schedule = new Schedule(schedules);
         this.instructors = instructors;
+        this.section = section;
         this.nrc = nrc;
         this.campus = campus;
         this.term = term;

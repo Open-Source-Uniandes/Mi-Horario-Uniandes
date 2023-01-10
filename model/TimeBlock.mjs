@@ -24,12 +24,12 @@ class TimeBlock {
         return instant;
     }
 
-    // Halla el tiempo en formato "hh:mm" a partir de un instante de tiempo
+    // Halla el tiempo en formato "hhmm" a partir de un instante de tiempo
     static calculateTime(instant) {
         
         const hour = Math.floor(instant / 60);
         const minute = instant % 60;
-        const time = `${hour}:${minute}`;
+        const time = `${hour}${minute}`;
         return time;
     }
 

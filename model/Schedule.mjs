@@ -64,7 +64,7 @@ class Schedule {
     static merge(...schedulesArray) {
 
         // Crea un horario vacío
-        const merged = new Schedule;
+        const merged = new Schedule();
 
         // Llena la información de todos los schedules
         merged.timeBlocks = schedulesArray.reduce(
@@ -82,7 +82,47 @@ class Schedule {
         return merged;
     }
 
-    // Getters para "l", "m", "i", etc.
+    // Crea un schedule válido a partir de un array de bloques de tiempo. Depura o combina time blocks de ser necesario
+    static fromBlocks(blocks) {
+
+        const schedule = new Schedule();
+        // Recorrer cada día de cada bloque
+        blocks.forEach(block => {
+            const timeBlock = {time_ini: block.startTime, time_fin: block.endTime};
+            block.days.forEach(day => {
+                schedule.timeBlocks[day].push(new TimeBlock(timeBlock));
+            });
+        });
+
+        // Hacerlo válido
+        schedule.timeBlocks = Object.entries(schedule.timeBlocks)
+            .forEach(([day, timeBlocksArray]) => schedule.timeBlocks[day] = schedule.#mergeBlocks(timeBlocksArray));
+        
+        return schedule;
+    }
+
+    // Corrige el overlapping, borrando time blocks de ser necesario
+    #mergeBlocks(timeBlocksArray) {
+
+        // Caso que no tiene elementos
+        if(timeBlocksArray.length < 1) return timeBlocksArray; 
+        
+        timeBlocksArray = timeBlocksArray
+            // Ordenar el Array ascendentemente según startTime
+            .sort((a, b) => (a.startTime - b.startTime))
+            .reduce((acum, curr) => {
+                // Último elemento añadido al array final
+                let lastAdded = acum[acum.length - 1];
+                // Si hay colisión con el actual, se incorpora al elemento ya añadido
+                if(curr.startTime < lastAdded.endTime) lastAdded.endTime = Math.max(lastAdded.endTime, curr.endTime);
+                // Si no hay colisión, simplemente se agrega
+                else acum.push(curr);
+                return acum;
+            }, [timeBlocksArray[0]]);
+        return newTimeBlocksArray;
+    }
+
+    /* Métricas que se pueden calcular a cada Array */
 }
 
 export { Schedule };

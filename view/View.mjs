@@ -1,48 +1,44 @@
 /* 
-Este módulo centraliza la interacción con la interfaz
+Este módulo maneja la interacción con la interfaz
 */
 
-import { ViewModel } from "../view-model/ViewModel.mjs";
-
+import { CalendarView } from "./CalendarView.mjs";
 class View {
 
-    constructor() {
-
-        // Crear modelo de la vista
-        this.viewModel = new ViewModel();
-        this.lastTime = null;  // Fecha de última actualización de los datos
-
-        // Añadir event listeners
-        document.querySelector("#btn-start").addEventListener('click', this.openConfig.bind(this));
-    }
-
-    // Se ejecuta al cargar la página 
-    start() {
-        this.lastTime = this.viewModel.loadData().then(time => {
-            // Eliminar animación de carga
-            document.querySelector("#load-start").classList.add("inactive");
-            // Mostrar botón de continuar
-            document.querySelector("#btn-start").classList.remove("inactive");
-            
-            return time;
+    constructor(viewModel) {
+        // Guarda una referencia del view model para invocar sus métodos
+        this.viewModel = viewModel;
+        // Manejo de secciones específicas
+        this.calendarView = new CalendarView({
+            days : ["l", "m", "i", "j", "v", "s"],
+            startTime : "0600",
+            endTime : "2100",
         });
     }
 
-    // Se ejecuta cuando el usuario decide continuar a armar su horario
-    // O cuando decide cambiar la configuración
-    openConfig() {
+    // Establece la interfaz como lista para ejecutarse
+    ready() {
+        // Eliminar animación de carga
+        document.querySelector("#load-start").classList.add("inactive");
+        // Mostrar botón de continuar
+        document.querySelector("#btn-start").classList.remove("inactive");
+        document.querySelector("#btn-start").addEventListener('click', this.openConfig.bind(this));
+    }
 
-        // Cerrar modal de bienvenida, si está abierto
+    // Abre el modal de configuración
+    openConfig() {
+        // Cerrar otros modales y abrir configuración
         document.querySelector("#welcome").classList.add("inactive");
-        // Abrir modal de configuración
+        document.querySelector("#calendar").classList.add("inactive");
         document.querySelector("#config").classList.remove("inactive");
     }
 
-    // Se ejecuta cuando el usuario ya ha definido la configuración
+    // Abre el modal del calendario
     openCalendar() {
-        
-        // Cerrar modal de configuración
+        // Cerrar otros modales y abrir calendario
+        document.querySelector("#welcome").classList.add("inactive");
         document.querySelector("#config").classList.add("inactive");
+        document.querySelector("#calendar").classList.remove("inactive");
     }
 }
 
