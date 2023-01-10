@@ -28,7 +28,7 @@ a {
 
 }
 
-button {
+.btn-primary {
     padding: 10px 20px;
     border: 2px solid var(--dark-gray);
     border-radius: 5px;
@@ -39,6 +39,15 @@ button {
     font-size: 20px;
 
     cursor: pointer;
+}
+
+.small-em-text {
+    display: block;
+    padding-top: 20px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 700;
 }
 
 .modal {
@@ -114,6 +123,142 @@ button {
     }
     #welcome header h1 {
         font-size: 48px;
+    }
+}
+
+/* Configuración */
+
+#config header {
+    width: 100%;
+    height: 80px;
+    padding: 0 20px;
+    background-color: var(--yellow);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
+#config main {
+    width: 100%;
+    display: grid;
+    grid-template-areas: 
+        "step1"
+        "step2"
+        "step3"
+        "btn";
+}
+
+#config main article {
+    padding: 20px 30px;
+}
+
+#config main article h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+}
+
+#config main article > p {
+    text-align: justify;
+}
+
+#config main > :nth-child(1) {
+    grid-area: step1;
+}
+
+#config main > :nth-child(1) #config-courseCode {
+    width: 100%;
+    padding: 10px 5px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    border: 1px solid var(--dark-gray);
+    outline: none;
+    text-align: center;
+    font-size: 18px;
+    font-style: italic;
+}
+
+#config main > :nth-child(1) #config-courseCode:focus {
+    border-color: var(--strong-yellow);
+}
+
+#config main > :nth-child(1) .course-info {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#config main > :nth-child(1) .course-info .container-row {
+    width: 100%;
+}
+#config main > :nth-child(1) #course-options {
+    gap: 10px;
+}
+
+#config main > :nth-child(1) #course-options .course-option {
+    width: 100%;
+    padding: 20px;
+    background-color: var(--light-gray);
+    border: 1px solid var(--dark-gray);
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#config main > :nth-child(1) #course-options .course-option.unavailable-option {
+    background-color: rgba(255, 0, 0, 0.3);
+}
+
+#config main > :nth-child(1) #course-options .course-option > div {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+#config main > :nth-child(2) {
+    grid-area: step2;
+}
+
+#config main > :nth-child(3) {
+    grid-area: step3;
+}
+
+#config main > :last-child {
+    grid-area: step3;
+}
+
+#config footer p {
+    width: fit-content;
+    padding: 0px 30px 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+@media (min-width: 1024px) {
+    #config header {
+        font-size: 16px;
+    }
+    #config main {
+        padding: 20px;
+    }
+    #config main article {
+        border-radius: 5px;
+        border: 1px solid var(--light-gray);
+    }
+    #config main {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "step1 step2"
+            "step1 step3"
+            "step1  btn";
     }
 }
 

@@ -11,7 +11,7 @@
 </head>
 <body>
     <!-- Modal de bienvenida -->
-    <section id="welcome" class="modal">
+    <section id="welcome" class="modal inactive">
         <header>
             <img src="https://medicina.uniandes.edu.co/sites/default/files/campus-uniandes.jpg" alt="Application Banner">
             <div class="container-column">
@@ -42,7 +42,7 @@
         </div>
         <!-- Botón para iniciar la aplicación -->
         <div class="container-column">
-            <button id="btn-start" class="inactive" type="button">Arma tu horario</button>
+            <button id="btn-start" class="inactive btn-primary" type="button">Arma tu horario</button>
         </div>
 
         <footer class="container-column">
@@ -52,18 +52,112 @@
     </section>
 
     <!-- Modal de configuración -->
-    <section id="config" class="modal inactive">
+    <section id="config" class="modal">
 
-        <!---->
-        <h2>Añade tus materias</h2>
-        botón añadir nueva materia
-        boton añadir nuebo bloque
-        <ul>
-            <li></li>
-        </ul>
-        checkbox: Solo secciones con cupo
-        checkbox: Optimizar para reducir huecos o salir temprano?
-        <!---->
+        <header class="container-column">
+            <h1>Personaliza tu Horario</h1>
+        </header>
+
+        <main>
+
+            <!-- Paso 1 -->
+            <article>
+                <h2>Paso 1: Elige tus cursos</h2>
+                <p>Empieza por ingresar el código de uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu horario ideal.</p>
+                <label class="small-em-text" for="config-courseCode">Ingresa el código del curso:</label>
+                <input type="search" id="config-courseCode" placeholder="DECA1101">
+                <div>
+                    <p class="small-em-text">Detalles del curso:</p>
+                    <div class="course-info">
+                        <h3>Fundamentos de administración para no administradores</h3>
+                        <div class="container-row" style="justify-content: space-around;">
+                            <p>3 créditos</p>
+                            <p>ADMI1001</p>
+                            <p>202310</p>
+                        </div>
+                    </div>
+                    <p class="small-em-text">Secciones disponibles:</p>
+                    <div id="course-options" class="container-column">
+                        <div class="course-option">
+                            <h4>Sección 1 - NRC 41356</h4>
+                            <div>
+                                <div>
+                                    <h5>Profesores</h5>
+                                    <p>Andrés Botero</p>
+                                    <p>Hernán Gutierrez</p>
+                                    <p>Olga Lopez</p>
+                                </div>
+                                <div>
+                                    <h5>Horarios</h5>
+                                    <p>Lunes: 8:00 - 9:30</p>
+                                    <p>Jueves: 8:00 - 9:30</p>
+                                    <p>Viernes: 8:00 - 9:30</p>
+                                </div>
+                            </div>
+                            <h5>8 cupos disponibles</h5>
+                        </div>
+                        <div class="course-option unavailable-option">
+                            <h4>Sección 1 - NRC 41356</h4>
+                            <div>
+                                <div>
+                                    <h5>Profesores</h5>
+                                    <p>Andrés Botero</p>
+                                    <p>Hernán Gutierrez</p>
+                                    <p>Olga Lopez</p>
+                                </div>
+                                <div>
+                                    <h5>Horarios</h5>
+                                    <p>Lunes: 8:00 - 9:30</p>
+                                    <p>Jueves: 8:00 - 9:30</p>
+                                    <p>Viernes: 8:00 - 9:30</p>
+                                </div>
+                            </div>
+                            <h5>8 cupos disponibles</h5>
+                        </div>
+                        <div class="course-option" style="background-color: rgba(0, 255, 0, 0.3);">
+                            <h4>Sección 1 - NRC 41356</h4>
+                            <div>
+                                <div>
+                                    <h5>Profesores</h5>
+                                    <p>Andrés Botero Botero Botero</p>
+                                    <p>Hernán Gutierrez</p>
+                                    <p>Olga Lopez</p>
+                                </div>
+                                <div>
+                                    <h5>Horarios</h5>
+                                    <p>Lunes: 8:00 - 9:30</p>
+                                    <p>Jueves: 8:00 - 9:30</p>
+                                    <p>Viernes: 8:00 - 9:30</p>
+                                </div>
+                            </div>
+                            <h5>8 cupos disponibles</h5>
+                        </div>
+                    </div>
+                </div>
+                
+            </article>
+
+            <!-- Paso 2 -->
+            <article class="inactive">
+                <h2>Paso 2: Añade tus bloques</h2>
+                <p></p>
+            </article>
+
+            <!-- Paso 3 -->
+            <article class="inactive">
+                <h2>Paso 3: Optimiza</h2>
+
+            </article>
+
+            <button class="inactive btn-primary">Construir tu horario</button>
+
+        </main>
+
+        <footer>
+            <p>
+                Datos recuperados de Banner el <span>27/01/21 13:45:34</span>
+            </p>
+        </footer>
 
     </section>
 
