@@ -16,6 +16,7 @@ Si encuentras un error, por favor añádelo como un [issue](https://github.com/O
 
 Errores conocidos:
 * Cursos de primer y segundo ciclo que estén en el mismo horario se cuentan como inválidos.
+* Cursos con horarios no fijos durante el semestre (ejemplo: 1:00-2:00 las primeras 5 semanas, luego 1:30-2:30 las siguientes 3 semanas, etc...) Se contarán como inválidos si estas opciones se cruzan.
 
 ## Colaboración
 
