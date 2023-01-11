@@ -51,13 +51,23 @@ class CalendarView {
 
         // Añadir texto
         let p = document.createElement("p");
-        p.innerText = `${courseSection.courseCode}\nSección ${courseSection.section}`;
+        if(courseSection) {
+            p.innerText = `${courseSection.courseCode}\nSección ${courseSection.section}`;
+        }
+        else {
+            p.innerText = "Bloque de tiempo reservado";
+        }
         node.appendChild(p);
     }
 
     // Muestra un Schedule de bloque 
     showBlocks(blocks) {
+        const color = "var(--light-gray)";
 
+        blocks.forEach(block => {
+            let timeBlock = TimeBlock.fromInstants({time_ini: block.startTime, time_fin: block.endTime});
+            block.days.forEach(day => this.showTimeBlock(timeBlock, day, color))
+        });
     }
 
     // Muestra un Schedule de un Course Section

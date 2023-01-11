@@ -82,7 +82,7 @@ class Schedule {
         blocks.forEach(block => {
             const timeBlock = {time_ini: block.startTime, time_fin: block.endTime};
             block.days.forEach(day => {
-                schedule.timeBlocks[day].push(new TimeBlock(timeBlock));
+                schedule.timeBlocks[day].push(TimeBlock.fromInstants(timeBlock));
             });
         });
 
@@ -111,7 +111,7 @@ class Schedule {
                 else acum.push(curr);
                 return acum;
             }, [timeBlocksArray[0]]);
-        return newTimeBlocksArray;
+        return timeBlocksArray;
     }
 
     /* Métricas que se pueden calcular a cada Array */

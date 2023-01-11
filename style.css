@@ -300,6 +300,12 @@ a {
     padding: 0 10px;
 }
 
+#config main #step3 #my-courses {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 #config main #step3 #my-courses .my-course {
     width: 100%;
     padding: 20px;
@@ -311,6 +317,12 @@ a {
     flex-direction: column;
     gap: 15px;
 }
+
+#config main #step3 #my-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+} 
 
 #config main #step3 #my-blocks .my-block {
     width: 100%;

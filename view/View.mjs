@@ -2,6 +2,7 @@
 Este módulo maneja la interacción con la interfaz
 */
 
+import { TimeBlock } from "../model/TimeBlock.mjs";
 import { CalendarView } from "./CalendarView.mjs";
 class View {
 
@@ -33,6 +34,8 @@ class View {
         // Config
         document.querySelector("#config-courseCode").addEventListener('input', this.showSearchedCourse.bind(this));
         document.querySelector("#btn-open-calendar").addEventListener('click', this.openCalendar.bind(this));
+        document.querySelector("#btn-add-block").addEventListener('click', this.addBlock.bind(this));
+        document.querySelectorAll("#step2 .checkbox").forEach(element => element.addEventListener('click', () => element.classList.toggle("chkbox-selected")));
         // Calendar
         document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
         document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(--this.idxCalendar));
@@ -71,6 +74,9 @@ class View {
 
     // Abre el modal del calendario
     openCalendar() {
+        // Actualizar métrica
+        this.config.metric = document.querySelector('input[name="optimizar"]:checked').value;
+
         // Obtener los calendarios válidos
         this.calendars = this.viewModel.getSchedules(this.config);
 
@@ -90,9 +96,60 @@ class View {
         document.querySelector("#calendar-total").innerText = this.calendars.length;
 
         // Mostrar el primer calendario 
-// TODO BLOQUE
         this.idxCalendar = 0;
         this.showSchedule(this.idxCalendar);
+    }
+
+    addBlock() {
+
+        // Si no han agregado las horas, parar
+        if(document.getElementById("block-time-start").value === '' || document.getElementById("block-time-end").value === '') return;
+
+        // Obtiene los datos
+        let startTime = TimeBlock.calculateInstant(document.getElementById("block-time-start").value.replace(":", ""));
+        let endTime = TimeBlock.calculateInstant(document.getElementById("block-time-end").value.replace(":", ""));
+        if(endTime < startTime) {
+            [startTime, endTime] = [endTime, startTime];
+        }
+
+        const elements = ["l", "m", "i", "j", "v", "s"];
+        let days = elements
+            .filter( element => document.getElementById("block-chkbox-" + element).classList.contains("chkbox-selected"))
+            .map(element => element.toLowerCase());
+
+        // Si no han agregado los días, parar
+        if(!days.length) return;
+
+        const block = {
+            days,
+            startTime,
+            endTime,
+        };
+        this.config.blocks.push(block);
+
+        // Resetea la configuración al estado inicial
+        document.querySelectorAll("#step2 .checkbox").forEach(element => element.classList.remove("chkbox-selected"));
+        document.getElementById("block-time-start").value = null;
+        document.getElementById("block-time-end").value = null;
+
+        // Actualiza la interfaz de bloques creados
+        let node = document.createElement("div");
+        node.classList.add("my-block");
+        let container = document.createElement("div");
+        container.style.justifyContent = "space-around";
+        container.classList.add("container-row");
+        node.appendChild(container);
+        elements.forEach(element => {
+            let el = document.createElement("div");
+            el.classList.add("checkbox");
+            if(days.includes(element)) el.classList.add("chkbox-selected");
+            el.innerText = element.toUpperCase();
+            container.appendChild(el);
+        })
+        let strong = document.createElement("strong");
+        strong.innerText = `${TimeBlock.calculateTime(startTime)} - ${TimeBlock.calculateTime(endTime)}`
+        node.appendChild(strong)
+        document.getElementById("my-blocks").appendChild(node);
     }
 
     showSchedule(idx) {
@@ -101,6 +158,8 @@ class View {
         idx = this.idxCalendar;
         // Limpiar si es necesario
         this.calendarView.clearCalendar();
+        // Mostrar los bloques de tiempo 
+        this.calendarView.showBlocks(this.config.blocks);
         // Mostrar los schedules de todos los cursos de la opción seleccionada
         let calendarCourses = this.calendars[idx];
         calendarCourses.forEach(courseSection => this.calendarView.showCourseSchedule(courseSection));
@@ -201,21 +260,49 @@ class View {
     toggleCourseSection(courseCode, courseSection) {
         // Hallar configuración previa, si existe
         let courseConfig = this.config.courses.find(course => course.courseCode === courseCode);
-        // Añadir config del curso si no existe
         if(!courseConfig) {
+
+            // Añadir config del curso si no existe
             courseConfig = {courseCode, sections: []};
             this.config.courses.push(courseConfig);
+
+            // Añadir el curso a la lista de cursos de la interfaz
+            let node = document.createElement("div");
+            document.getElementById("my-courses").appendChild(node);
+            node.id = courseCode;
+            node.classList.add("my-course");
+            let h3 = document.createElement("h3");
+            h3.innerText = document.getElementById("course-title").innerText;
+            node.appendChild(h3);
+            let container = document.createElement("div");
+            container.classList.add("container-row")
+            node.appendChild(container);
+            let p = document.createElement("p");
+            let strong = document.createElement("strong");
+            strong.innerText = "Secciones: "
+            let span = document.createElement("span");
+            p.appendChild(strong);
+            p.appendChild(span);
+            let code = document.createElement("strong");
+            code.innerText = courseCode;
+            container.appendChild(p);
+            container.appendChild(code);
         }
         // Si no existe la sección, se agrega
         const idx = courseConfig.sections.indexOf(courseSection);
         if(idx === -1) {
             courseConfig.sections.push(courseSection);
         }
-        // Si existe la sección dentro del config, se elimina y, si no queda nada, se borra el curso
+        // Si existe la sección dentro del config, se elimina
         else {
             courseConfig.sections.splice(idx, 1);
-            if(!courseConfig.sections.length) this.config.courses = this.config.courses.filter(course => course.courseCode !== courseConfig.courseCode);
         }
+        document.querySelector(`#${courseCode} span`).innerText = courseConfig.sections.join(", ");
+        // si no queda nada, se borra el curso
+        if(!courseConfig.sections.length) {
+            this.config.courses = this.config.courses.filter(course => course.courseCode !== courseConfig.courseCode);
+            document.getElementById(courseCode).remove();
+        } 
     }
 }
 

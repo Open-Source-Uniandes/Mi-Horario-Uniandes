@@ -16,6 +16,17 @@ class TimeBlock {
         return `${TimeBlock.calculateTime(this.startTime)} - ${TimeBlock.calculateTime(this.endTime)}`
     }
 
+    static fromInstants({
+        time_ini : startTime,
+        time_fin : endTime,
+    }) {
+        let timeBlock = new TimeBlock({time_ini: "0000", time_fin: "0000"});
+        timeBlock.startTime = startTime;
+        timeBlock.endTime = endTime;
+        timeBlock.duration = endTime - startTime;
+        return timeBlock;
+    }
+
     // Halla la cantidad de minutos desde el inicio del día
     // time en el formato "hhmm", por ejemplo "0920"
     static calculateInstant(time) {

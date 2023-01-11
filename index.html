@@ -12,7 +12,7 @@
 </head>
 <body>
     <!-- Modal de bienvenida -->
-    <section id="welcome" class="modal inactive">
+    <section id="welcome" class="modal">
         <header>
             <img src="https://medicina.uniandes.edu.co/sites/default/files/campus-uniandes.jpg" alt="Application Banner">
             <div class="container-column">
@@ -53,7 +53,7 @@
     </section>
 
     <!-- Modal de configuración -->
-    <section id="config" class="modal">
+    <section id="config" class="modal inactive">
 
         <header class="container-column">
             <h1>Personaliza tu Horario</h1>
@@ -109,10 +109,10 @@
                     <div class="container-row" style="justify-content: center; gap: 20px;">
                         <input type="time" id="block-time-start" min="06:00" max="21:00" required>
                         <div style="height: 1px; width: 10px; border-top: 1px solid black;"></div>
-                        <input type="time" id="block-time-start" min="06:00" max="21:00" required>
+                        <input type="time" id="block-time-end" min="06:00" max="21:00" required>
                     </div>
                     <div class="container-column">
-                        <button type="button" class="btn-secondary">Crear Bloque</button>
+                        <button type="button" class="btn-secondary" id="btn-add-block">Crear Bloque</button>
                     </div>
                 </article>
     
@@ -127,8 +127,12 @@
                             <label for="opt-min-huecos">Quiero un horario sin huecos</label>
                         </li>
                         <li>
-                            <input type="radio" id="opt-min-salida" value="MinHuecos" name="optimizar">
+                            <input type="radio" id="opt-min-salida" value="MinSalida" name="optimizar">
                             <label for="opt-min-salida">Quiero salir temprano todos los días</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="opt-max-entrada" value="MaxEntrada" name="optimizar">
+                            <label for="opt-max-entrada">Quiero entrar un poco más tarde todos los días</label>
                         </li>
                         <li>
                             <input type="radio" id="opt-aleatorio" value="Aleatorio" name="optimizar">
@@ -137,30 +141,10 @@
                     </ul>
                     <p class="small-em-text">Tus cursos:</p>
                     <div id="my-courses">
-                        <div class="my-course">
-                            <h3>Fundamentos de administración para no administradores</h3>
-                            <div class="container-row">
-                                <p>
-                                    <strong>Secciones:</strong> 1,2,3
-                                </p>
-                                <strong>ADMI1001</strong>
-                            </div>
-                        </div>
                         <!-- Aquí van los cursos agregados -->
                     </div>
                     <p class="small-em-text">Tus bloques:</p>
                     <div id="my-blocks">
-                        <div class="my-block">
-                            <div class="container-row" style="justify-content: space-around;">
-                                <div class="checkbox">L</div>
-                                <div class="checkbox">M</div>
-                                <div class="checkbox">I</div>
-                                <div class="checkbox">J</div>
-                                <div class="checkbox">V</div>
-                                <div class="checkbox chkbox-selected">S</div>
-                            </div>
-                            <strong>9:30 - 11:00</strong>
-                        </div>
                         <!-- Aquí van los bloques agregados -->
                     </div>
                     <div class="container-column">
