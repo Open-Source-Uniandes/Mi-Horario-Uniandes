@@ -35,6 +35,8 @@ class View {
         document.querySelector("#config-courseCode").addEventListener('input', this.showSearchedCourse.bind(this));
         document.querySelector("#btn-open-calendar").addEventListener('click', this.openCalendar.bind(this));
         document.querySelector("#btn-add-block").addEventListener('click', this.addBlock.bind(this));
+        document.querySelector("#btn-reset-blocks").addEventListener('click', this.resetBlocks.bind(this));
+        document.querySelector("#btn-reset-courses").addEventListener('click', this.resetCourses.bind(this));
         document.querySelectorAll("#step2 .checkbox").forEach(element => element.addEventListener('click', () => element.classList.toggle("chkbox-selected")));
         // Calendar
         document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
@@ -55,7 +57,7 @@ class View {
             }
         })
     }
-
+    
     // Establece la interfaz como lista para ejecutarse
     ready() {
         // Eliminar animación de carga
@@ -150,6 +152,11 @@ class View {
         strong.innerText = `${TimeBlock.calculateTime(startTime)} - ${TimeBlock.calculateTime(endTime)}`
         node.appendChild(strong)
         document.getElementById("my-blocks").appendChild(node);
+    }
+
+    resetBlocks() {
+        this.config.blocks=[] //Elimina los bloques seleccionados
+        document.getElementById("my-blocks").innerHTML = ""; // Elimina todos los hijos
     }
 
     showSchedule(idx) {
@@ -304,6 +311,12 @@ class View {
             document.getElementById(courseCode).remove();
         } 
     }
+    resetCourses() {
+        this.config.courses=[] //Elimina la lista de cursos
+        document.getElementById("my-courses").innerHTML = ""; // Elimina todos los hijos
+        document.querySelectorAll(".course-option").forEach(element => element.classList.remove("selected-option")); //Hace que los cursos seleccionados restauren su color
+    }
+
 }
 
 export { View };
