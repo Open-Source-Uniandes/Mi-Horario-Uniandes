@@ -43,7 +43,6 @@ class View {
         document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
         document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar - 1));
         document.querySelector("#next-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar + 1));
-        window.addEventListener('resize', () => this.showSchedule(this.idxCalendar));
         // Movimiento con las teclas de dirección
         window.addEventListener('keydown', event => {
             switch(event.key) {
