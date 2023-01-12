@@ -22,6 +22,7 @@ class View {
             blocks : [],
             metric : "",
         }
+
         // Calendarios generados
         this.calendars = undefined;
         this.idxCalendar = 0; // índice del actual
@@ -163,6 +164,11 @@ class View {
         // Ajustar índice si se sale de los rangos
         this.idxCalendar = Math.max(Math.min(this.calendars.length - 1, idx), 0);
         idx = this.idxCalendar;
+        let totalCredits = 0;
+        for (let course in this.config.courses) {
+            totalCredits += parseInt(this.config.courses[course].courseCredits);
+        }
+
         // Limpiar si es necesario
         this.calendarView.clearCalendar();
         // Mostrar los bloques de tiempo 
@@ -172,6 +178,7 @@ class View {
         calendarCourses.forEach(courseSection => this.calendarView.showCourseSchedule(courseSection));
         // Actualizar interfaz
         document.querySelector("#calendar-current").innerText = idx + 1;
+        document.querySelector("#credits-current").innerText = totalCredits;
     }
 
     // Muestra la información del curso buscado en el panel de configuración
@@ -205,7 +212,7 @@ class View {
                 // Event listeners
                 node.addEventListener('click', (() => {
                     node.classList.toggle('selected-option');
-                    this.toggleCourseSection(courseSection.courseCode, courseSection.section);
+                    this.toggleCourseSection(courseSection.courseCode, courseSection.section, courseSection.credits );
                 }));
 
                 let h4 = document.createElement("h4");
@@ -264,13 +271,13 @@ class View {
     }
 
     // (des)Selecciona una sección de un curso
-    toggleCourseSection(courseCode, courseSection) {
+    toggleCourseSection(courseCode, courseSection, courseCredits) {
         // Hallar configuración previa, si existe
         let courseConfig = this.config.courses.find(course => course.courseCode === courseCode);
         if(!courseConfig) {
 
             // Añadir config del curso si no existe
-            courseConfig = {courseCode, sections: []};
+            courseConfig = {courseCode, sections: [], courseCredits};
             this.config.courses.push(courseConfig);
 
             // Añadir el curso a la lista de cursos de la interfaz
@@ -279,7 +286,7 @@ class View {
             node.id = courseCode;
             node.classList.add("my-course");
             let h3 = document.createElement("h3");
-            h3.innerText = document.getElementById("course-title").innerText;
+            h3.innerText = document.getElementById("course-title").innerText + " - " +courseCode;
             node.appendChild(h3);
             let container = document.createElement("div");
             container.classList.add("container-row")
@@ -290,10 +297,18 @@ class View {
             let span = document.createElement("span");
             p.appendChild(strong);
             p.appendChild(span);
-            let code = document.createElement("strong");
-            code.innerText = courseCode;
+
+            let credits = document.createElement("p");
+            let creditsText = document.createElement("strong");
+            let creditsNum = document.createElement("span");
+            creditsText.innerText = "Creditos: "
+            creditsNum.innerText = courseCredits
+            credits.appendChild(creditsText);
+            credits.appendChild(creditsNum);
+
             container.appendChild(p);
-            container.appendChild(code);
+            container.appendChild(credits);
+
         }
         // Si no existe la sección, se agrega
         const idx = courseConfig.sections.indexOf(courseSection);
@@ -310,7 +325,9 @@ class View {
             this.config.courses = this.config.courses.filter(course => course.courseCode !== courseConfig.courseCode);
             document.getElementById(courseCode).remove();
         } 
+        
     }
+
     resetCourses() {
         this.config.courses=[] //Elimina la lista de cursos
         document.getElementById("my-courses").innerHTML = ""; // Elimina todos los hijos
@@ -320,3 +337,4 @@ class View {
 }
 
 export { View };
+
