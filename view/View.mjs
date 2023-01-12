@@ -24,7 +24,7 @@ class View {
         }
 
         // Calendarios generados
-        this.calendars = undefined;
+        this.calendars = [];
         this.idxCalendar = 0; // índice del actual
 
         document.querySelectorAll('.date-last-fetch').forEach(el => el.innerText = new Date().toLocaleString());
@@ -41,19 +41,19 @@ class View {
         document.querySelectorAll("#step2 .checkbox").forEach(element => element.addEventListener('click', () => element.classList.toggle("chkbox-selected")));
         // Calendar
         document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
-        document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(--this.idxCalendar));
-        document.querySelector("#next-calendar").addEventListener('click', () => this.showSchedule(++this.idxCalendar));
+        document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar - 1));
+        document.querySelector("#next-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar + 1));
         window.addEventListener('resize', () => this.showSchedule(this.idxCalendar));
         // Movimiento con las teclas de dirección
         window.addEventListener('keydown', event => {
             switch(event.key) {
             
                 case 'ArrowLeft':
-                    this.showSchedule(--this.idxCalendar)
+                    this.showSchedule(this.idxCalendar - 1)
                     break;
             
                 case 'ArrowRight':
-                    this.showSchedule(++this.idxCalendar)
+                    this.showSchedule(this.idxCalendar + 1)
                     break;
             }
         })
@@ -161,9 +161,11 @@ class View {
     }
 
     showSchedule(idx) {
-        // Ajustar índice si se sale de los rangos
-        this.idxCalendar = Math.max(Math.min(this.calendars.length - 1, idx), 0);
-        idx = this.idxCalendar;
+        // Ignorar el llamado de la función si se sale de los rangos
+        if(idx < 0 || idx > this.calendars.length - 1) return;
+        // Ajustar el valor interno de idxCalendar
+        this.idxCalendar = idx
+        // Añadir créditos totales
         let totalCredits = 0;
         for (let course in this.config.courses) {
             totalCredits += parseInt(this.config.courses[course].courseCredits);
