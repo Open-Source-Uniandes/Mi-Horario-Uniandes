@@ -52,7 +52,7 @@ class CalendarView {
         // Añadir texto
         let p = document.createElement("p");
         if(courseSection) {
-            p.innerText = `${courseSection.courseCode}\nSección ${courseSection.section}`;
+            p.innerText = `${courseSection.courseCode} - Sección ${courseSection.section}\n ${courseSection.instructors} `;
         }
         else {
             p.innerText = "Bloque de tiempo reservado";
