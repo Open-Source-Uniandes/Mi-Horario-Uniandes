@@ -37,14 +37,14 @@ class CalendarView {
 
         // Calcular el offset
         const top = (startTime - this.timeZero) * this.calendarHeight / this.timeSpan;
-        const left = this.day2idx[day] * this.calendarWidth / this.totalDays;
+        const left = this.day2idx[day] / this.totalDays * 100;
         const height = duration * this.calendarHeight / this.timeSpan;
 
         // Crear el nodo y agregarlo al DOM
         const node = document.createElement("div");
         node.classList.add("time-block");
         node.style.top = top + "px";
-        node.style.left = left + "px";
+        node.style.left = left + "%";
         node.style.height = height + "px";
         node.style.backgroundColor = color;
         this.calendarDOM.appendChild(node);
