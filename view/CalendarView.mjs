@@ -50,14 +50,18 @@ class CalendarView {
         this.calendarDOM.appendChild(node);
 
         // Añadir texto
-        let p = document.createElement("p");
+        let p1 = document.createElement("p");
+        let p2 = document.createElement("p");
         if(courseSection) {
-            p.innerText = `${courseSection.courseCode} - Sección ${courseSection.section}\n ${courseSection.instructors} `;
+            p1.innerText = `${courseSection.courseCode} - Sec.${courseSection.section}`;
+            p2.innerText = courseSection.instructors.join(", ");
         }
         else {
-            p.innerText = "Bloque de tiempo reservado";
+            p1.innerText = "";
+            p2.innerText = "Bloque de tiempo reservado";
         }
-        node.appendChild(p);
+        node.appendChild(p1);
+        node.appendChild(p2);
     }
 
     // Muestra un Schedule de bloque 
