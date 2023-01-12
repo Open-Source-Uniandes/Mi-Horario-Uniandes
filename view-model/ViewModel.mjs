@@ -27,8 +27,18 @@ class ViewModel {
         sections,       // Array de secciones a considerar
     }) {
         // De todos los cursos, filtrar los que correspondan al course code
-        let courses =  this.dataModel.data
-            .filter(course => (course.courseCode === courseCode));
+        // Si el usuario solicita un nrc (ej 10145)
+        let courses = [];
+        const nrcRegExp = new RegExp(/^\d+$/); // Un nrc contiene solo números
+        if(nrcRegExp.test(courseCode)) {  
+            courses =  this.dataModel.data
+                .filter(course => (course.nrc == courseCode));
+        }
+        // Si el usuario solicita un código de curso (ej ADMI1001)
+        else {
+            courses =  this.dataModel.data
+                .filter(course => (course.courseCode === courseCode));
+        }
         // Y si se solicita, filtrar las secciones pedidas
         if(sections)
             courses = courses.filter(course => sections.includes(course.section));
