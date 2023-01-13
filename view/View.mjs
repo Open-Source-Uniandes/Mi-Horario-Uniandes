@@ -16,7 +16,7 @@ class View {
             endTime : "2100",
         });
 
-        // Configuración del usuario
+        // Cargar configuración previa del usuario
         this.config = this.getConfig();
 
         // Calendarios generados
@@ -61,6 +61,14 @@ class View {
         document.querySelector("#load-start").classList.add("inactive");
         // Mostrar botón de continuar
         document.querySelector("#btn-start").classList.remove("inactive");
+
+        // Carga de configuración previa
+        // Mostrar los cursos guardados
+        this.config.courses.forEach(this.showAddedCourse.bind(this));
+        // Mostrar los bloques guardados
+        this.config.blocks.forEach(this.showAddedBlock);
+        // Mostrar la métrica guardada en la configuración
+        document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
     }
 
     // Abre el modal de configuración
@@ -69,12 +77,6 @@ class View {
         document.querySelector("#welcome").classList.add("inactive");
         document.querySelector("#calendar").classList.add("inactive");
         document.querySelector("#config").classList.remove("inactive");
-        // Mostrar los cursos guardados
-        this.config.courses.forEach(this.showAddedCourse.bind(this));
-        // Mostrar los bloques guardados
-        this.config.blocks.forEach(this.showAddedBlock);
-        // Mostrar la métrica guardada en la configuración
-        document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
     }
 
     // Abre el modal del calendario
