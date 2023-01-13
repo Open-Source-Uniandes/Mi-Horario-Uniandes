@@ -173,7 +173,12 @@ class View {
 
     resetBlocks() {
         this.config.blocks=[] //Elimina los bloques seleccionados
-        document.getElementById("my-blocks").innerHTML = ""; // Elimina todos los hijos
+
+        // Elimina todos los hijos
+        const myBlocks = document.getElementById("my-blocks");
+        while (myBlocks.firstChild && myBlocks.firstChild.id !== "btn-reset-blocks") {
+          myBlocks.removeChild(myBlocks.firstChild);
+        }
 
         this.setConfig() // Actualiza la config
     }
@@ -362,7 +367,13 @@ class View {
 
     resetCourses() {
         this.config.courses=[] //Elimina la lista de cursos
-        document.getElementById("my-courses").innerHTML = ""; // Elimina todos los hijos
+
+        // Elimina todos los hijos
+        const myCourses = document.getElementById("my-courses");
+        while (myCourses.firstChild && myCourses.firstChild.id !== "btn-reset-courses") {
+            myCourses.removeChild(myCourses.firstChild);
+        }
+
         document.querySelectorAll(".course-option").forEach(element => element.classList.remove("selected-option")); //Hace que los cursos seleccionados restauren su color
 
         this.setConfig() // Actualiza la config
