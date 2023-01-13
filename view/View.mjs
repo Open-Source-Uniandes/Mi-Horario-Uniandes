@@ -182,10 +182,9 @@ class View {
         // Ajustar el valor interno de idxCalendar
         this.idxCalendar = idx
         // Añadir créditos totales
-        debugger;
         let totalCredits = 0;
-        for (let course in this.config.courses) {
-            totalCredits += parseInt(this.config.courses[course].courseCredits);
+        for (let course of this.config.courses) {
+            totalCredits += parseInt(course.credits);
         }
 
         // Limpiar si es necesario
