@@ -17,11 +17,7 @@ class View {
         });
 
         // Configuración del usuario
-        this.config = {
-            courses : [],
-            blocks : [],
-            metric : "",
-        }
+        this.config = this.getConfig();
 
         // Calendarios generados
         this.calendars = [];
@@ -39,6 +35,7 @@ class View {
         document.querySelector("#btn-reset-blocks").addEventListener('click', this.resetBlocks.bind(this));
         document.querySelector("#btn-reset-courses").addEventListener('click', this.resetCourses.bind(this));
         document.querySelectorAll("#step2 .checkbox").forEach(element => element.addEventListener('click', () => element.classList.toggle("chkbox-selected")));
+        document.querySelectorAll('input[name="optimizar"]').forEach(element => element.addEventListener('click', this.changeMetric.bind(this)));
         // Calendar
         document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
         document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar - 1));
@@ -72,12 +69,16 @@ class View {
         document.querySelector("#welcome").classList.add("inactive");
         document.querySelector("#calendar").classList.add("inactive");
         document.querySelector("#config").classList.remove("inactive");
+        // Mostrar los cursos guardados
+        this.config.courses.forEach(this.showAddedCourse.bind(this));
+        // Mostrar los bloques guardados
+        this.config.blocks.forEach(this.showAddedBlock);
+        // Mostrar la métrica guardada en la configuración
+        document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
     }
 
     // Abre el modal del calendario
     openCalendar() {
-        // Actualizar métrica
-        this.config.metric = document.querySelector('input[name="optimizar"]:checked').value;
 
         // Obtener los calendarios válidos
         this.calendars = this.viewModel.getSchedules(this.config);
@@ -135,6 +136,20 @@ class View {
         document.getElementById("block-time-end").value = null;
 
         // Actualiza la interfaz de bloques creados
+        this.showAddedBlock(block);
+
+        this.setConfig() // Actualiza la config
+    }
+
+    // Añade el bloque a la lista "my-blocks" de la interfaz
+    showAddedBlock({
+        days,
+        startTime,
+        endTime,
+    }) {
+
+        const elements = ["l", "m", "i", "j", "v", "s"];
+
         let node = document.createElement("div");
         node.classList.add("my-block");
         let container = document.createElement("div");
@@ -151,12 +166,14 @@ class View {
         let strong = document.createElement("strong");
         strong.innerText = `${TimeBlock.calculateTime(startTime)} - ${TimeBlock.calculateTime(endTime)}`
         node.appendChild(strong)
-        document.getElementById("my-blocks").appendChild(node);
+        document.getElementById("my-blocks").prepend(node);
     }
 
     resetBlocks() {
         this.config.blocks=[] //Elimina los bloques seleccionados
         document.getElementById("my-blocks").innerHTML = ""; // Elimina todos los hijos
+
+        this.setConfig() // Actualiza la config
     }
 
     showSchedule(idx) {
@@ -165,6 +182,7 @@ class View {
         // Ajustar el valor interno de idxCalendar
         this.idxCalendar = idx
         // Añadir créditos totales
+        debugger;
         let totalCredits = 0;
         for (let course in this.config.courses) {
             totalCredits += parseInt(this.config.courses[course].courseCredits);
@@ -272,43 +290,17 @@ class View {
     }
 
     // (des)Selecciona una sección de un curso
-    toggleCourseSection(courseCode, courseSection, courseCredits) {
+    toggleCourseSection(courseCode, courseSection, credits) {
         // Hallar configuración previa, si existe
         let courseConfig = this.config.courses.find(course => course.courseCode === courseCode);
         if(!courseConfig) {
 
             // Añadir config del curso si no existe
-            courseConfig = {courseCode, sections: [], courseCredits};
+            courseConfig = {courseCode, sections: [], credits};
             this.config.courses.push(courseConfig);
 
             // Añadir el curso a la lista de cursos de la interfaz
-            let node = document.createElement("div");
-            document.getElementById("my-courses").appendChild(node);
-            node.id = courseCode;
-            node.classList.add("my-course");
-            let h3 = document.createElement("h3");
-            h3.innerText = document.getElementById("course-title").innerText + " - " +courseCode;
-            node.appendChild(h3);
-            let container = document.createElement("div");
-            container.classList.add("container-row")
-            node.appendChild(container);
-            let p = document.createElement("p");
-            let strong = document.createElement("strong");
-            strong.innerText = "Secciones: "
-            let span = document.createElement("span");
-            p.appendChild(strong);
-            p.appendChild(span);
-
-            let credits = document.createElement("p");
-            let creditsText = document.createElement("strong");
-            let creditsNum = document.createElement("span");
-            creditsText.innerText = "Creditos: "
-            creditsNum.innerText = courseCredits
-            credits.appendChild(creditsText);
-            credits.appendChild(creditsNum);
-
-            container.appendChild(p);
-            container.appendChild(credits);
+            this.showAddedCourse(courseConfig);
 
         }
         // Si no existe la sección, se agrega
@@ -326,13 +318,76 @@ class View {
             this.config.courses = this.config.courses.filter(course => course.courseCode !== courseConfig.courseCode);
             document.getElementById(courseCode).remove();
         } 
-        
+
+        this.setConfig() // Actualiza la config
+    }
+
+    // Añade el curso a la lista "my-courses" de la interfaz
+    showAddedCourse({
+        courseCode,
+        sections,
+        credits,
+    }) {
+        let node = document.createElement("div");
+        document.getElementById("my-courses").prepend(node);
+        node.id = courseCode;
+        node.classList.add("my-course");
+        let h3 = document.createElement("h3");
+        const title = this.viewModel.getCourseSections({courseCode})[0].title;
+        h3.innerText = title + " - " + courseCode;
+        node.appendChild(h3);
+        let container = document.createElement("div");
+        container.classList.add("container-row")
+        node.appendChild(container);
+        let p = document.createElement("p");
+        let strong = document.createElement("strong");
+        strong.innerText = "Secciones: "
+        let span = document.createElement("span");
+        span.innerText = sections.join(", ");
+        p.appendChild(strong);
+        p.appendChild(span);
+
+        let creditsContainer = document.createElement("p");
+        let creditsText = document.createElement("strong");
+        let creditsNum = document.createElement("span");
+        creditsText.innerText = "Créditos: "
+        creditsNum.innerText = credits
+        creditsContainer.appendChild(creditsText);
+        creditsContainer.appendChild(creditsNum);
+
+        container.appendChild(p);
+        container.appendChild(creditsContainer);
     }
 
     resetCourses() {
         this.config.courses=[] //Elimina la lista de cursos
         document.getElementById("my-courses").innerHTML = ""; // Elimina todos los hijos
         document.querySelectorAll(".course-option").forEach(element => element.classList.remove("selected-option")); //Hace que los cursos seleccionados restauren su color
+
+        this.setConfig() // Actualiza la config
+    }
+
+    changeMetric() {
+
+        this.config.metric = document.querySelector('input[name="optimizar"]:checked').value;
+        this.setConfig() // Actualiza la config
+    }
+
+    setConfig() {
+        // Convierte el objeto en string
+        localStorage.setItem('Mi-Horario-Uniandes-config', JSON.stringify(this.config));
+    }
+
+    getConfig() {
+        // Lee el string y lo convierte de nuevo a un objeto, si está definido
+        let config = localStorage.getItem('Mi-Horario-Uniandes-config');
+        if(config) return JSON.parse(config);
+        // Si no está definido, crea una nueva config
+        return {
+            courses : [],
+            blocks : [],
+            metric : "MinHuecos",  // Valor por defecto
+        };
     }
 
 }
