@@ -36,6 +36,14 @@ class View {
         document.querySelector("#btn-reset-courses").addEventListener('click', this.resetCourses.bind(this));
         document.querySelectorAll("#step2 .checkbox").forEach(element => element.addEventListener('click', () => element.classList.toggle("chkbox-selected")));
         document.querySelectorAll('input[name="optimizar"]').forEach(element => element.addEventListener('click', this.changeMetric.bind(this)));
+        document.querySelector("#btn-select-all-options").addEventListener('click', () => { // Añadir botón de seleccionar todas las secciones 
+            document.querySelectorAll("#course-options > *").forEach(node => {
+                // Si no está marcado como seleccionado
+                if(!node.classList.contains('selected-option')) {
+                    // Se ejecuta su evento click para marcarlo
+                    node.click(); 
+                }
+        })});
         // Calendar
         document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
         document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar - 1));

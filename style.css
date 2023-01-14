@@ -229,6 +229,28 @@ a {
     width: 100%;
 }
 
+#config main #step1 #btn-select-all-options {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    width: 80px;
+    height: 35px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#config main #step1 #btn-select-all-options:hover {
+    border-color: var(--strong-yellow);
+}
+
+#config main #step1 #btn-select-all-options svg {
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+    fill: var(--dark-gray);
+}
+
 #config main #step1 #course-options {
     gap: 10px;
 }
