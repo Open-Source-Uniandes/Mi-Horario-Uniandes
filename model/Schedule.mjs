@@ -30,6 +30,10 @@ class Schedule {
             // Agregar el TimeBlock al día que corresponda
             days.forEach(day => this.timeBlocks[day].push(new TimeBlock(schedule)));
         })
+
+        // Hacerlo válido (en ocasiones los bloques de tiempo de un mismo curso se superponen)
+        Object.entries(this.timeBlocks)
+            .forEach(([day, timeBlocksArray]) => this.timeBlocks[day] = this.#mergeBlocks(timeBlocksArray));
     }
 
     // Booleano que indica si el horario es válido 
