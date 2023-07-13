@@ -23,6 +23,13 @@ Errores conocidos:
 
 El software lo construimos entre todos 💛
 
+## Colaboradores
+
+**Daniel Diaz ([ddi4z](https://github.com/ddi4z))**
+* Implementación de la opción de búsqueda de cursos por nombre utilizando una estructura de datos Trie como base. 
+* Incorporación de botones para agilizar el proceso de selección de cursos y secciones.
+* Realización de cambios menores para mejorar la experiencia general del usuario. 
+
 ## Contacto
 
 Este proyecto es creado y mantenido por [Juan Sebastian Urrea](https://github.com/jsurrea) (js.urrea@uniandes.edu.co)
