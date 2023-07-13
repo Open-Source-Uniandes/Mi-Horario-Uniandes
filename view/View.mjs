@@ -218,7 +218,7 @@ class View {
     showSearchedCourse(event) {
 
         // Normalizar input
-        const courseCode = event.target.value.replace(" ", "").toUpperCase();
+        const courseCode = event.target.value.toUpperCase();
 
         const courseSections = this.viewModel.getCourseSections({courseCode});
         if(courseSections.length) {
@@ -247,6 +247,9 @@ class View {
                     node.classList.toggle('selected-option');
                     this.toggleCourseSection(courseSection.courseCode, courseSection.section, courseSection.credits );
                 }));
+                let h2 = document.createElement("h2");
+                h2.innerText = `${courseSection.title}`
+                node.appendChild(h2);
 
                 let h4 = document.createElement("h4");
                 h4.innerText = `Sección ${courseSection.section} - NRC ${courseSection.nrc}`

@@ -35,10 +35,19 @@ class ViewModel {
                 .filter(course => (course.nrc == courseCode));
         }
         // Si el usuario solicita un código de curso (ej ADMI1001)
-        else {
+        else if (nrcRegExp.test(courseCode.slice(4))) {
             courses =  this.dataModel.data
                 .filter(course => (course.courseCode === courseCode));
         }
+        // Si el usuario solicita un curso (ej DISEÑO Y ANALISIS DE ALGORITMOS)
+        else if (courseCode.length > 3) {
+            // Buscar en el trie
+            let courseTitles = this.dataModel.trie.searchPrefix(courseCode);
+            // Filtrar los cursos que coincidan con el título
+            courses = this.dataModel.data
+                .filter(course => courseTitles.includes(course.title));
+        }
+        // Y si se solicita, filtrar las secciones pedidas
         // Y si se solicita, filtrar las secciones pedidas
         if(sections)
             courses = courses.filter(course => sections.includes(course.section));
