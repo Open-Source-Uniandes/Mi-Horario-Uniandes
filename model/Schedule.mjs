@@ -49,7 +49,6 @@ class Schedule {
 
         // Ordenar el Array ascendentemente según startTime
         timeBlocksArray = timeBlocksArray.sort((a, b) => (a.startTime - b.startTime));
-
         // Comparar elementos consecutivos: posterior (i) y anterior (i-1) 
         for(let i = 1; i < timeBlocksArray.length; i++) 
 

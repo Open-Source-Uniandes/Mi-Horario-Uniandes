@@ -229,7 +229,7 @@ a {
     width: 100%;
 }
 
-#config main #step1 #btn-select-all-options {
+#config main #step1 #btn-select-all-options #btn-select-valid-options #btn-select-none-options{
     position: absolute;
     right: 0;
     bottom: 10px;
@@ -240,11 +240,11 @@ a {
     cursor: pointer;
 }
 
-#config main #step1 #btn-select-all-options:hover {
+#config main #step1 #btn-select-all-options:hover #btn-select-valid-options:hover #btn-select-none-options:hover{
     border-color: var(--strong-yellow);
 }
 
-#config main #step1 #btn-select-all-options svg {
+#config main #step1 #btn-select-all-options #btn-select-valid-options #btn-select-none-options svg {
     width: 25px;
     height: 25px;
     margin: 0 auto;
