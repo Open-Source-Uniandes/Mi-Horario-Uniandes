@@ -74,6 +74,14 @@ class View {
         document.querySelector("#btn-open-config").addEventListener('click', this.openConfig.bind(this));
         document.querySelector("#prev-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar - 1));
         document.querySelector("#next-calendar").addEventListener('click', () => this.showSchedule(this.idxCalendar + 1));
+
+        // Movimiento con el input de calendario
+        document.querySelector("#calendar-current").addEventListener('keydown', (event) => {
+            if(event.key === 'Enter') {
+                if (event.target.value > 0 && event.target.value <= this.calendars.length) this.showSchedule(parseInt(event.target.value) - 1);
+                else event.target.value = this.idxCalendar + 1;
+            }
+        });
         // Movimiento con las teclas de dirección
         window.addEventListener('keydown', event => {
             switch(event.key) {
@@ -236,7 +244,7 @@ class View {
         let calendarCourses = this.calendars[idx];
         calendarCourses.forEach(courseSection => this.calendarView.showCourseSchedule(courseSection));
         // Actualizar interfaz
-        document.querySelector("#calendar-current").innerText = idx + 1;
+        document.querySelector("#calendar-current").value = idx + 1;
         document.querySelector("#credits-current").innerText = totalCredits;
     }
 
