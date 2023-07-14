@@ -30,12 +30,13 @@ class ViewModel {
         // Si el usuario solicita un nrc (ej 10145)
         let courses = [];
         const nrcRegExp = new RegExp(/^\d+$/); // Un nrc contiene solo números
+        const courseRegExp = new RegExp(/^\d+[A-z]?$/); // Un curso contiene solo números y puede (o no) terminar con una letra
         if(nrcRegExp.test(courseCode)) {  
             courses =  this.dataModel.data
                 .filter(course => (course.nrc == courseCode));
         }
         // Si el usuario solicita un código de curso (ej ADMI1001)
-        else if (nrcRegExp.test(courseCode.slice(4))) {
+        else if (courseRegExp.test(courseCode.slice(4))) {
             courses =  this.dataModel.data
                 .filter(course => (course.courseCode === courseCode));
         }
