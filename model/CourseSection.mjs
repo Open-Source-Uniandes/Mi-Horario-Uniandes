@@ -14,7 +14,7 @@ class CourseSection {
         schedules,   // Horarios
         instructors, // Profesores
         section,     // Número de sección
-        nrc,         // Número único de registro 
+        nrc,         // Número único de registro
         campus,      // Campus
         term,        // Período académico
     }) {

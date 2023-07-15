@@ -1,4 +1,4 @@
-/* 
+/*
 Clase que representa un horario.
 Un horario es una colección de bloques de tiempo.
 Puede representar el horario de una sola CourseSection o de varias.
@@ -15,7 +15,7 @@ class Schedule {
     timeBlocks = Object.fromEntries(
         Schedule.DAYS_OF_THE_WEEK.map(day => [day, []])
     );
-    
+
     // schedules es un array con todos los posibles bloques de tiempo 
     constructor(schedules) {
 
@@ -36,10 +36,10 @@ class Schedule {
             .forEach(([day, timeBlocksArray]) => this.timeBlocks[day] = this.#mergeBlocks(timeBlocksArray));
     }
 
-    // Booleano que indica si el horario es válido 
+    // Booleano que indica si el horario es válido
     isValid() {
         const isOverlapped = Object.values(this.timeBlocks)
-            // Si al menos un par de TimeBlocks hacen overlap en un mismo día, no es válido 
+            // Si al menos un par de TimeBlocks hacen overlap en un mismo día, no es válido
             .some(timeBlocksArray => this.#checkCollision(timeBlocksArray));
         return !isOverlapped;
     }
@@ -49,8 +49,8 @@ class Schedule {
 
         // Ordenar el Array ascendentemente según startTime
         timeBlocksArray = timeBlocksArray.sort((a, b) => (a.startTime - b.startTime));
-        // Comparar elementos consecutivos: posterior (i) y anterior (i-1) 
-        for(let i = 1; i < timeBlocksArray.length; i++) 
+        // Comparar elementos consecutivos: posterior (i) y anterior (i-1)
+        for(let i = 1; i < timeBlocksArray.length; i++)
 
             // Si el elemento posterior empieza antes de que acabe el anterior
             if(timeBlocksArray[i].startTime < timeBlocksArray[i-1].endTime)
@@ -92,7 +92,7 @@ class Schedule {
         // Hacerlo válido
         Object.entries(schedule.timeBlocks)
             .forEach(([day, timeBlocksArray]) => schedule.timeBlocks[day] = schedule.#mergeBlocks(timeBlocksArray));
-        
+
         return schedule;
     }
 
@@ -100,8 +100,8 @@ class Schedule {
     #mergeBlocks(timeBlocksArray) {
 
         // Caso que no tiene elementos
-        if(timeBlocksArray.length < 1) return timeBlocksArray; 
-        
+        if(timeBlocksArray.length < 1) return timeBlocksArray;
+
         timeBlocksArray = timeBlocksArray
             // Ordenar el Array ascendentemente según startTime
             .sort((a, b) => (a.startTime - b.startTime))

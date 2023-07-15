@@ -1,4 +1,4 @@
-/* 
+/*
 Representa un bloque de tiempo como minutos desde el inicio del día.
 */
 class TimeBlock {
@@ -30,7 +30,7 @@ class TimeBlock {
     // Halla la cantidad de minutos desde el inicio del día
     // time en el formato "hhmm", por ejemplo "0920"
     static calculateInstant(time) {
-        
+
         const hour = +time.slice(0,2);
         const minute = +time.slice(2,4);
         const instant = (hour * 60) + minute;
@@ -39,7 +39,7 @@ class TimeBlock {
 
     // Halla el tiempo en formato "hh:mm" a partir de un instante de tiempo
     static calculateTime(instant) {
-        
+
         const hour = Math.floor(instant / 60);
         const minute = String(instant % 60).padStart(2, '0');  // Padding para casos como '0'
         const time = hour + ":" + minute;

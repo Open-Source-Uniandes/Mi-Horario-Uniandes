@@ -1,4 +1,4 @@
-/* 
+/*
 Este módulo interactúa con la interfaz del calendario
 */
 
@@ -64,7 +64,7 @@ class CalendarView {
         node.appendChild(p2);
     }
 
-    // Muestra un Schedule de bloque 
+    // Muestra un Schedule de bloque
     showBlocks(blocks) {
         const color = "var(--light-gray)";
 
@@ -76,7 +76,7 @@ class CalendarView {
 
     // Muestra un Schedule de un Course Section
     showCourseSchedule(courseSection) {
-        
+
         const color = this.COLORS[this.idxCurrentColor];
         Object.entries(courseSection.schedule.timeBlocks).forEach(
             ([day, timeBlocks]) => timeBlocks.forEach(
