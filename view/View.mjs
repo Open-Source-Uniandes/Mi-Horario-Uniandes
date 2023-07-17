@@ -114,7 +114,7 @@ class View {
         // Mostrar los cursos guardados
         this.config.courses.forEach(this.showAddedCourse.bind(this));
         // Mostrar los bloques guardados
-        this.config.blocks.forEach(this.showAddedBlock);
+        this.config.blocks.forEach(this.showAddedBlock.bind(this));
         // Mostrar la métrica guardada en la configuración
         document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
     }
