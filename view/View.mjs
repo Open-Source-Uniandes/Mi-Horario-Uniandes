@@ -1,11 +1,17 @@
-/*
-Este módulo maneja la interacción con la interfaz
-*/
+/**
+ * Maneja la interacción con la interfaz
+ */
 
 import { TimeBlock } from "../model/TimeBlock.mjs";
 import { CalendarView } from "./CalendarView.mjs";
+
+
 class View {
 
+    /**
+     * Constructor
+     * @param {*} viewModel 
+     */
     constructor(viewModel) {
         // Guarda una referencia del view model para invocar sus métodos
         this.viewModel = viewModel;
@@ -93,8 +99,11 @@ class View {
                     break;
             }
         })
-    }
-    // Establece la interfaz como lista para ejecutarse
+    }    
+    
+    /**
+     * Establece la interfaz como lista para ejecutarse
+     */
     ready() {
         // Eliminar animación de carga
         document.querySelector("#load-start").classList.add("inactive");
@@ -110,7 +119,10 @@ class View {
         document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
     }
 
-    // Abre el modal de configuración
+
+    /**
+     * Abre el modal de configuración
+     */
     openConfig() {
         // Cerrar otros modales y abrir configuración
         document.querySelector("#welcome").classList.add("inactive");
@@ -118,7 +130,10 @@ class View {
         document.querySelector("#config").classList.remove("inactive");
     }
 
-    // Abre el modal del calendario
+    
+    /**
+     * Abre el modal de calendario
+     */
     openCalendar() {
 
         // Obtener los calendarios válidos
@@ -144,6 +159,10 @@ class View {
         this.showSchedule(this.idxCalendar);
     }
 
+
+    /**
+     * Añade un bloque de tiempo a la configuración
+     */
     addBlock() {
 
         // Si no han agregado las horas, parar
@@ -182,7 +201,13 @@ class View {
         this.setConfig() // Actualiza la config
     }
 
-    // Añade el bloque a la lista "my-blocks" de la interfaz
+
+    /**
+     * Añade el bloque a la lista "my-blocks" de la interfaz
+     * @param {array} days lista de días del bloque
+     * @param {string} startTime tiempo inicial del bloque
+     * @param {string} endTime tiempo final del bloque
+     */
     showAddedBlock({
         days,
         startTime,
@@ -210,6 +235,10 @@ class View {
         document.getElementById("my-blocks").prepend(node);
     }
 
+
+    /**
+     * Elimina todos los bloques de la configuración
+     */
     resetBlocks() {
         this.config.blocks=[] //Elimina los bloques seleccionados
 
@@ -222,6 +251,11 @@ class View {
         this.setConfig() // Actualiza la config
     }
 
+
+    /**
+     * Muestra el calendario con el índice idx
+     * @param {number} idx índice del calendario a mostrar
+     */
     showSchedule(idx) {
         // Ignorar el llamado de la función si se sale de los rangos
         if(idx < 0 || idx > this.calendars.length - 1) return;
@@ -245,7 +279,11 @@ class View {
         document.querySelector("#credits-current").innerText = totalCredits;
     }
 
-    // Muestra la información del curso buscado en el panel de configuración
+
+    /**
+     * Muestra la información del curso buscado en el panel de configuración
+     * @param {event} event evento de input
+     */
     showSearchedCourse(event) {
 
         // Normalizar input
@@ -337,8 +375,18 @@ class View {
         }
     }
 
-    // (des)Selecciona una sección de un curso
-    toggleCourseSection(courseCode, courseSection, credits) {
+
+    /**
+     * Añade o elimina una sección de un curso de la preselección
+     * @param {string} courseCode código del curso
+     * @param {number} courseSection sección del curso
+     * @param {number} credits número de créditos
+     */
+    toggleCourseSection(
+        courseCode, 
+        courseSection, 
+        credits
+    ) {
         // Hallar configuración previa, si existe
         let courseConfig = this.config.courses.find(course => course.courseCode === courseCode);
         if(!courseConfig) {
@@ -370,7 +418,13 @@ class View {
         this.setConfig() // Actualiza la config
     }
 
-    // Añade el curso a la lista "my-courses" de la interfaz
+    
+    /**
+     * Añade el curso a la lista "my-courses" de la interfaz
+     * @param {string} courseCode código del curso
+     * @param {number} courseSection sección del curso
+     * @param {number} credits número de créditos
+     */
     showAddedCourse({
         courseCode,
         sections,
@@ -407,6 +461,10 @@ class View {
         container.appendChild(creditsContainer);
     }
 
+
+    /**
+     * Elimina todos los cursos de la configuración
+     */
     resetCourses() {
         this.config.courses=[] //Elimina la lista de cursos
 
@@ -421,17 +479,29 @@ class View {
         this.setConfig() // Actualiza la config
     }
 
+
+    /**
+     * Cambia la métrica de optimización
+     */
     changeMetric() {
 
         this.config.metric = document.querySelector('input[name="optimizar"]:checked').value;
         this.setConfig() // Actualiza la config
     }
 
+
+    /**
+     * Guarda la configuración en el localStorage
+     */
     setConfig() {
         // Convierte el objeto en string
         localStorage.setItem('Mi-Horario-Uniandes-config', JSON.stringify(this.config));
     }
 
+
+    /**
+     * Recupera la configuración del localStorage
+     */
     getConfig() {
         // Lee el string y lo convierte de nuevo a un objeto, si está definido
         let config = localStorage.getItem('Mi-Horario-Uniandes-config');
@@ -443,8 +513,7 @@ class View {
             metric : "MinHuecos",  // Valor por defecto
         };
     }
-
 }
 
-export { View };
 
+export { View };

@@ -1,17 +1,25 @@
-/*
-Este módulo interactúa con la interfaz del calendario
-*/
+/**
+ * Módulo que interactua con la vista del calendario
+ */
 
 import { TimeBlock } from "../model/TimeBlock.mjs";
 
+
 class CalendarView {
 
+    // Colores para los bloques de tiempo
     COLORS = ["#E1628B", "#9595ff", "#C78A6B", "#E1A557", "#67A6D4", "#A05CD4", "#82BA6D", "#62E1C9"];
 
+
+    /**
+     * @param {array} days Array para mapear días en índices, en orden
+     * @param {string} startTime Hora de inicio del calendario en formato "HHMM"
+     * @param {string} endTime Hora de fin del calendario en formato "HHMM"
+     */
     constructor({
-        days, // Array para mapear días en índices, en orden
-        startTime, // Hora de inicio del calendario
-        endTime, // Hora de fin del calendario
+        days,
+        startTime,
+        endTime,
     }) {
         // Conversión de tiempo a píxeles
         this.timeSpan = TimeBlock.calculateDuration(startTime, endTime); // Rango de tiempo que almacena el calendario
@@ -28,6 +36,14 @@ class CalendarView {
         this.idxCurrentColor = 0;
     }
 
+
+    /**
+     * Muestra un bloque de tiempo en el calendario
+     * @param {TimeBlock} timeBlock Bloque de tiempo a mostrar
+     * @param {string} day Día en el que se mostrará el bloque de tiempo
+     * @param {string} color Color del bloque de tiempo
+     * @param {CourseSection} courseSection Sección del curso a la que pertenece el bloque de tiempo
+     */
     showTimeBlock(timeBlock, day, color, courseSection) {
 
         const {
@@ -74,7 +90,11 @@ class CalendarView {
         });
     }
 
-    // Muestra un Schedule de un Course Section
+    
+    /**
+     * Muestra el horario (Schedule) de una sección (CourseSection)
+     * @param {CourseSection} courseSection Sección del curso a mostrar
+     */
     showCourseSchedule(courseSection) {
 
         const color = this.COLORS[this.idxCurrentColor];
@@ -88,7 +108,10 @@ class CalendarView {
         this.idxCurrentColor = (this.idxCurrentColor + 1) % this.COLORS.length;
     }
 
-    // Limpia todos los objetos en el calendario
+    
+    /**
+     * Limpia todos los objetos en el calendario
+     */
     clearCalendar() {
         // Recalcular variables
         this.calendarWidth = this.calendarDOM.clientWidth;

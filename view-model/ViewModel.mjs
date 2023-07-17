@@ -1,10 +1,11 @@
-/*
-Este módulo transforma el modelo de datos al formato solicitado por la interfaz
-*/
+/**
+ * Transforma el modelo de datos al formato solicitado por la interfaz
+ */
 
 import { DataModel } from "../model/DataModel.mjs";
 import { Schedule } from "../model/Schedule.mjs";
 import { View } from "../view/View.mjs";
+
 
 class ViewModel {
 
@@ -13,22 +14,32 @@ class ViewModel {
         this.view = new View(this);
     }
 
-    // Punto de entrada para inicializar la aplicación
+    
+    /**
+     * Punto de entrada para inicializar la aplicación
+     */
     start() {
-        //Inicia la descarga de datos
+        // Inicia la descarga de datos
         this.dataModel.loadData()
             // Prepara la interfaz
             .then(this.view.ready.bind(this.view));
     }
 
+
+    /**
+     * Obtiene los cursos que coincidan con el código de curso o el array de secciones a considerar
+     * @param {string} courseCode Código del curso, ejemplo "ISIS1105"
+     * @param {array} sections Array de secciones a considerar, ejemplo ["1", "2"]
+     * @returns {array} Array de objetos con los cursos que coinciden con el código de curso o el array de secciones a considerar
+     */
     getCourseSections({
-        courseCode,     // Código del curso, ejemplo "ISIS1105"
-        sections,       // Array de secciones a considerar
+        courseCode,
+        sections,
     }) {
         // De todos los cursos, filtrar los que correspondan al course code
         // Si el usuario solicita un nrc (ej 10145)
         let courses = [];
-        const nrcRegExp = new RegExp(/^\d+$/); // Un nrc contiene solo números
+        const nrcRegExp = new RegExp(/^\d+$/); // Un NRC contiene solo números
         const courseRegExp = new RegExp(/^\d+[A-z]?$/); // Un curso contiene solo números y puede (o no) terminar con una letra
         if(nrcRegExp.test(courseCode)) {
             courses =  this.dataModel.data
@@ -44,16 +55,25 @@ class ViewModel {
            // Buscar los cursos que contienen la palabra
             courses = this.dataModel.data.filter(course => course.title.includes(courseCode));
         }
+
         // Y si se solicita, filtrar las secciones pedidas
-        if(sections)
+        if (sections)
             courses = courses.filter(course => sections.includes(course.section));
         return courses;
     }
 
+
+    /**
+     * Obtiene los bloques de tiempo que coincidan con el código de bloque o el array de bloques a considerar
+     * @param {array} courses array de cursos a combinar
+     * @param {array} blocks array de bloques de tiempo del usuario
+     * @param {*} metric métrica a optimizar al generar los horarios
+     * @returns {array} array de todas las combinaciones posibles de horarios válidos
+     */
     getSchedules({
-        courses,    // Array de cursos a combinar
-        blocks,     // Array de bloques de tiempo del usuario
-        metric,     // métrica a optimizar al generar los horarios
+        courses,
+        blocks,
+        metric,
     }) {
 
         // Transformar los bloques en un Schedule
@@ -79,7 +99,11 @@ class ViewModel {
         return courseOptions;
     }
 
-    // Recibe un array que contiene arrays con las opciones para cada curso
+    
+    /**
+     * Obtiene los bloques de tiempo que coincidan con el código de bloque o el array de bloques a considerar
+     * @param {array} courseOptions array de cursos a combinar
+     */
     #getValidSchedules(courseOptions) {
 
         // Caso en que no llega ninguna opción
@@ -89,7 +113,7 @@ class ViewModel {
         const cartesianProduct = (sets) => sets.reduce((resultSet, currentSet) => resultSet.flatMap(resultTuple => currentSet.map(currentElement => [resultTuple, currentElement].flat())));
         let allOptions = cartesianProduct(courseOptions);
 
-        /// Cuando es un solo curso, el código anterior devuelve [opcion1, opcion2, ...] cuando debería ser [[opcion1], [opcion2], ...]
+        // Cuando es un solo curso, el código anterior devuelve [opcion1, opcion2, ...] cuando debería ser [[opcion1], [opcion2], ...]
         if(courseOptions.length === 1) allOptions = allOptions.map(element => [element]);
 
         // Generar los Schedules de cada opción y filtrar aquellos que son válidos
@@ -100,8 +124,12 @@ class ViewModel {
             });
     }
 
-    // Calcular el score de una opción para optimizar
-    // option es un schedule
+    /**
+     * Calcula el score de una opción para optimizar
+     * @param {Schedule} courseOption horario a considerar
+     * @param {*} metric métrica seleccionada
+     * @returns {number} puntaje de la opción según la métrica
+     */
     #customScore(courseOption, metric) {
 
         // Sacar los bloques de tiempo del schedule

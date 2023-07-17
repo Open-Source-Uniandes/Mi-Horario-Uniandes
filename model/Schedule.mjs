@@ -1,10 +1,11 @@
-/*
-Clase que representa un horario.
-Un horario es una colección de bloques de tiempo.
-Puede representar el horario de una sola CourseSection o de varias.
-*/
+/**
+ * Clase que representa un horario.
+ * Un horario es una colección de bloques de tiempo.
+ * Puede representar el horario de una sola CourseSection o de varias.
+ */
 
 import { TimeBlock } from "./TimeBlock.mjs";
+
 
 class Schedule {
 
@@ -15,8 +16,12 @@ class Schedule {
     timeBlocks = Object.fromEntries(
         Schedule.DAYS_OF_THE_WEEK.map(day => [day, []])
     );
+    
 
-    // schedules es un array con todos los posibles bloques de tiempo 
+    /**
+     * @param {array} schedules array con todos los posibles bloques de tiempo
+     * @returns {Schedule}
+     */
     constructor(schedules) {
 
         schedules?.forEach(schedule => {
@@ -36,7 +41,9 @@ class Schedule {
             .forEach(([day, timeBlocksArray]) => this.timeBlocks[day] = this.#mergeBlocks(timeBlocksArray));
     }
 
-    // Booleano que indica si el horario es válido
+    /**
+     * @returns {boolean} true si el horario es válido, false de lo contrario
+     */
     isValid() {
         const isOverlapped = Object.values(this.timeBlocks)
             // Si al menos un par de TimeBlocks hacen overlap en un mismo día, no es válido
@@ -44,13 +51,20 @@ class Schedule {
         return !isOverlapped;
     }
 
-    // Valida colisiones (overlapping) entre TimeBlocks del Array
+
+    /**
+     * Valida colisiones/overlapping entre TimeBlocks del Array
+     * @param {array} timeBlocksArray 
+     * @returns {boolean} true si hay colisión, false de lo contrario
+     */
     #checkCollision(timeBlocksArray) {
 
         // Ordenar el Array ascendentemente según startTime
         timeBlocksArray = timeBlocksArray.sort((a, b) => (a.startTime - b.startTime));
-        // Comparar elementos consecutivos: posterior (i) y anterior (i-1)
-        for(let i = 1; i < timeBlocksArray.length; i++)
+
+        // Comparar elementos consecutivos: posterior (i) y anterior (i-1) 
+        // TODO: puede estar mal. Proveer contraejemplo
+        for(let i = 1; i < timeBlocksArray.length; i++) 
 
             // Si el elemento posterior empieza antes de que acabe el anterior
             if(timeBlocksArray[i].startTime < timeBlocksArray[i-1].endTime)
@@ -62,8 +76,12 @@ class Schedule {
         return false;
     }
 
-    // Crea un único horario a partir de varios horarios
-    // schedulesArray es un array de schedules, as described above
+
+    /**
+     * Crea un único horario a partir de varios horarios
+     * @param {array} schedulesArray array de schedules
+     * @returns {Schedule} horario unificado
+     */
     static merge(schedulesArray) {
 
         // Crea un horario vacío
@@ -77,7 +95,12 @@ class Schedule {
         return merged;
     }
 
-    // Crea un schedule válido a partir de un array de bloques de tiempo. Depura o combina time blocks de ser necesario
+
+    /**
+     * Crea un horario válido a partir de un array de bloques de tiempo. Depura o combina time blocks de ser necesario
+     * @param {array} blocks array de bloques de tiempo
+     * @returns {Schedule} horario unificado
+     */
     static fromBlocks(blocks) {
 
         const schedule = new Schedule();
@@ -96,7 +119,12 @@ class Schedule {
         return schedule;
     }
 
-    // Corrige el overlapping, borrando time blocks de ser necesario
+    
+    /**
+     * Corrige el overlapping, borrando TimeBlocks de ser necesario
+     * @param {array} timeBlocksArray arreglo de TimeBlocks
+     * @returns {array} arreglo de TimeBlocks sin overlapping
+     */
     #mergeBlocks(timeBlocksArray) {
 
         // Caso que no tiene elementos
