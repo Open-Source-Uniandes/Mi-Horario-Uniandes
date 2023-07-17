@@ -30,7 +30,7 @@ class CourseSection {
         section,     
         nrc,         
         campus,      
-        term,        
+        term,
     }) {
         this.title = title;
         this.courseCode = courseCode;

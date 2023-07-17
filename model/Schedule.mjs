@@ -4,7 +4,6 @@
  * Puede representar el horario de una sola CourseSection o de varias.
  */
 
-
 import { TimeBlock } from "./TimeBlock.mjs";
 
 
@@ -42,13 +41,12 @@ class Schedule {
             .forEach(([day, timeBlocksArray]) => this.timeBlocks[day] = this.#mergeBlocks(timeBlocksArray));
     }
 
-
     /**
      * @returns {boolean} true si el horario es válido, false de lo contrario
      */
     isValid() {
         const isOverlapped = Object.values(this.timeBlocks)
-            // Si al menos un par de TimeBlocks hacen overlap en un mismo día, no es válido 
+            // Si al menos un par de TimeBlocks hacen overlap en un mismo día, no es válido
             .some(timeBlocksArray => this.#checkCollision(timeBlocksArray));
         return !isOverlapped;
     }
@@ -63,6 +61,7 @@ class Schedule {
 
         // Ordenar el Array ascendentemente según startTime
         timeBlocksArray = timeBlocksArray.sort((a, b) => (a.startTime - b.startTime));
+
         // Comparar elementos consecutivos: posterior (i) y anterior (i-1) 
         // TODO: puede estar mal. Proveer contraejemplo
         for(let i = 1; i < timeBlocksArray.length; i++) 
@@ -116,7 +115,7 @@ class Schedule {
         // Hacerlo válido
         Object.entries(schedule.timeBlocks)
             .forEach(([day, timeBlocksArray]) => schedule.timeBlocks[day] = schedule.#mergeBlocks(timeBlocksArray));
-        
+
         return schedule;
     }
 
@@ -129,8 +128,8 @@ class Schedule {
     #mergeBlocks(timeBlocksArray) {
 
         // Caso que no tiene elementos
-        if(timeBlocksArray.length < 1) return timeBlocksArray; 
-        
+        if(timeBlocksArray.length < 1) return timeBlocksArray;
+
         timeBlocksArray = timeBlocksArray
             // Ordenar el Array ascendentemente según startTime
             .sort((a, b) => (a.startTime - b.startTime))

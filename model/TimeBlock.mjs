@@ -2,7 +2,6 @@
  * Representa un bloque de tiempo, con un inicio y un fin.
  */
 
-
 class TimeBlock {
 
     /**
@@ -53,7 +52,7 @@ class TimeBlock {
      * @returns {number} minutos desde el inicio del día
      */
     static calculateInstant(time) {
-        
+
         const hour = +time.slice(0,2);
         const minute = +time.slice(2,4);
         const instant = (hour * 60) + minute;
@@ -67,7 +66,7 @@ class TimeBlock {
      * @returns {string} tiempo en formato "HH:MM"
      */
     static calculateTime(instant) {
-        
+
         const hour = Math.floor(instant / 60);
         const minute = String(instant % 60).padStart(2, '0');  // Padding para casos como '0'
         const time = hour + ":" + minute;

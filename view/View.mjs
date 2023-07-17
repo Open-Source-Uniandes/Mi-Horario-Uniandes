@@ -2,7 +2,6 @@
  * Maneja la interacción con la interfaz
  */
 
-
 import { TimeBlock } from "../model/TimeBlock.mjs";
 import { CalendarView } from "./CalendarView.mjs";
 
@@ -49,7 +48,7 @@ class View {
                 // Si no está marcado como seleccionado
                 if(!node.classList.contains('selected-option')) {
                     // Se ejecuta su evento click para marcarlo
-                    node.click(); 
+                    node.click();
                 }
         })});
         document.querySelector("#btn-select-none-options").addEventListener('click', () => { // Añadir botón de deseleccionar todas las secciones
@@ -92,18 +91,15 @@ class View {
         // Movimiento con las teclas de dirección
         window.addEventListener('keydown', event => {
             switch(event.key) {
-            
                 case 'ArrowLeft':
                     this.showSchedule(this.idxCalendar - 1)
                     break;
-            
                 case 'ArrowRight':
                     this.showSchedule(this.idxCalendar + 1)
                     break;
             }
         })
-    }
-    
+    }    
     
     /**
      * Establece la interfaz como lista para ejecutarse
@@ -158,7 +154,7 @@ class View {
         // Actualizar interfaz
         document.querySelector("#calendar-total").innerText = this.calendars.length;
 
-        // Mostrar el primer calendario 
+        // Mostrar el primer calendario
         this.idxCalendar = 0;
         this.showSchedule(this.idxCalendar);
     }
@@ -273,7 +269,7 @@ class View {
 
         // Limpiar si es necesario
         this.calendarView.clearCalendar();
-        // Mostrar los bloques de tiempo 
+        // Mostrar los bloques de tiempo
         this.calendarView.showBlocks(this.config.blocks);
         // Mostrar los schedules de todos los cursos de la opción seleccionada
         let calendarCourses = this.calendars[idx];
@@ -291,7 +287,7 @@ class View {
     showSearchedCourse(event) {
 
         // Normalizar input
-        const courseCode = event.target.value.toUpperCase();
+        const courseCode = event.target.value.toUpperCase().trim();
 
         const courseSections = this.viewModel.getCourseSections({courseCode});
         if(courseSections.length) {
@@ -417,7 +413,7 @@ class View {
         if(!courseConfig.sections.length) {
             this.config.courses = this.config.courses.filter(course => course.courseCode !== courseConfig.courseCode);
             document.getElementById(courseCode).remove();
-        } 
+        }
 
         this.setConfig() // Actualiza la config
     }

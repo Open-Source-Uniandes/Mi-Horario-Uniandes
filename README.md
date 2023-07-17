@@ -26,7 +26,7 @@ El software lo construimos entre todos 💛
 ## Colaboradores
 
 **Daniel Diaz ([ddi4z](https://github.com/ddi4z))**
-* Implementación de la opción de búsqueda de cursos por nombre utilizando una estructura de datos Trie como base. 
+* Implementación de la opción de búsqueda de cursos por nombre. 
 * Incorporación de botones para agilizar el proceso de selección de cursos y secciones.
 * Realización de cambios menores para mejorar la experiencia general del usuario. 
 

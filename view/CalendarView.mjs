@@ -2,7 +2,6 @@
  * Módulo que interactua con la vista del calendario
  */
 
-
 import { TimeBlock } from "../model/TimeBlock.mjs";
 
 
@@ -81,7 +80,7 @@ class CalendarView {
         node.appendChild(p2);
     }
 
-    // Muestra un Schedule de bloque 
+    // Muestra un Schedule de bloque
     showBlocks(blocks) {
         const color = "var(--light-gray)";
 
@@ -97,7 +96,7 @@ class CalendarView {
      * @param {CourseSection} courseSection Sección del curso a mostrar
      */
     showCourseSchedule(courseSection) {
-        
+
         const color = this.COLORS[this.idxCurrentColor];
         Object.entries(courseSection.schedule.timeBlocks).forEach(
             ([day, timeBlocks]) => timeBlocks.forEach(

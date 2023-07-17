@@ -2,10 +2,8 @@
  * Transforma el modelo de datos al formato solicitado por la interfaz
  */
 
-
 import { DataModel } from "../model/DataModel.mjs";
 import { Schedule } from "../model/Schedule.mjs";
-import { TimeBlock } from "../model/TimeBlock.mjs";
 import { View } from "../view/View.mjs";
 
 
@@ -43,7 +41,7 @@ class ViewModel {
         let courses = [];
         const nrcRegExp = new RegExp(/^\d+$/); // Un NRC contiene solo números
         const courseRegExp = new RegExp(/^\d+[A-z]?$/); // Un curso contiene solo números y puede (o no) terminar con una letra
-        if(nrcRegExp.test(courseCode)) {  
+        if(nrcRegExp.test(courseCode)) {
             courses =  this.dataModel.data
                 .filter(course => (course.nrc == courseCode));
         }
@@ -53,12 +51,9 @@ class ViewModel {
                 .filter(course => (course.courseCode === courseCode));
         }
         // Si el usuario solicita un curso (ej DISEÑO Y ANALISIS DE ALGORITMOS)
-        else if (courseCode.length > 3) {
-            // Buscar en el trie
-            let courseTitles = this.dataModel.trie.searchPrefix(courseCode);
-            // Filtrar los cursos que coincidan con el título
-            courses = this.dataModel.data
-                .filter(course => courseTitles.includes(course.title));
+        else if (courseCode.length >3) {
+           // Buscar los cursos que contienen la palabra
+            courses = this.dataModel.data.filter(course => course.title.includes(courseCode));
         }
 
         // Y si se solicita, filtrar las secciones pedidas
@@ -93,7 +88,7 @@ class ViewModel {
                 option => Schedule.merge([option.schedule, blocks]).isValid()
             )
         );
-        
+
         // Generar todas las posibles combinaciones válidas
         console.info({numCombinations: courseOptions.reduce((prev,cur) => prev*cur.length, 1)});  // LOG
         courseOptions = this.#getValidSchedules(courseOptions);
