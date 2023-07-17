@@ -233,9 +233,19 @@ class View {
         strong.innerText = `${TimeBlock.calculateTime(startTime)} - ${TimeBlock.calculateTime(endTime)}`
         node.appendChild(strong)
         document.getElementById("my-blocks").prepend(node);
+
+        // Boton que elimina el bloque desde el que se pulsa
+        let btn = document.createElement("button");
+        btn.classList.add("btn-remove-block");
+        btn.innerText = "Eliminar";
+        btn.addEventListener('click', () => {
+            node.remove();
+            this.config.blocks = this.config.blocks.filter(block => block.days !== days || block.startTime !== startTime || block.endTime !== endTime);
+            this.setConfig()
+        }
+        );
+        node.appendChild(btn);
     }
-
-
     /**
      * Elimina todos los bloques de la configuración
      */
@@ -418,7 +428,7 @@ class View {
         this.setConfig() // Actualiza la config
     }
 
-    
+
     /**
      * Añade el curso a la lista "my-courses" de la interfaz
      * @param {string} courseCode código del curso
@@ -459,6 +469,22 @@ class View {
 
         container.appendChild(p);
         container.appendChild(creditsContainer);
+
+        // Boton que elimina el curso desde el que se pulsa
+        let btn = document.createElement("button");
+        btn.classList.add("btn-remove-course");
+        btn.innerText = "Eliminar";
+        btn.addEventListener('click', () => {
+            document.querySelectorAll(`#course-options > div > h2`).forEach(node => {
+                if(node.innerText === title) {
+                    node.parentElement.classList.remove('selected-option');
+                }
+            });
+            node.remove();
+            this.config.courses = this.config.courses.filter(course => course.courseCode !== courseCode);
+            this.setConfig()
+        });
+        node.appendChild(btn);
     }
 
 
