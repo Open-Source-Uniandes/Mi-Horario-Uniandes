@@ -229,26 +229,11 @@ a {
     width: 100%;
 }
 
-#config main #step1 #btn-select-all-options #btn-select-valid-options #btn-select-none-options{
-    position: absolute;
-    right: 0;
-    bottom: 10px;
-    width: 80px;
-    height: 35px;
-    border: 1px solid transparent;
-    border-radius: 10px;
+.selection-svg {
+    width: 30px; 
+    height: 30px; 
     cursor: pointer;
-}
-
-#config main #step1 #btn-select-all-options:hover #btn-select-valid-options:hover #btn-select-none-options:hover{
-    border-color: var(--strong-yellow);
-}
-
-#config main #step1 #btn-select-all-options #btn-select-valid-options #btn-select-none-options svg {
-    width: 25px;
-    height: 25px;
-    margin: 0 auto;
-    fill: var(--dark-gray);
+    margin: 0 5px;
 }
 
 #config main #step1 #course-options {
@@ -265,6 +250,7 @@ a {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    cursor: pointer;
 }
 
 #config main #step1 #course-options .course-option.unavailable-option {
@@ -291,6 +277,7 @@ a {
     width: 50px;
     height: 50px;
     font-size: 20px;
+    cursor: pointer;
 }
 
 #config main #step2 input[type="time"] {
@@ -338,6 +325,25 @@ a {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+#config  main #step3 #my-courses .my-course .btn-remove-course  {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--dark-gray);
+    background-color: rgba(0, 255, 0);
+    color: var(--dark-gray);
+    font-size: 18px;
+    cursor: pointer;
+}
+main #step3 #my-blocks .btn-remove-block {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: var(--dark-gray);
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 #config main #step3 #my-blocks {
