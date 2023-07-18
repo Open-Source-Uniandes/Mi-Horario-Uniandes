@@ -305,15 +305,17 @@ class View {
             // Se eliminan todos los nodos hijos del div de coincidencias de cursos course-coincidences
             document.querySelector("#course-coincidences").innerHTML = ""; // Elimina todos los hijos
 
-            // Se crea un set para obtener los cursos unicos
-            let uniqueCourses  = new Set()
+            // Se crea un un objeto con los cursos únicos
+            let uniqueCourses  = {};
 
             courseSections.forEach(courseSection => {
-                uniqueCourses.add(courseSection.title + "%&%" +courseSection.courseCode + "%&%" + courseSection.credits +"%&%" + courseSection.term)
+                if (!uniqueCourses[courseSection.courseCode]) {
+                    uniqueCourses[courseSection.courseCode] = courseSection.courseCode + "%&%" + courseSection.title + "%&%" + courseSection.credits + "%&%" + courseSection.term;
+                }
             })
 
             // Si solo hay un curso, se muestra y ademas se muestran sus secciones
-            if (uniqueCourses.size == 1) {
+            if (Object.keys(uniqueCourses).length == 1) {
                 // Se crea un nodo para el curso, el cual se añade al div de coincidencias de cursos course-coincidences
                 let node = document.createElement("div");
                 node.classList.add("course-coincident");
@@ -339,58 +341,63 @@ class View {
                 document.querySelector("#course-coincidences").appendChild(node);
 
 
-                
+
             }
-            else { 
+            else {
                 // Si hay varios cursos
-                // se itera el set y se crea un nodo para cada elemento
+                // Se crea un nodo para el curso, el cual se añade al div de coincidencias de cursos course-coincidences
                 let p = document.createElement("p");
                 p.innerText = "Selecciona el curso que buscas"
                 document.querySelector("#course-coincidences").appendChild(p);
-                uniqueCourses.forEach(course => {
-                    // Se crea un nodo para el curso, el cual se añade al div de coincidencias de cursos course-coincidences
-                    // Este nodo al pulsarse, elimina los demas nodos course-coincident y muestra las secciones del curso seleccionado
+                for (let course in uniqueCourses) {
                     let node = document.createElement("div");
                     node.classList.add("course-coincident");
+                    node.addEventListener('click', (() => {
+                        this.showSearchedCourseAux(courseSections);
+                    }));
                     let h2 = document.createElement("h2");
-                    h2.innerText = `${course.split("%&%")[0]}`
+                    h2.innerText = `${uniqueCourses[course].split("%&%")[1]}`
                     node.appendChild(h2);
+
                     let h4 = document.createElement("h4");
-                    h4.innerText = `${course.split("%&%")[2]} créditos`
+                    h4.innerText = `${uniqueCourses[course].split("%&%")[2]} créditos`
                     node.appendChild(h4);
+
                     let h3 = document.createElement("h3");
-                    h3.innerText = `${course.split("%&%")[1]}`
+                    h3.innerText = `${uniqueCourses[course].split("%&%")[0]}`
                     node.appendChild(h3);
+
                     let h5 = document.createElement("h5");
-                    h5.innerText = `Periodo: ${course.split("%&%")[3]}`
+                    h5.innerText = `Periodo: ${uniqueCourses[course].split("%&%")[3]}`
                     node.appendChild(h5);
+
                     document.querySelector("#course-coincidences").appendChild(node);
 
-                    //añadir el evento click a cada nodo
+                    // añadir event listener
                     node.addEventListener('click', (() => {
-
                         document.querySelector("#course-options").innerHTML = ""; // Elimina todos los hijos
-                        //elimina los demas nodos course-coincident cuyo codigo de curso sea diferente al del nodo seleccionado
+                        //elimina los demas nodos course-coincident cuyo titulo de curso sea diferente al del nodo seleccionado
                         document.querySelectorAll(".course-coincident").forEach(element => {
-                            if(element.querySelector("h3").innerText !== course.split("%&%")[1]) {
+                            if(element.querySelector("h2").innerText !== node.querySelector("h2").innerText) {
                                 element.remove();
                             }
                         });
-                        //llama a la funcion que muestra la info de cada seccion
-                        this.showSearchedCourseAux(courseSections.filter(courseSection => courseSection.courseCode === course.split("%&%")[1]));
-                    }));
+                        // Mostrar secciones del curso seleccionado
+
+                        this.showSearchedCourseAux(courseSections.filter(courseSection => courseSection.courseCode === uniqueCourses[course].split("%&%")[0]));
+                    }
+                    ));
                 }
-                )
+
             }
 
             // Borrar secciones si existe algún elemento
             document.querySelector("#course-options").innerHTML = ""; // Elimina todos los hijos
 
             // Añadir info de cada sección
-            if (uniqueCourses.size == 1) {
+            if (Object.keys(uniqueCourses).length == 1) {
                 this.showSearchedCourseAux(courseSections);
             }
-            
 
             // Mostrar detalles del curso y ocultar texto que indica que no se encontró
             document.querySelector('#course-details').classList.remove("inactive");
@@ -401,6 +408,7 @@ class View {
             document.querySelector('#course-not-found').classList.remove("inactive");
             document.querySelector('#course-not-found > span').innerText = courseCode;
             document.querySelector('#course-details').classList.add("inactive");
+            document.querySelector("#course-buttons").classList.add("inactive");
         }
     }
 
@@ -413,6 +421,9 @@ class View {
 
     showSearchedCourseAux(courseSections) {
     courseSections.forEach(courseSection => {
+        // Muestra los botones de cursos
+        document.querySelector("#course-buttons").classList.remove("inactive");
+
 
         // Se crea un nodo nuevo por cada sección
         let node = document.createElement("div");
@@ -484,8 +495,8 @@ class View {
      * @param {number} credits número de créditos
      */
     toggleCourseSection(
-        courseCode, 
-        courseSection, 
+        courseCode,
+        courseSection,
         credits
     ) {
         // Hallar configuración previa, si existe
