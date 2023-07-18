@@ -8,32 +8,35 @@ import { TimeBlock } from "./TimeBlock.mjs";
 
 
 class Schedule {
-
+  
     // Se usa la misma convención de días de Banner
     static DAYS_OF_THE_WEEK = ["l", "m", "i", "j", "v", "s", "d"];
-
-    // Se crea un array para guardar los TimeBlocks de cada día de la semana
+  
     timeBlocks = Object.fromEntries(
         Schedule.DAYS_OF_THE_WEEK.map(day => [day, []])
     );
-    
 
     /**
      * @param {array} schedules array con todos los posibles bloques de tiempo
      * @returns {Schedule}
      */
-    constructor(schedules) {
-
-        schedules?.forEach(schedule => {
-
+    constructor(schedules = []) {
+        // Verificar entrada
+        if(!Array.isArray(schedules)) {
+            throw new Error("schedules must be an array");
+        }
+       
+        schedules.forEach(schedule => {
+          
             // Ignorar schedules que no tengan hora de inicio o de fin
             if(!schedule.time_ini || !schedule.time_fin) return;
-
+          
             // Hallar días válidos para el schedule
             const days = Schedule.DAYS_OF_THE_WEEK.filter(day => schedule[day]);
-
+          
             // Agregar el TimeBlock al día que corresponda
             days.forEach(day => this.timeBlocks[day].push(new TimeBlock(schedule)));
+
         })
 
         // Hacerlo válido (en ocasiones los bloques de tiempo de un mismo curso se superponen)
@@ -65,18 +68,18 @@ class Schedule {
 
         // Comparar elementos consecutivos: posterior (i) y anterior (i-1) 
         // TODO: puede estar mal. Proveer contraejemplo
-        for(let i = 1; i < timeBlocksArray.length; i++) 
+        for(let i = 1; i < timeBlocksArray.length; i++) {
 
             // Si el elemento posterior empieza antes de que acabe el anterior
-            if(timeBlocksArray[i].startTime < timeBlocksArray[i-1].endTime)
+            if(timeBlocksArray[i].startTime < timeBlocksArray[i-1].endTime) {
 
                 // Hay colisión
                 return true;
-
+            }
+        }
         // Si no se encuentra ningún caso, no hay colisión
         return false;
     }
-
 
     /**
      * Crea un único horario a partir de varios horarios
@@ -84,18 +87,20 @@ class Schedule {
      * @returns {Schedule} horario unificado
      */
     static merge(schedulesArray) {
-
+      
+        // Verificar entrada
+        if(!Array.isArray(schedulesArray)) {
+            throw new Error("schedulesArray must be an array");
+        }
+      
         // Crea un horario vacío
         const merged = new Schedule();
-
-        // Llena los bloques de los demás horarios
-        schedulesArray
-            .forEach(schedule => Object.entries(schedule.timeBlocks)
-                .forEach(([day, blocks]) => merged.timeBlocks[day] = [...merged.timeBlocks[day], ...blocks]));
-
+      
+         // Llena los bloques de los demás horarios
+        schedulesArray.forEach(schedule => Object.entries(schedule.timeBlocks)
+            .forEach(([day, blocks]) => merged.timeBlocks[day] = [...merged.timeBlocks[day], ...blocks]));
         return merged;
     }
-
 
     /**
      * Crea un horario válido a partir de un array de bloques de tiempo. Depura o combina time blocks de ser necesario
@@ -103,8 +108,14 @@ class Schedule {
      * @returns {Schedule} horario unificado
      */
     static fromBlocks(blocks) {
-
+      
+        // Verificar entrada
+        if(!Array.isArray(blocks)) {
+            throw new Error("blocks must be an array");
+        }
+      
         const schedule = new Schedule();
+      
         // Recorrer cada día de cada bloque
         blocks.forEach(block => {
             const timeBlock = {time_ini: block.startTime, time_fin: block.endTime};
@@ -112,7 +123,7 @@ class Schedule {
                 schedule.timeBlocks[day].push(TimeBlock.fromInstants(timeBlock));
             });
         });
-
+      
         // Hacerlo válido
         Object.entries(schedule.timeBlocks)
             .forEach(([day, timeBlocksArray]) => schedule.timeBlocks[day] = schedule.#mergeBlocks(timeBlocksArray));
@@ -143,10 +154,9 @@ class Schedule {
                 else acum.push(curr);
                 return acum;
             }, [timeBlocksArray[0]]);
+
         return timeBlocksArray;
     }
-
-    /* Métricas que se pueden calcular a cada Array */
 }
 
 export { Schedule };
