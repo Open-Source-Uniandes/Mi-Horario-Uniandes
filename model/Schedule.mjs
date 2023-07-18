@@ -59,6 +59,7 @@ class Schedule {
      */
     #checkCollision(timeBlocksArray) {
 
+        console.log("Revisando colisiones...")
         // Ordenar el Array ascendentemente según startTime
         timeBlocksArray = timeBlocksArray.sort((a, b) => (a.startTime - b.startTime));
 

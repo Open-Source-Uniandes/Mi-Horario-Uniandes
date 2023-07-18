@@ -7,14 +7,19 @@ class TimeBlock {
     /**
      * @param {string} startTime tiempo de inicio en formato "HHMM" (i.e. "0920")
      * @param {string} endTime tiempo de fin en formato "HHMM" (i.e. "0920")
+     * @param {}
      */
     constructor({
         time_ini : startTime,
         time_fin : endTime,
+        date_ini : startDate,
+        date_fin : endDate,
     }) {
         this.startTime = TimeBlock.calculateInstant(startTime);
         this.endTime = TimeBlock.calculateInstant(endTime);
         this.duration = TimeBlock.calculateDuration(startTime, endTime);
+        this.startDate = new Date(startDate.substring(0, 10));
+        this.endDate = new Date(endDate.substring(0, 10));
     }
 
 
