@@ -119,6 +119,16 @@ class View {
         document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
     }
 
+    /**
+     * Maneja errores en la carga de datos de la oferta de cursos
+     */
+    error() {
+        // Eliminar animación de carga
+        document.querySelector("#load-start").classList.add("inactive");
+        // Mostrar mensaje de error
+        document.querySelector("#load-error").classList.remove("inactive");
+    }
+
 
     /**
      * Abre el modal de configuración
