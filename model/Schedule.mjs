@@ -67,10 +67,10 @@ class Schedule {
 
         // Comparar elementos consecutivos: posterior (i) y anterior (i-1) 
         // TODO: puede estar mal. Proveer contraejemplo
-        for(let i = 1; i < timeBlocksArray.length; i++) 
+        for(let i = 1; i < timeBlocksArray.length; i++) {
 
             // Si el elemento posterior empieza antes de que acabe el anterior
-            if(timeBlocksArray[i].startTime < timeBlocksArray[i-1].endTime)
+            if(timeBlocksArray[i].startTime < timeBlocksArray[i-1].endTime) {
 
                 // Hay colisión
                 return true;
