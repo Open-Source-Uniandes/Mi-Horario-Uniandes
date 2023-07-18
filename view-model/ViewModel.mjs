@@ -22,7 +22,8 @@ class ViewModel {
         // Inicia la descarga de datos
         this.dataModel.loadData()
             // Prepara la interfaz
-            .then(this.view.ready.bind(this.view));
+            .then(this.view.ready.bind(this.view))
+            .catch(this.view.error.bind(this.view));
     }
 
 
