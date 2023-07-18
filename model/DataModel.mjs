@@ -1,4 +1,4 @@
-/* 
+/*
 Este módulo se encarga de leer y procesar la información de la API
 */
 
@@ -17,8 +17,16 @@ class DataModel {
         this.data = await fetch(DataModel.API)
             .then(response => response.json())
             // Añadir el atributo courseCode = class + course
-            .then(response => response.map(response => ({...response, courseCode : response.class + response.course})))
-            .then(response => response.map(response => new CourseSection(response)));
+            .then(response => response.map(response => ({ ...response, courseCode: response.class + response.course })))
+            .then(response => response.map(response => {
+                // Eliminar espacios adicionales en el título
+                response.title = response.title.replace(/\s+/g, ' ').trim();
+                // Eliminar todas las tildes
+                response.title = response.title.replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U');
+                // Convertir a mayúsculas
+                response.title = response.title.toUpperCase();
+                return new CourseSection(response);
+            }));
     }
 }
 

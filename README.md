@@ -16,13 +16,19 @@ Si encuentras un error, por favor añádelo como un [issue](https://github.com/O
 
 Errores conocidos:
 * Cursos de primer y segundo ciclo que estén en el mismo horario se cuentan como inválidos.
-* Cursos con horarios no fijos durante el semestre (ejemplo: 1:00-2:00 las primeras 5 semanas, luego 1:30-2:30 las siguientes 3 semanas, etc...) Se contarán como inválidos si estas opciones se cruzan.
 
 ## Colaboración
 
 ¿Tienes una idea increíble que quisieras implementar? Te invitamos a abrir un nuevo [pull request](https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes/pulls) con tus cambios propuestos.
 
 El software lo construimos entre todos 💛
+
+## Colaboradores
+
+**Daniel Diaz ([ddi4z](https://github.com/ddi4z))**
+* Implementación de la opción de búsqueda de cursos por nombre. 
+* Incorporación de botones para agilizar el proceso de selección de cursos y secciones.
+* Realización de cambios menores para mejorar la experiencia general del usuario. 
 
 ## Contacto
 
