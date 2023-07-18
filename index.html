@@ -45,7 +45,7 @@
 
             <h2>Inicia aquí 👇</h2>
             <p>Queremos ofrecerte la información más actualizada desde Banner. Por esto, cada vez que recargues la página se descargará nuevamente la información de los cursos. Esto no suele tomar más de 30 segundos.</p>            
-            <p><strong>Recuerda que debes inscribir tus cursos a través de Banner</strong></p>
+            <p style="text-align: center;"><strong>Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automaticamente.</strong></p>
         </main>
 
         <!-- Animación de carga -->
@@ -83,14 +83,9 @@
                     <input type="search" id="config-courseCode" placeholder="DECA1101, NRC o nombre">
                     <p id="course-not-found" class="small-em-text inactive">No encontramos el curso <span></span></p>
                     <div id="course-details" class="inactive">
-                        <p class="small-em-text">Detalles de la primera coincidencia:</p>
-                        <div class="course-info">
-                            <h3 id="course-title"></h3>
-                            <div class="container-row" style="justify-content: space-around;">
-                                <p><span id="course-credits"></span> créditos</p>
-                                <p id="course-courseCode"></p>
-                                <p id="course-term"></p>
-                            </div>
+                        <p class="small-em-text">Cursos que pudimos encontrar:</p>
+                        <div id="course-coincidences" class="container-column">
+                            <!-- Aquí van los cursos a mostrar al usuario -->
                         </div>
 
                         <h2 >Secciones disponibles:</h2>
