@@ -215,19 +215,21 @@ a {
     border-color: var(--strong-yellow);
 }
 
-#config main #step1 .course-info {
+#config main #step1 .course-coincident {
+    width: 100%;
     padding: 20px;
+    background-color: var(--light-gray);
+    border: 1px solid var(--dark-gray);
+    border-radius: 20px;
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     gap: 10px;
+    cursor: pointer;
+
 }
 
-#config main #step1 .course-info .container-row {
-    width: 100%;
-}
+
 
 .selection-svg {
     width: 30px; 

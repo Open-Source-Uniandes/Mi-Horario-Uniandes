@@ -302,76 +302,95 @@ class View {
         const courseSections = this.viewModel.getCourseSections({courseCode});
         if(courseSections.length) {
 
-            // Actualizar info del curso recuperado
-            const courseSectionSample = courseSections[0];
-            document.querySelector("#course-title").innerText = courseSectionSample.title;
-            document.querySelector("#course-credits").innerText = courseSectionSample.credits;
-            document.querySelector("#course-courseCode").innerText = courseSectionSample.courseCode;
-            document.querySelector("#course-term").innerText = courseSectionSample.term;
+            // Se eliminan todos los nodos hijos del div de coincidencias de cursos course-coincidences
+            document.querySelector("#course-coincidences").innerHTML = ""; // Elimina todos los hijos
+
+            // Se crea un set para obtener los cursos unicos
+            let uniqueCourses  = new Set()
+
+            courseSections.forEach(courseSection => {
+                uniqueCourses.add(courseSection.title + "%&%" +courseSection.courseCode + "%&%" + courseSection.credits +"%&%" + courseSection.term)
+            })
+
+            // Si solo hay un curso, se muestra y ademas se muestran sus secciones
+            if (uniqueCourses.size == 1) {
+                // Se crea un nodo para el curso, el cual se añade al div de coincidencias de cursos course-coincidences
+                let node = document.createElement("div");
+                node.classList.add("course-coincident");
+
+                let h2 = document.createElement("h2");
+                h2.innerText = `${courseSections[0].title}`
+                node.appendChild(h2);
+
+                let h4 = document.createElement("h4");
+                h4.innerText = `${courseSections[0].credits} créditos`
+                node.appendChild(h4);
+
+                let h3 = document.createElement("h3");
+                h3.innerText = `${courseSections[0].courseCode}`
+                node.appendChild(h3);
+
+
+                let h5 = document.createElement("h5");
+                h5.innerText = `Periodo: ${courseSections[0].term}`
+                node.appendChild(h5);
+
+
+                document.querySelector("#course-coincidences").appendChild(node);
+
+
+                
+            }
+            else { 
+                // Si hay varios cursos
+                // se itera el set y se crea un nodo para cada elemento
+                let p = document.createElement("p");
+                p.innerText = "Selecciona el curso que buscas"
+                document.querySelector("#course-coincidences").appendChild(p);
+                uniqueCourses.forEach(course => {
+                    // Se crea un nodo para el curso, el cual se añade al div de coincidencias de cursos course-coincidences
+                    // Este nodo al pulsarse, elimina los demas nodos course-coincident y muestra las secciones del curso seleccionado
+                    let node = document.createElement("div");
+                    node.classList.add("course-coincident");
+                    let h2 = document.createElement("h2");
+                    h2.innerText = `${course.split("%&%")[0]}`
+                    node.appendChild(h2);
+                    let h4 = document.createElement("h4");
+                    h4.innerText = `${course.split("%&%")[2]} créditos`
+                    node.appendChild(h4);
+                    let h3 = document.createElement("h3");
+                    h3.innerText = `${course.split("%&%")[1]}`
+                    node.appendChild(h3);
+                    let h5 = document.createElement("h5");
+                    h5.innerText = `Periodo: ${course.split("%&%")[3]}`
+                    node.appendChild(h5);
+                    document.querySelector("#course-coincidences").appendChild(node);
+
+                    //añadir el evento click a cada nodo
+                    node.addEventListener('click', (() => {
+
+                        document.querySelector("#course-options").innerHTML = ""; // Elimina todos los hijos
+                        //elimina los demas nodos course-coincident cuyo codigo de curso sea diferente al del nodo seleccionado
+                        document.querySelectorAll(".course-coincident").forEach(element => {
+                            if(element.querySelector("h3").innerText !== course.split("%&%")[1]) {
+                                element.remove();
+                            }
+                        });
+                        //llama a la funcion que muestra la info de cada seccion
+                        this.showSearchedCourseAux(courseSections.filter(courseSection => courseSection.courseCode === course.split("%&%")[1]));
+                    }));
+                }
+                )
+            }
 
             // Borrar secciones si existe algún elemento
             document.querySelector("#course-options").innerHTML = ""; // Elimina todos los hijos
 
             // Añadir info de cada sección
-            courseSections.forEach(courseSection => {
-
-                // Se crea un nodo nuevo por cada sección
-                let node = document.createElement("div");
-                // Clases
-                node.classList.add("course-option");
-                if(courseSection.seatsavail <= 0) node.classList.add("unavailable-option");
-                if(this.config.courses.find(course => course.courseCode === courseSection.courseCode)?.sections.includes(courseSection.section)) node.classList.add("selected-option");
-                // Event listeners
-                node.addEventListener('click', (() => {
-                    node.classList.toggle('selected-option');
-                    this.toggleCourseSection(courseSection.courseCode, courseSection.section, courseSection.credits );
-                }));
-                let h2 = document.createElement("h2");
-                h2.innerText = `${courseSection.title}`
-                node.appendChild(h2);
-
-                let h4 = document.createElement("h4");
-                h4.innerText = `Sección ${courseSection.section} - NRC ${courseSection.nrc}`
-                node.appendChild(h4);
-
-                let instructors = document.createElement("div");
-                let h5Instructors = document.createElement("h5");
-                h5Instructors.innerText = "Profesores";
-                instructors.appendChild(h5Instructors)
-                courseSection.instructors.forEach(name => {
-                    let p = document.createElement("p");
-                    p.innerText = name;
-                    instructors.appendChild(p);
-                })
-
-                let schedule= document.createElement("div");
-                let h5Schedule = document.createElement("h5");
-                h5Schedule.innerText = "Horarios";
-                schedule.appendChild(h5Schedule)
-                const days = ["l", "m", "i", "j", "v", "s"];
-                days.forEach(day => {
-                    let dayTimeBlocks = courseSection.schedule.timeBlocks[day];
-                    if(!dayTimeBlocks.length) return; // Ignorar días sin registros
-                    let p = document.createElement("p");
-                    let text = dayTimeBlocks
-                        .map(timeBlock => timeBlock.toString())
-                        .join(", ");
-                    p.innerText = `${day.toUpperCase()}: ${text}`;
-                    schedule.appendChild(p);
-                });
-
-                let container = document.createElement("div");
-                container.appendChild(instructors);
-                container.appendChild(schedule);
-                node.appendChild(container);
-
-                let h5 = document.createElement("h5");
-                h5.innerText = `${courseSection.seatsavail} cupos disponibles`
-                node.appendChild(h5);
-
-                // Se añade a la lista de secciones
-                document.querySelector("#course-options").appendChild(node);
-            });
+            if (uniqueCourses.size == 1) {
+                this.showSearchedCourseAux(courseSections);
+            }
+            
 
             // Mostrar detalles del curso y ocultar texto que indica que no se encontró
             document.querySelector('#course-details').classList.remove("inactive");
@@ -384,6 +403,78 @@ class View {
             document.querySelector('#course-details').classList.add("inactive");
         }
     }
+
+
+
+    /**
+     * Muestra la información de todas las secciones de un curso buscado en el panel de configuración
+     * @param {courseSections} array de secciones de un curso
+    */
+
+    showSearchedCourseAux(courseSections) {
+    courseSections.forEach(courseSection => {
+
+        // Se crea un nodo nuevo por cada sección
+        let node = document.createElement("div");
+        // Clases
+        node.classList.add("course-option");
+        if(courseSection.seatsavail <= 0) node.classList.add("unavailable-option");
+        if(this.config.courses.find(course => course.courseCode === courseSection.courseCode)?.sections.includes(courseSection.section)) node.classList.add("selected-option");
+        // Event listeners
+        node.addEventListener('click', (() => {
+            node.classList.toggle('selected-option');
+            this.toggleCourseSection(courseSection.courseCode, courseSection.section, courseSection.credits );
+        }));
+        let h2 = document.createElement("h2");
+        h2.innerText = `${courseSection.title}`
+        node.appendChild(h2);
+
+        let h4 = document.createElement("h4");
+        h4.innerText = `Sección ${courseSection.section} - NRC ${courseSection.nrc}`
+        node.appendChild(h4);
+
+        let instructors = document.createElement("div");
+        let h5Instructors = document.createElement("h5");
+        h5Instructors.innerText = "Profesores";
+        instructors.appendChild(h5Instructors)
+        courseSection.instructors.forEach(name => {
+            let p = document.createElement("p");
+            p.innerText = name;
+            instructors.appendChild(p);
+        })
+
+        let schedule= document.createElement("div");
+        let h5Schedule = document.createElement("h5");
+        h5Schedule.innerText = "Horarios";
+        schedule.appendChild(h5Schedule)
+        const days = ["l", "m", "i", "j", "v", "s"];
+        days.forEach(day => {
+            let dayTimeBlocks = courseSection.schedule.timeBlocks[day];
+            if(!dayTimeBlocks.length) return; // Ignorar días sin registros
+            let p = document.createElement("p");
+            let text = dayTimeBlocks
+                .map(timeBlock => timeBlock.toString())
+                .join(", ");
+            p.innerText = `${day.toUpperCase()}: ${text}`;
+            schedule.appendChild(p);
+        });
+
+        let container = document.createElement("div");
+        container.appendChild(instructors);
+        container.appendChild(schedule);
+        node.appendChild(container);
+
+        let h5 = document.createElement("h5");
+        h5.innerText = `${courseSection.seatsavail} cupos disponibles`
+        node.appendChild(h5);
+
+        // Se añade a la lista de secciones
+        document.querySelector("#course-options").appendChild(node);
+    });
+
+    }
+
+
 
 
     /**
