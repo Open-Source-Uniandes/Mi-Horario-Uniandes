@@ -18,12 +18,44 @@ class Schedule {
 
     /**
      * @param {array} schedules array con todos los posibles bloques de tiempo
+     * @param {string} ptrmdesc descripción del período académico (i.e PERIODO 202320 - 16 SEMANAS)
+     * @throws {Error} si el periodo académico no se puede interpretar
      * @returns {Schedule}
      */
-    constructor(schedules = []) {
+    constructor(schedules = [], ptrmdesc = "") {
         // Verificar entrada
         if(!Array.isArray(schedules)) {
             throw new Error("schedules must be an array");
+        }
+        
+        // determina en qué ciclo se da la materia
+
+        const descripcionCiclo = ptrmdesc.match(/^\w+/)[0];
+        let ciclo = 0;
+
+        if (descripcionCiclo == 'PRIMER') {
+            ciclo = 1;
+        }
+        else if (descripcionCiclo == 'SEGUNDO') {
+            ciclo = 2;
+        }
+        /**
+         * PERIODO - 16 SEMANAS
+         * DEPORTES - 16 SEMANAS
+         * CURSOS - 21 SEMANAS (MEDICINA)
+         * POSGRADO - 26 SEMANAS (MEDICINA)
+         */
+        else if (
+            descripcionCiclo == 'PERIODO' || 
+            descripcionCiclo == 'DEPORTES' || 
+            descripcionCiclo == 'CURSOS' ||
+            descripcionCiclo == 'POSGRADO' ||
+            descripcionCiclo == 'NODADO'
+        ) {
+            ciclo = 0;
+        }
+        else {
+            throw new Error("No se pudo determinar el ciclo de la materia " + courseCode + " (NRC: " + nrc + ")");
         }
        
         schedules.forEach(schedule => {
@@ -35,7 +67,7 @@ class Schedule {
             const days = Schedule.DAYS_OF_THE_WEEK.filter(day => schedule[day]);
           
             // Agregar el TimeBlock al día que corresponda
-            days.forEach(day => this.timeBlocks[day].push(new TimeBlock(schedule)));
+            days.forEach(day => this.timeBlocks[day].push(new TimeBlock(schedule, ciclo)));
 
         })
 
@@ -61,24 +93,42 @@ class Schedule {
      * @returns {boolean} true si hay colisión, false de lo contrario
      */
     #checkCollision(timeBlocksArray) {
+        console.log("Revisando colisiones");
 
-        console.log("Revisando colisiones...")
-        // Ordenar el Array ascendentemente según startTime
-        timeBlocksArray = timeBlocksArray.sort((a, b) => (a.startTime - b.startTime));
+        // separa los time blocks por ciclo. Periodo completo va en ambos arreglos
+        let timeBlocksCiclo1 = [];
+        let timeBlocksCiclo2 = [];
+        
+        for (let block of timeBlocksArray) { 
+            if (block.ciclo == 1 || block.ciclo == 0) timeBlocksCiclo1.push(block);
+            if (block.ciclo == 2 || block.ciclo == 0) timeBlocksCiclo2.push(block);
+        }
+
+        // los ordena ascendentemente
+        timeBlocksCiclo1 = timeBlocksCiclo1.sort((a, b) => (a.startTime - b.startTime));
+        timeBlocksCiclo2 = timeBlocksCiclo2.sort((a, b) => (a.startTime - b.startTime));
 
         // Comparar elementos consecutivos: posterior (i) y anterior (i-1) 
         // TODO: puede estar mal. Proveer contraejemplo
-        for(let i = 1; i < timeBlocksArray.length; i++) {
+        let hayColision = false;
 
-            // Si el elemento posterior empieza antes de que acabe el anterior
-            if(timeBlocksArray[i].startTime < timeBlocksArray[i-1].endTime) {
-
-                // Hay colisión
-                return true;
+        // ciclo 1
+        for (let i=1; i<timeBlocksCiclo1.length && !hayColision; i++) {
+            if (timeBlocksCiclo1[i].startTime < timeBlocksCiclo1[i-1].endTime) {
+                hayColision = true;
             }
         }
+
+        // ciclo 2
+        for (let i=1; i<timeBlocksCiclo2.length && !hayColision; i++) {
+            if (timeBlocksCiclo2[i].startTime < timeBlocksCiclo2[i-1].endTime) {
+                hayColision = true;
+            }
+        }
+
+        console.log("Finaliza revisión colisiones");
         // Si no se encuentra ningún caso, no hay colisión
-        return false;
+        return hayColision;
     }
 
     /**
@@ -94,7 +144,7 @@ class Schedule {
         }
       
         // Crea un horario vacío
-        const merged = new Schedule();
+        const merged = new Schedule([], 'NODADO');
       
          // Llena los bloques de los demás horarios
         schedulesArray.forEach(schedule => Object.entries(schedule.timeBlocks)
@@ -104,7 +154,7 @@ class Schedule {
 
     /**
      * Crea un horario válido a partir de un array de bloques de tiempo. Depura o combina time blocks de ser necesario
-     * @param {array} blocks array de bloques de tiempo
+     * @param {Array} blocks array de bloques de tiempo
      * @returns {Schedule} horario unificado
      */
     static fromBlocks(blocks) {
@@ -114,15 +164,30 @@ class Schedule {
             throw new Error("blocks must be an array");
         }
       
-        const schedule = new Schedule();
+        const schedule = new Schedule([], "NODADO");
       
         // Recorrer cada día de cada bloque
         blocks.forEach(block => {
             const timeBlock = {time_ini: block.startTime, time_fin: block.endTime};
             block.days.forEach(day => {
-                schedule.timeBlocks[day].push(TimeBlock.fromInstants(timeBlock));
+                schedule.timeBlocks[day].push(new TimeBlock(timeBlock, 0));
             });
         });
+        
+        /*
+        for (let block in blocks) {
+            // periodo de tiempo del bloque
+            const timeFrame = {
+                time_ini: blocks[block].startTime, 
+                time_fin: blocks[block].endTime
+            };
+
+            for (let day in block.days) {
+                // agregar el bloque al dia correspondiente
+                schedule.timeBlocks[day].push(new TimeBlock(timeBlock, 0));
+            }
+        }
+        */
       
         // Hacerlo válido
         Object.entries(schedule.timeBlocks)
