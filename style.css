@@ -406,7 +406,7 @@ main #step3 #my-blocks .btn-remove-block {
 }
 
 #config footer p {
-    width: fit-content;
+    width: 100%;
     padding: 20px 30px;
     margin: 0 auto;
     text-align: center;

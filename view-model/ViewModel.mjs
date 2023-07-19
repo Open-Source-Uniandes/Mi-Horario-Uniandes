@@ -78,6 +78,7 @@ class ViewModel {
     }) {
 
         // Transformar los bloques en un Schedule
+        // TODO: revisar creación de bloques para todo el semestre
         blocks = Schedule.fromBlocks(blocks);
 
         // Obtener las opciones por cada curso

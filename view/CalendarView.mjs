@@ -56,26 +56,51 @@ class CalendarView {
         const left = this.day2idx[day] / this.totalDays * 100;
         const height = duration * this.calendarHeight / this.timeSpan;
 
-        // Crear el nodo y agregarlo al DOM
+        /**
+         * Crear el nodo y agregarlo al DOM
+         * 
+         * Semestre completo    : bloque completo
+         * Primer ciclo         : bloque izquierdo
+         * Segundo ciclo        : bloque derecho
+         */
         const node = document.createElement("div");
         node.classList.add("time-block");
         node.style.top = top + "px";
         node.style.left = left + "%";
         node.style.height = height + "px";
         node.style.backgroundColor = color;
+        
+        if (timeBlock.ciclo == 1) {
+            node.style.width = 100/this.totalDays/2 + "%";
+            node.style.left = left + "%";
+        }
+        else if (timeBlock.ciclo == 2) {
+            node.style.width = 100/this.totalDays/2 + "%";
+            node.style.left = (left + 100/this.totalDays/2) + "%";
+        }
+        else {
+            node.style.width = 100/this.totalDays + "%";
+        }
+
+        // cambio de estilo interior
+        node.style.display = "flex";
+        node.style.alignContent = "center";
+
         this.calendarDOM.appendChild(node);
 
         // Añadir texto
         let p1 = document.createElement("p");
         let p2 = document.createElement("p");
-        if(courseSection) {
-            p1.innerText = `${courseSection.courseCode} - Sec.${courseSection.section}`;
+
+        if (courseSection) {
+            p1.innerText = `${courseSection.courseCode}\n${courseSection.section}\n${courseSection.nrc}`;
             p2.innerText = courseSection.instructors.join(", ");
         }
         else {
             p1.innerText = "";
             p2.innerText = "Bloque de tiempo reservado";
         }
+
         node.appendChild(p1);
         node.appendChild(p2);
     }

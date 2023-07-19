@@ -7,14 +7,18 @@ class TimeBlock {
     /**
      * @param {string} startTime tiempo de inicio en formato "HHMM" (i.e. "0920")
      * @param {string} endTime tiempo de fin en formato "HHMM" (i.e. "0920")
+     * @param {number} ciclo ciclo académico. 0 es semestre completo, 1 o 2 son ciclos específicos
+     * @param {}
      */
     constructor({
-        time_ini : startTime,
-        time_fin : endTime,
-    }) {
+        time_ini : startTime = "0000",
+        time_fin : endTime = "0000",
+    }, ciclo = 0
+    ) {
         this.startTime = TimeBlock.calculateInstant(startTime);
         this.endTime = TimeBlock.calculateInstant(endTime);
         this.duration = TimeBlock.calculateDuration(startTime, endTime);
+        this.ciclo = ciclo;
     }
 
 
