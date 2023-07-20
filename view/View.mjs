@@ -10,7 +10,7 @@ class View {
 
     /**
      * Constructor
-     * @param {*} viewModel 
+     * @param {*} viewModel
      */
     constructor(viewModel) {
         // Guarda una referencia del view model para invocar sus métodos
@@ -42,7 +42,7 @@ class View {
         document.querySelector("#btn-reset-courses").addEventListener('click', this.resetCourses.bind(this));
         document.querySelectorAll("#step2 .checkbox").forEach(element => element.addEventListener('click', () => element.classList.toggle("chkbox-selected")));
         document.querySelectorAll('input[name="optimizar"]').forEach(element => element.addEventListener('click', this.changeMetric.bind(this)));
-        
+
         document.querySelector("#btn-select-all-options").addEventListener('click', () => { // Añadir botón de seleccionar todas las secciones 
             document.querySelectorAll("#course-options > *").forEach(node => {
                 // Si no está marcado como seleccionado
@@ -99,8 +99,8 @@ class View {
                     break;
             }
         })
-    }    
-    
+    }
+
     /**
      * Establece la interfaz como lista para ejecutarse
      */
@@ -140,7 +140,7 @@ class View {
         document.querySelector("#config").classList.remove("inactive");
     }
 
-    
+
     /**
      * Abre el modal de calendario
      */
@@ -224,6 +224,11 @@ class View {
         endTime,
     }) {
 
+        if(!document.querySelector("#my-blocks > p")) {
+            let p = document.createElement("p");
+            p.innerText = "Puedes editar los dias en los que aplica un bloque 😀";
+            document.getElementById("my-blocks").prepend(p);
+        }
         const elements = ["l", "m", "i", "j", "v", "s"];
 
         let node = document.createElement("div");
@@ -238,10 +243,27 @@ class View {
             if(days.includes(element)) el.classList.add("chkbox-selected");
             el.innerText = element.toUpperCase();
             container.appendChild(el);
+
+            // Añadir event listener
+            // Al seleccionar un día, se añade a la lista de días del bloque
+            el.addEventListener('click', () => {
+                el.classList.toggle("chkbox-selected");
+                if(el.classList.contains("chkbox-selected")) {
+                    days.push(element);
+                }
+                else {
+                    days.splice(days.indexOf(element), 1);
+                }
+                this.setConfig();
+            }
+            );
         })
         let strong = document.createElement("strong");
         strong.innerText = `${TimeBlock.calculateTime(startTime)} - ${TimeBlock.calculateTime(endTime)}`
         node.appendChild(strong)
+
+
+
         document.getElementById("my-blocks").prepend(node);
 
         // Boton que elimina el bloque desde el que se pulsa
@@ -252,6 +274,10 @@ class View {
             node.remove();
             this.config.blocks = this.config.blocks.filter(block => block.days !== days || block.startTime !== startTime || block.endTime !== endTime);
             this.setConfig()
+            if(!document.querySelector("#my-blocks > div")) {
+                document.querySelector("#my-blocks > p").remove();
+            }
+
         }
         );
         node.appendChild(btn);
@@ -552,6 +578,12 @@ class View {
         sections,
         credits,
     }) {
+        if(!document.querySelector("#my-courses > p")) {
+            let p = document.createElement("p");
+            p.innerText = "Puedes hacer clic en un curso para editar sus secciones 😁";
+            document.getElementById("my-courses").prepend(p);
+
+        }
         let node = document.createElement("div");
         document.getElementById("my-courses").prepend(node);
         node.id = courseCode;
@@ -582,6 +614,11 @@ class View {
         container.appendChild(p);
         container.appendChild(creditsContainer);
 
+        // Al presionar, el nodo, se busca el codigo del curso, como si se colocase dentro del input config-courseCode
+        node.addEventListener('click', () => {
+            document.querySelector("#config-courseCode").value = courseCode;
+            this.showSearchedCourse({target: {value: courseCode}});
+        });
         // Boton que elimina el curso desde el que se pulsa
         let btn = document.createElement("button");
         btn.classList.add("btn-remove-course");
@@ -595,8 +632,13 @@ class View {
             node.remove();
             this.config.courses = this.config.courses.filter(course => course.courseCode !== courseCode);
             this.setConfig()
+
+            if(!document.querySelector("#my-courses > div")) {
+                document.querySelector("#my-courses > p").remove();
+            }
         });
         node.appendChild(btn);
+
     }
 
 

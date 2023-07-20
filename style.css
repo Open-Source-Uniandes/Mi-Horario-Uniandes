@@ -72,6 +72,7 @@ a {
     display: grid;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .checkbox.chkbox-selected {
@@ -293,7 +294,6 @@ a {
     width: 50px;
     height: 50px;
     font-size: 20px;
-    cursor: pointer;
 }
 
 #config main #step2 input[type="time"] {
