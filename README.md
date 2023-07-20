@@ -14,9 +14,6 @@ Visita la aplicación web desplegada [aquí](https://open-source-uniandes.github
 
 Si encuentras un error, por favor añádelo como un [issue](https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes/issues).
 
-Errores conocidos:
-* Cursos de primer y segundo ciclo que estén en el mismo horario se cuentan como inválidos.
-
 ## Colaboración
 
 ¿Tienes una idea increíble que quisieras implementar? Te invitamos a abrir un nuevo [pull request](https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes/pulls) con tus cambios propuestos.
