@@ -582,6 +582,11 @@ class View {
         container.appendChild(p);
         container.appendChild(creditsContainer);
 
+        // Al presionar, el nodo, se busca el codigo del curso, como si se colocase dentro del input config-courseCode
+        node.addEventListener('click', () => {
+            document.querySelector("#config-courseCode").value = courseCode;
+            this.showSearchedCourse({target: {value: courseCode}});
+        });
         // Boton que elimina el curso desde el que se pulsa
         let btn = document.createElement("button");
         btn.classList.add("btn-remove-course");
