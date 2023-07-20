@@ -93,7 +93,7 @@ class CalendarView {
         let p2 = document.createElement("p");
 
         if (courseSection) {
-            p1.innerText = `${courseSection.courseCode}\n${courseSection.section}\n${courseSection.nrc}`;
+            p1.innerText = `${courseSection.courseCode}\nSec. ${courseSection.section}\n${courseSection.nrc}`;
             p2.innerText = courseSection.instructors.join(", ");
         }
         else {
