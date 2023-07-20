@@ -170,7 +170,7 @@ class Schedule {
         blocks.forEach(block => {
             const timeBlock = {time_ini: block.startTime, time_fin: block.endTime};
             block.days.forEach(day => {
-                schedule.timeBlocks[day].push(new TimeBlock(timeBlock, 0));
+                schedule.timeBlocks[day].push(TimeBlock.fromInstants(timeBlock));
             });
         });
         
