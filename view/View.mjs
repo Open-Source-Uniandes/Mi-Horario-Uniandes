@@ -515,6 +515,16 @@ class View {
         h5.innerText = `${courseSection.seatsavail} cupos disponibles`
         node.appendChild(h5);
 
+        h5 = document.createElement("h5");
+        let a_tag = document.createElement("a");
+        a_tag.innerText = `¿Cuántos conflictos de horario tiene esta sección?`
+        a_tag.style.color = "red";
+        a_tag.href = "https://registroapps.uniandes.edu.co/schsolicitudes/?nrc=" + courseSection.nrc;
+        a_tag.target = "_blank"
+        //a.style.textDecorationLine = "underline";
+        h5.appendChild(a_tag);
+        node.appendChild(h5);
+
         // Se añade a la lista de secciones
         document.querySelector("#course-options").appendChild(node);
     });
