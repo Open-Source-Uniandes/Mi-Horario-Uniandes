@@ -11,11 +11,29 @@ class DataModel {
     async loadData() {
         // Almacena la fecha y hora actual
         this.lastTime = new Date().toLocaleString();
-        
+        // Inicializa los cbus
+        this.cbu = {"cbca":[],"cbco":[],"cbpc":[],"cbcc":[]};
         // Hace una petición a la API, procesa la respuesta y almacena los datos
         this.data = await fetch(DataModel.API)
             .then(response => response.json())
             .then(response => response.map(this.processResponseData));
+        
+        // Recorre todos los cursos y los clasifica en los cbus
+        this.data.forEach(course => {
+            if (course.courseCode.startsWith('CBCA')) {
+                this.cbu.cbca.push(course);
+            }
+            else if (course.courseCode.startsWith('CBCO')) {
+                this.cbu.cbco.push(course);
+            }
+            else if (course.courseCode.startsWith('CBPC')) {
+                this.cbu.cbpc.push(course);
+            }
+            else if (course.courseCode.startsWith('CBCC')) {
+                this.cbu.cbcc.push(course);
+            }
+        }
+        );
     }
 
     // Método para procesar cada objeto de datos de la respuesta

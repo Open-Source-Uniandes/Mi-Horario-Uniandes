@@ -264,10 +264,64 @@
             <p>
                 Datos recuperados de Banner: <span class="date-last-fetch"></span>
             </p>
+            <button id="btn-open-cbus" class="btn-primary">Encuentra CBU's para este horario</button>
         </footer>
 
     </section>
 
+    <!-- Panel de cbu's -->
+    <section id="cbus" class="modal inactive">
+        <header class="container-row">
+            <svg id="btn-close-cbus" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.8)" width="47.997" height="48.001"><g fill="#1a171b"><path d="M35.619 18.212h-1.476a13.756 13.756 0 0 0-.445-1.654l1.28-.739a1.5 1.5 0 0 0 .549-2.052l-1.164-2.018a1.5 1.5 0 0 0-2.052-.549l-1.282.74a13.68 13.68 0 0 0-1.21-1.21l.739-1.282a1.5 1.5 0 0 0-.551-2.048l-2.015-1.169a1.5 1.5 0 0 0-2.053.55l-.739 1.28a13.22 13.22 0 0 0-1.655-.445V6.139a1.5 1.5 0 0 0-1.5-1.5h-2.33a1.5 1.5 0 0 0-1.5 1.5v1.477a13.206 13.206 0 0 0-1.654.445l-.739-1.28a1.5 1.5 0 0 0-2.053-.55L11.75 7.4a1.5 1.5 0 0 0-.55 2.053l.739 1.282a13.806 13.806 0 0 0-1.209 1.21L9.448 11.2a1.507 1.507 0 0 0-2.053.551l-1.164 2.016a1.5 1.5 0 0 0 .55 2.053l1.279.738a13.47 13.47 0 0 0-.444 1.654H6.139a1.506 1.506 0 0 0-1.5 1.5v2.327a1.505 1.505 0 0 0 1.5 1.5h1.477A13.6 13.6 0 0 0 8.06 25.2l-1.279.738a1.5 1.5 0 0 0-.55 2.054L7.4 30.008a1.5 1.5 0 0 0 2.053.55l1.282-.74a13.681 13.681 0 0 0 1.209 1.211l-.744 1.282a1.5 1.5 0 0 0 .55 2.053l2.016 1.163a1.5 1.5 0 0 0 2.053-.55l.739-1.279a13.247 13.247 0 0 0 1.654.444v1.477a1.506 1.506 0 0 0 1.5 1.5h2.328a1.5 1.5 0 0 0 1.5-1.5v-1.477a13.343 13.343 0 0 0 1.66-.442l.739 1.278a1.5 1.5 0 0 0 2.053.551l2.015-1.163a1.5 1.5 0 0 0 .551-2.054l-.739-1.281a13.547 13.547 0 0 0 1.209-1.211l1.283.74a1.506 1.506 0 0 0 2.053-.55l1.163-2.015a1.5 1.5 0 0 0-.55-2.054L33.7 25.2a13.523 13.523 0 0 0 .445-1.654h1.476a1.505 1.505 0 0 0 1.5-1.5v-2.33a1.505 1.505 0 0 0-1.502-1.504zm0 3.879h-2.085a.728.728 0 0 0-.719.618 12.04 12.04 0 0 1-.687 2.553.729.729 0 0 0 .313.894l1.825 1.109-1.229 2.035-1.811-1.045a.726.726 0 0 0-.931.175 12.22 12.22 0 0 1-1.868 1.87.728.728 0 0 0-.174.931l1.026 1.869-2.079 1.15-1.043-1.808a.727.727 0 0 0-.894-.313 11.954 11.954 0 0 1-2.553.686.728.728 0 0 0-.618.719l-.048 2.135-2.376-.049v-2.086a.729.729 0 0 0-.618-.719 11.887 11.887 0 0 1-2.552-.686.736.736 0 0 0-.264-.05.727.727 0 0 0-.63.363l-1.114 1.825-2.032-1.229 1.044-1.81a.728.728 0 0 0-.174-.931 12.22 12.22 0 0 1-1.868-1.868.728.728 0 0 0-.932-.175L8.652 29.28 7.506 27.2l1.808-1.043a.726.726 0 0 0 .313-.895 12.14 12.14 0 0 1-.686-2.552.727.727 0 0 0-.719-.618l-2.134-.048.048-2.376h2.086a.727.727 0 0 0 .719-.618 12.1 12.1 0 0 1 .686-2.55.728.728 0 0 0-.313-.895l-1.825-1.113 1.229-2.033 1.81 1.045a.731.731 0 0 0 .932-.174 12.138 12.138 0 0 1 1.868-1.869.729.729 0 0 0 .174-.932l-1.026-1.876 2.081-1.146L15.6 9.316a.728.728 0 0 0 .894.313 11.945 11.945 0 0 1 2.552-.686.729.729 0 0 0 .618-.72l.048-2.134 2.376.048v2.086a.73.73 0 0 0 .618.72 11.911 11.911 0 0 1 2.553.686.729.729 0 0 0 .894-.313l1.111-1.826L29.3 8.719l-1.044 1.81a.728.728 0 0 0 .174.932 12.189 12.189 0 0 1 1.87 1.869.728.728 0 0 0 .931.174l1.869-1.027 1.146 2.082L32.44 15.6a.728.728 0 0 0-.313.895 12.091 12.091 0 0 1 .687 2.552.726.726 0 0 0 .719.618h2.085l.048.049z"/><path d="m46.368 38.476-7.329-7.328a20.878 20.878 0 1 0-7.89 7.892l7.327 7.328a5.58 5.58 0 0 0 7.892-7.892zm-14.586-.864a.728.728 0 0 0-.891-.108 19.43 19.43 0 1 1 6.609-6.616.729.729 0 0 0 .109.891l5.591 5.583a12.031 12.031 0 0 1-5.837 5.838zm13.552 7.725a4.122 4.122 0 0 1-5.829 0L38.468 44.3a13.841 13.841 0 0 0 5.832-5.832l1.037 1.037a4.127 4.127 0 0 1-.003 5.832z"/><path d="M26.243 13.577a.727.727 0 0 0-1.028 0L13.579 25.213a.727.727 0 0 0 0 1.028.728.728 0 0 0 1.029 0l11.636-11.636a.728.728 0 0 0-.001-1.028zM27.154 19.4 19.4 27.154a.728.728 0 0 0 .515 1.241.72.72 0 0 0 .514-.214l7.758-7.757a.727.727 0 1 0-1.033-1.024z"/></g></svg>
+            <h1>CBU's perfectos</h1>
+            <div class="container-row" style="gap: 5px;">
+            </div>
+        </header>
+
+        <main>
+            
+            <div class="cbu_checkbox">
+                <label for="cbca_check">
+                    <input type="checkbox" id="cbca_check" name="cbus" value="cbca"> <span class="checkbox_text">Cultura, Artes y Humanidades (CBCA)</span>
+                </label>
+            
+                <label for="cbco_check">
+                    <input type="checkbox" id="cbco_check" name="cbus" value="cbco"> <span class="checkbox_text">Común en Colombia (CBCO)</span>
+                </label>
+            
+                <label for="cbpc_check">
+                    <input type="checkbox" id="cbpc_check" name="cbus" value="cbpc"> <span class="checkbox_text">Pensamiento Científico (CBCP)</span>
+                </label>
+            
+                <label for="cbcc_check">
+                    <input type="checkbox" id="cbcc_check" name="cbus" value="cbcc"> <span class="checkbox_text">Colombia - Espacio, Tiempo, Diferencia (CBCC-1177)</span>
+                </label>
+            </div>
+            <p class="welcome-cbu">Selecciona la categoria de CBU que te interese para ver todos los que son compatibles con tu horario, luego puedes regresar al menu principal y añadirlos</p>
+            <div class="cbu_list">
+                <div id="cbca" class="cbus-list inactive">
+                    <!-- Aquí van los cbca -->
+                </div>
+            
+
+                <div id="cbco" class="cbus-list inactive">
+                    <!-- Aquí van los cbco -->
+                </div>
+            
+
+                <div id="cbpc" class="cbus-list inactive">
+                    <!-- Aquí van los cbpc -->
+                </div>
+            
+
+                <div id="cbcc" class="cbus-list inactive">
+                    <!-- Aquí van los cbus cbcc -->
+                </div>
+            </div>
+            
+        </main>
+        
+    </section>
     <script type="module" src="./script.js"></script>
 </body>
 </html>

@@ -4,10 +4,11 @@
 
 Mi Horario Uniandes es una aplicación web que se nutre de la API de cursos de la Universidad de los Andes para ayudarte a encontrar tu horario ideal.
 
-Actualmente, cuenta con 3 funcionalidades principales:
+Actualmente, cuenta con 4 funcionalidades principales:
 1. Permite agregar secciones específicas de cursos que te interesa considerar entre tus opciones.
 2. Permite agregar bloques de tiempo personalizados en los cuales no deseas tener clase.
 3. Permite optimizar tus horarios según una métrica personalizada.
+4. Permite consultar todos los CBU's que cuadran dentro de un horario especifico
 
 Visita la aplicación web desplegada [aquí](https://open-source-uniandes.github.io/Mi-Horario-Uniandes/)
 ## Reporte de errores
@@ -23,9 +24,10 @@ El software lo construimos entre todos 💛
 ## Colaboradores
 
 **Daniel Diaz ([ddi4z](https://github.com/ddi4z))**
-* Implementación de la opción de búsqueda de cursos por nombre. 
+* Implementación de la funcionalidad de consulta de CBU's.
+* Implementación de la opción de búsqueda de cursos por nombre.
 * Incorporación de botones para agilizar el proceso de selección de cursos y secciones.
-* Realización de cambios menores para mejorar la experiencia general del usuario. 
+* Realización de cambios menores para mejorar la experiencia general del usuario.
 
 ## Contacto
 

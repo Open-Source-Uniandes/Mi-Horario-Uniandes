@@ -432,7 +432,7 @@ main #step3 #my-blocks .btn-remove-block {
 
 /* Calendario */
 
-#calendar header {
+#calendar header,#cbus header {
     width: 100%;
     height: 80px;
     padding: 0 20px;
@@ -441,6 +441,7 @@ main #step3 #my-blocks .btn-remove-block {
     font-weight: 700;
     text-align: center;
 }
+
 
 #calendar header svg {
     fill: var(--dark-gray);
@@ -555,6 +556,70 @@ main #step3 #my-blocks .btn-remove-block {
     text-align: center;
     font-weight: 700;
 }
+
+/* CBUS */
+.cbu_course{
+    width: 80%;
+    padding: 20px;
+    margin: 20px auto;
+    border: 20px solid rgba(0, 255, 0, 0.3);
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    display: grid;
+}
+
+.welcome-cbu{
+    font-size: 20px;
+    text-align: center;
+    margin: 20px auto;
+}
+.title-cbu{
+    font-size: 40px;
+    text-align: center;
+}
+
+.cbu_course.unavailable-cbu {
+    border: 20px solid rgba(255, 0, 0, 0.3);
+}
+
+.cbu_checkbox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.not-found-cbu {
+    padding: 30px 20px;
+    width: 80%;
+    color: #731c24;
+    background-color: #f8d8da;
+    border: 1px solid #731c24;
+    border-radius: 5px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 20px auto;
+}
+
+.cbu_checkbox label {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.checkbox_text {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
 
 @media (min-width: 1024px) {
     #calendar header {
