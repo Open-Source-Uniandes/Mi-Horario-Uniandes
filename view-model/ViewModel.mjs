@@ -62,7 +62,32 @@ class ViewModel {
             courses = courses.filter(course => sections.includes(course.section));
         return courses;
     }
+    getCbusCourses(blocks, calendario) {
+        let cbca = this.dataModel.cbu.cbca;
+        let cbco = this.dataModel.cbu.cbco;
+        let cbpc = this.dataModel.cbu.cbpc;
+        let cbcc = this.dataModel.cbu.cbcc;
+        
 
+
+        // se recorre el calendario y se filtran los cbus que se cruzan con los cursos del calendario
+        calendario.forEach(element => {
+            cbca = cbca.filter(course => Schedule.merge([element.schedule, course.schedule]).isValid());
+            cbco = cbco.filter(course => Schedule.merge([element.schedule, course.schedule]).isValid());
+            cbpc = cbpc.filter(course => Schedule.merge([element.schedule, course.schedule]).isValid());
+            cbcc = cbcc.filter(course => Schedule.merge([element.schedule, course.schedule]).isValid());
+        });
+        
+        // se revisan tambien los blocks del usuario
+        let bloques = Schedule.fromBlocks(blocks);
+        cbca = cbca.filter(course => Schedule.merge([bloques, course.schedule]).isValid());
+        cbco = cbco.filter(course => Schedule.merge([bloques, course.schedule]).isValid());
+        cbpc = cbpc.filter(course => Schedule.merge([bloques, course.schedule]).isValid());
+        cbcc = cbcc.filter(course => Schedule.merge([bloques, course.schedule]).isValid());
+        
+
+        return {"cbca":cbca,"cbco":cbco,"cbpc":cbpc,"cbcc":cbcc};
+    }
 
     /**
      * Obtiene los bloques de tiempo que coincidan con el código de bloque o el array de bloques a considerar

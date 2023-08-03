@@ -43,6 +43,16 @@ class View {
         document.querySelectorAll("#step2 .checkbox").forEach(element => element.addEventListener('click', () => element.classList.toggle("chkbox-selected")));
         document.querySelectorAll('input[name="optimizar"]').forEach(element => element.addEventListener('click', this.changeMetric.bind(this)));
 
+        // Cbus
+        document.querySelector("#btn-close-cbus").addEventListener('click', this.closeCbus.bind(this));
+        document.querySelector("#btn-open-cbus").addEventListener('click', this.openCbus.bind(this));
+
+        // se añade el event listener a los 4 checkbox de cbus, si se hace clic, se muestra la lista correspondiente
+        document.querySelector("#cbca_check").addEventListener('click', () => {this.showCBUList("cbca");});
+        document.querySelector("#cbco_check").addEventListener('click', () => {this.showCBUList("cbco");});
+        document.querySelector("#cbpc_check").addEventListener('click', () => {this.showCBUList("cbpc");});
+        document.querySelector("#cbcc_check").addEventListener('click', () => {this.showCBUList("cbcc");});
+
         document.querySelector("#btn-select-all-options").addEventListener('click', () => { // Añadir botón de seleccionar todas las secciones 
             document.querySelectorAll("#course-options > *").forEach(node => {
                 // Si no está marcado como seleccionado
@@ -154,11 +164,14 @@ class View {
             document.querySelector("#no-calendars").classList.remove("inactive");
             return; // Parar la ejecución de la función
         }
+
+
         document.querySelector("#no-calendars").classList.add("inactive")
 
         // Cerrar otros modales y abrir calendario
         document.querySelector("#welcome").classList.add("inactive");
         document.querySelector("#config").classList.add("inactive");
+        document.querySelector("#cbus").classList.add("inactive");
         document.querySelector("#calendar").classList.remove("inactive");
 
         // Actualizar interfaz
@@ -169,6 +182,91 @@ class View {
         this.showSchedule(this.idxCalendar);
     }
 
+    /**
+    * Abre el modal de cbu's
+    */
+    openCbus() {
+        // se desactivan los modales y se activa el modal de cbus
+        document.querySelector("#welcome").classList.add("inactive");
+        document.querySelector("#config").classList.add("inactive");
+        document.querySelector("#calendar").classList.add("inactive");
+        document.querySelector("#cbus").classList.remove("inactive");
+
+        // Se eliminan de las 4 listas los elementos que existian antes
+
+        document.querySelector("#cbca").innerHTML = "";
+        document.querySelector("#cbco").innerHTML = "";
+        document.querySelector("#cbpc").innerHTML = "";
+        document.querySelector("#cbcc").innerHTML = "";
+
+        // se llama a la funcion getCbusCourses del viewModel para obtener los cursos de cbus
+        let cbusCourses = this.viewModel.getCbusCourses(this.config.blocks, this.calendars[this.idxCalendar]);
+
+        // se iteran las 4 llaves del objeto cbusCourses (los tipos de cbu), luego se itera cada curso de cada tipo de cbu y se añade a la lista correspondiente
+        for (let key in cbusCourses) {
+            //Titulo con el nombre del tipo de cbu
+            let p = document.createElement("p");
+            p.innerText = key;
+            p.classList.add("title-cbu");
+            document.querySelector("#" + key).appendChild(p);
+
+            // Si no hay cursos disponibles, se muestra un mensaje
+            if(cbusCourses[key].length === 0) {
+                let p = document.createElement("p");
+                p.innerText = "No hay cursos disponibles";
+                p.classList.add("not-found-cbu");
+                document.querySelector("#" + key).appendChild(p);
+            }
+            else {
+                cbusCourses[key].forEach(course => {
+                    let node = document.createElement("div");
+                    node.classList.add("cbu_course");
+                    if(course.seatsavail <= 0) node.classList.add("unavailable-cbu");
+                    let h2 = document.createElement("h2");
+                    h2.innerText = `${course.title}`
+                    node.appendChild(h2);
+
+                    let h3section = document.createElement("h3");
+                    h3section.innerText = `Sección: ${course.section}`
+                    node.appendChild(h3section);
+
+                    let h3nrc = document.createElement("h3");
+                    h3nrc.innerText = `NRC: ${course.nrc}`
+                    node.appendChild(h3nrc);
+
+                    let h3courseCode = document.createElement("h3");
+                    h3courseCode.innerText = `${course.courseCode}`
+                    node.appendChild(h3courseCode);
+
+                    let h3Professor = document.createElement("h3");
+                    h3Professor.innerText = `Profesor: ${course.instructors}`
+                    node.appendChild(h3Professor);
+
+                    let h4 = document.createElement("h4");
+                    h4.innerText = `${course.credits} créditos`
+                    node.appendChild(h4);
+
+                    let h5 = document.createElement("h5");
+                    h5.innerText = `Periodo: ${course.term}`
+                    node.appendChild(h5);
+
+                    document.querySelector("#" + key).appendChild(node);
+            });}
+        }
+    }
+    /**
+     * Función del event listener de los checkbox de cbu, muestra la lista de cbus correspondiente si el checkbox esta seleccionado
+     * @param {String} type tipo del cbu (cbca, cbco, cbpc, cbcc)
+    */
+
+    showCBUList(type) {
+        if(document.querySelector("#"+type+"_check").checked) {
+            document.querySelector("#"+type).classList.remove("inactive");
+        }
+        else {
+            document.querySelector("#"+type).classList.add("inactive");
+        }
+    }
 
     /**
      * Añade un bloque de tiempo a la configuración
@@ -297,6 +395,15 @@ class View {
         this.setConfig() // Actualiza la config
     }
 
+    /**
+     * Cierra el modal de cbus
+    */
+    closeCbus(){
+        document.querySelector("#welcome").classList.add("inactive");
+        document.querySelector("#calendar").classList.add("inactive");
+        document.querySelector("#config").classList.remove("inactive");
+        document.querySelector("#cbus").classList.add("inactive");
+    }
 
     /**
      * Muestra el calendario con el índice idx
