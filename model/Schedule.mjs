@@ -33,10 +33,10 @@ class Schedule {
         const descripcionCiclo = ptrmdesc.match(/^\w+/)[0];
         let ciclo = 0;
 
-        if (descripcionCiclo == 'PRIMER') {
+        if (descripcionCiclo === 'PRIMER') {
             ciclo = 1;
         }
-        else if (descripcionCiclo == 'SEGUNDO') {
+        else if (descripcionCiclo === 'SEGUNDO') {
             ciclo = 2;
         }
         /**
@@ -46,16 +46,17 @@ class Schedule {
          * POSGRADO - 26 SEMANAS (MEDICINA)
          */
         else if (
-            descripcionCiclo == 'PERIODO' || 
-            descripcionCiclo == 'DEPORTES' || 
-            descripcionCiclo == 'CURSOS' ||
-            descripcionCiclo == 'POSGRADO' ||
-            descripcionCiclo == 'NODADO'
+            descripcionCiclo === 'PERIODO' ||
+            descripcionCiclo === 'DEPORTES' ||
+            descripcionCiclo === 'CURSOS' ||
+            descripcionCiclo === 'POSGRADO' ||
+            descripcionCiclo === 'POSGRADOS' ||
+            descripcionCiclo === 'NODADO'
         ) {
             ciclo = 0;
         }
         else {
-            throw new Error("No se pudo determinar el ciclo de la materia " + courseCode + " (NRC: " + nrc + ")");
+            throw new Error("No se pudo determinar el ciclo de la materia");
         }
        
         schedules.forEach(schedule => {
@@ -100,8 +101,8 @@ class Schedule {
         let timeBlocksCiclo2 = [];
         
         for (let block of timeBlocksArray) { 
-            if (block.ciclo == 1 || block.ciclo == 0) timeBlocksCiclo1.push(block);
-            if (block.ciclo == 2 || block.ciclo == 0) timeBlocksCiclo2.push(block);
+            if (block.ciclo === 1 || block.ciclo === 0) timeBlocksCiclo1.push(block);
+            if (block.ciclo === 2 || block.ciclo === 0) timeBlocksCiclo2.push(block);
         }
 
         // los ordena ascendentemente
