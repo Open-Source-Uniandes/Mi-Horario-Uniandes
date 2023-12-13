@@ -51,7 +51,10 @@ class Schedule {
             descripcionCiclo === 'CURSOS' ||
             descripcionCiclo === 'POSGRADO' ||
             descripcionCiclo === 'POSGRADOS' ||
-            descripcionCiclo === 'NODADO'
+            descripcionCiclo === 'NODADO' ||
+            descripcionCiclo === 'ESPECIALIDADES' ||
+            descripcionCiclo === 'ESPECIALIDADES MEDICAS'
+
         ) {
             ciclo = 0;
         }
