@@ -19,14 +19,19 @@ class ViewModel {
      * Punto de entrada para inicializar la aplicación
      */
     start() {
-        // Inicia la descarga de datos
-        this.dataModel.loadData()
-            // Prepara la interfaz
-            .then(this.view.ready.bind(this.view))
-            .catch(this.view.error.bind(this.view));
+        this.view.ready();
     }
 
-
+    /**
+     * Agrega al modelo los cursos que coincidan con la búsqueda
+     * @param {string} search Búsqueda a realizar
+     * @returns {Promise} Promesa que se resuelve cuando se agregan los datos
+     * 
+     * 
+    */
+    async getSearchData(search) {
+        await this.dataModel.getSearchData(search);
+    }
     /**
      * Obtiene los cursos que coincidan con el código de curso o el array de secciones a considerar
      * @param {string} courseCode Código del curso, ejemplo "ISIS1105"
@@ -52,7 +57,7 @@ class ViewModel {
                 .filter(course => (course.courseCode === courseCode));
         }
         // Si el usuario solicita un curso (ej DISEÑO Y ANALISIS DE ALGORITMOS)
-        else if (courseCode.length >3) {
+        else if (courseCode.length > 3) {
            // Buscar los cursos que contienen la palabra
             courses = this.dataModel.data.filter(course => course.title.includes(courseCode));
         }
@@ -60,8 +65,14 @@ class ViewModel {
         // Y si se solicita, filtrar las secciones pedidas
         if (sections)
             courses = courses.filter(course => sections.includes(course.section));
+
         return courses;
     }
+
+    async loadCBUS() {
+        await this.dataModel.loadCBUS()
+    }
+
     getCbusCourses(blocks, calendario) {
         let cbca = this.dataModel.cbu.cbca;
         let cbco = this.dataModel.cbu.cbco;

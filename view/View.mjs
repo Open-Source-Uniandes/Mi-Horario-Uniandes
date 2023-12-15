@@ -17,9 +17,9 @@ class View {
         this.viewModel = viewModel;
         // Manejo de secciones específicas
         this.calendarView = new CalendarView({
-            days : ["l", "m", "i", "j", "v", "s"],
-            startTime : "0600",
-            endTime : "2100",
+            days: ["l", "m", "i", "j", "v", "s"],
+            startTime: "0600",
+            endTime: "2100",
         });
 
         // Cargar configuración previa del usuario
@@ -35,7 +35,7 @@ class View {
         // Welcome
         document.querySelector("#btn-start").addEventListener('click', this.openConfig.bind(this));
         // Config
-        document.querySelector("#config-courseCode").addEventListener('input', this.showSearchedCourse.bind(this));
+        document.querySelector("#btn-search-course").addEventListener('click', this.searchCourse.bind(this));
         document.querySelector("#btn-open-calendar").addEventListener('click', this.openCalendar.bind(this));
         document.querySelector("#btn-add-block").addEventListener('click', this.addBlock.bind(this));
         document.querySelector("#btn-reset-blocks").addEventListener('click', this.resetBlocks.bind(this));
@@ -45,45 +45,48 @@ class View {
 
         // Cbus
         document.querySelector("#btn-close-cbus").addEventListener('click', this.closeCbus.bind(this));
-        document.querySelector("#btn-open-cbus").addEventListener('click', this.openCbus.bind(this));
+        document.querySelector("#btn-open-cbus").addEventListener('click', this.loadCBUS.bind(this));
 
         // se añade el event listener a los 4 checkbox de cbus, si se hace clic, se muestra la lista correspondiente
-        document.querySelector("#cbca_check").addEventListener('click', () => {this.showCBUList("cbca");});
-        document.querySelector("#cbco_check").addEventListener('click', () => {this.showCBUList("cbco");});
-        document.querySelector("#cbpc_check").addEventListener('click', () => {this.showCBUList("cbpc");});
-        document.querySelector("#cbcc_check").addEventListener('click', () => {this.showCBUList("cbcc");});
+        document.querySelector("#cbca_check").addEventListener('click', () => { this.showCBUList("cbca"); });
+        document.querySelector("#cbco_check").addEventListener('click', () => { this.showCBUList("cbco"); });
+        document.querySelector("#cbpc_check").addEventListener('click', () => { this.showCBUList("cbpc"); });
+        document.querySelector("#cbcc_check").addEventListener('click', () => { this.showCBUList("cbcc"); });
 
         document.querySelector("#btn-select-all-options").addEventListener('click', () => { // Añadir botón de seleccionar todas las secciones 
             document.querySelectorAll("#course-options > *").forEach(node => {
                 // Si no está marcado como seleccionado
-                if(!node.classList.contains('selected-option')) {
+                if (!node.classList.contains('selected-option')) {
                     // Se ejecuta su evento click para marcarlo
                     node.click();
                 }
-        })});
+            })
+        });
         document.querySelector("#btn-select-none-options").addEventListener('click', () => { // Añadir botón de deseleccionar todas las secciones
             document.querySelectorAll("#course-options > *").forEach(node => {
                 // Si está marcado como seleccionado
-                if(node.classList.contains('selected-option')) {
+                if (node.classList.contains('selected-option')) {
                     // Se ejecuta su evento click para desmarcarlo
                     node.click();
                 }
-        })});
+            })
+        });
 
 
         document.querySelector("#btn-select-valid-options").addEventListener('click', () => { // Añadir botón de seleccionar todas las secciones con cupos
             document.querySelectorAll("#course-options > *").forEach(node => {
                 // Si está marcado como seleccionado
-                if(node.classList.contains('selected-option')) {
+                if (node.classList.contains('selected-option')) {
                     // Se ejecuta su evento click para desmarcarlo
                     node.click();
                 }
-                if(!node.classList.contains('unavailable-option')) {
+                if (!node.classList.contains('unavailable-option')) {
                     // Se ejecuta su evento click para marcarlo si tiene cupos
                     node.click();
                 }
 
-        })});
+            })
+        });
 
 
         // Calendar
@@ -93,14 +96,14 @@ class View {
 
         // Movimiento con el input de calendario
         document.querySelector("#calendar-current").addEventListener('keydown', (event) => {
-            if(event.key === 'Enter') {
+            if (event.key === 'Enter') {
                 if (event.target.value > 0 && event.target.value <= this.calendars.length) this.showSchedule(parseInt(event.target.value) - 1);
                 else event.target.value = this.idxCalendar + 1;
             }
         });
         // Movimiento con las teclas de dirección
         window.addEventListener('keydown', event => {
-            switch(event.key) {
+            switch (event.key) {
                 case 'ArrowLeft':
                     this.showSchedule(this.idxCalendar - 1)
                     break;
@@ -122,11 +125,14 @@ class View {
 
         // Carga de configuración previa
         // Mostrar los cursos guardados
-        this.config.courses.forEach(this.showAddedCourse.bind(this));
-        // Mostrar los bloques guardados
-        this.config.blocks.forEach(this.showAddedBlock.bind(this));
-        // Mostrar la métrica guardada en la configuración
-        document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
+
+        this.config.courses.forEach(course => {
+            this.searchCourse({ value: course.courseCode }).then(() => this.showAddedCourse.bind(this)(course));
+            // Mostrar los bloques guardados
+            this.config.blocks.forEach(this.showAddedBlock.bind(this));
+            // Mostrar la métrica guardada en la configuración
+            document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
+        });
     }
 
     /**
@@ -160,7 +166,7 @@ class View {
         this.calendars = this.viewModel.getSchedules(this.config);
 
         // En caso que no existan horarios con la configuración actual
-        if(!this.calendars.length) {
+        if (!this.calendars.length) {
             document.querySelector("#no-calendars").classList.remove("inactive");
             return; // Parar la ejecución de la función
         }
@@ -182,6 +188,10 @@ class View {
         this.showSchedule(this.idxCalendar);
     }
 
+
+    async loadCBUS() {
+        await this.viewModel.loadCBUS().then(() => this.openCbus.bind(this)());
+    }
     /**
     * Abre el modal de cbu's
     */
@@ -211,7 +221,7 @@ class View {
             document.querySelector("#" + key).appendChild(p);
 
             // Si no hay cursos disponibles, se muestra un mensaje
-            if(cbusCourses[key].length === 0) {
+            if (cbusCourses[key].length === 0) {
                 let p = document.createElement("p");
                 p.innerText = "No hay cursos disponibles";
                 p.classList.add("not-found-cbu");
@@ -221,7 +231,7 @@ class View {
                 cbusCourses[key].forEach(course => {
                     let node = document.createElement("div");
                     node.classList.add("cbu_course");
-                    if(course.seatsavail <= 0) node.classList.add("unavailable-cbu");
+                    if (course.seatsavail <= 0) node.classList.add("unavailable-cbu");
                     let h2 = document.createElement("h2");
                     h2.innerText = `${course.title}`
                     node.appendChild(h2);
@@ -251,7 +261,8 @@ class View {
                     node.appendChild(h5);
 
                     document.querySelector("#" + key).appendChild(node);
-            });}
+                });
+            }
         }
     }
     /**
@@ -260,11 +271,11 @@ class View {
     */
 
     showCBUList(type) {
-        if(document.querySelector("#"+type+"_check").checked) {
-            document.querySelector("#"+type).classList.remove("inactive");
+        if (document.querySelector("#" + type + "_check").checked) {
+            document.querySelector("#" + type).classList.remove("inactive");
         }
         else {
-            document.querySelector("#"+type).classList.add("inactive");
+            document.querySelector("#" + type).classList.add("inactive");
         }
     }
 
@@ -274,22 +285,22 @@ class View {
     addBlock() {
 
         // Si no han agregado las horas, parar
-        if(document.getElementById("block-time-start").value === '' || document.getElementById("block-time-end").value === '') return;
+        if (document.getElementById("block-time-start").value === '' || document.getElementById("block-time-end").value === '') return;
 
         // Obtiene los datos
         let startTime = TimeBlock.calculateInstant(document.getElementById("block-time-start").value.replace(":", ""));
         let endTime = TimeBlock.calculateInstant(document.getElementById("block-time-end").value.replace(":", ""));
-        if(endTime < startTime) {
+        if (endTime < startTime) {
             [startTime, endTime] = [endTime, startTime];
         }
 
         const elements = ["l", "m", "i", "j", "v", "s"];
         let days = elements
-            .filter( element => document.getElementById("block-chkbox-" + element).classList.contains("chkbox-selected"))
+            .filter(element => document.getElementById("block-chkbox-" + element).classList.contains("chkbox-selected"))
             .map(element => element.toLowerCase());
 
         // Si no han agregado los días, parar
-        if(!days.length) return;
+        if (!days.length) return;
 
         const block = {
             days,
@@ -322,7 +333,7 @@ class View {
         endTime,
     }) {
 
-        if(!document.querySelector("#my-blocks > p")) {
+        if (!document.querySelector("#my-blocks > p")) {
             let p = document.createElement("p");
             p.innerText = "Puedes editar los dias en los que aplica un bloque 😀";
             document.getElementById("my-blocks").prepend(p);
@@ -338,7 +349,7 @@ class View {
         elements.forEach(element => {
             let el = document.createElement("div");
             el.classList.add("checkbox");
-            if(days.includes(element)) el.classList.add("chkbox-selected");
+            if (days.includes(element)) el.classList.add("chkbox-selected");
             el.innerText = element.toUpperCase();
             container.appendChild(el);
 
@@ -346,7 +357,7 @@ class View {
             // Al seleccionar un día, se añade a la lista de días del bloque
             el.addEventListener('click', () => {
                 el.classList.toggle("chkbox-selected");
-                if(el.classList.contains("chkbox-selected")) {
+                if (el.classList.contains("chkbox-selected")) {
                     days.push(element);
                 }
                 else {
@@ -372,7 +383,7 @@ class View {
             node.remove();
             this.config.blocks = this.config.blocks.filter(block => block.days !== days || block.startTime !== startTime || block.endTime !== endTime);
             this.setConfig()
-            if(!document.querySelector("#my-blocks > div")) {
+            if (!document.querySelector("#my-blocks > div")) {
                 document.querySelector("#my-blocks > p").remove();
             }
 
@@ -384,12 +395,12 @@ class View {
      * Elimina todos los bloques de la configuración
      */
     resetBlocks() {
-        this.config.blocks=[] //Elimina los bloques seleccionados
+        this.config.blocks = [] //Elimina los bloques seleccionados
 
         // Elimina todos los hijos
         const myBlocks = document.getElementById("my-blocks");
         while (myBlocks.firstChild && myBlocks.firstChild.id !== "btn-reset-blocks") {
-          myBlocks.removeChild(myBlocks.firstChild);
+            myBlocks.removeChild(myBlocks.firstChild);
         }
 
         this.setConfig() // Actualiza la config
@@ -398,7 +409,7 @@ class View {
     /**
      * Cierra el modal de cbus
     */
-    closeCbus(){
+    closeCbus() {
         document.querySelector("#welcome").classList.add("inactive");
         document.querySelector("#calendar").classList.add("inactive");
         document.querySelector("#config").classList.remove("inactive");
@@ -411,7 +422,7 @@ class View {
      */
     showSchedule(idx) {
         // Ignorar el llamado de la función si se sale de los rangos
-        if(idx < 0 || idx > this.calendars.length - 1) return;
+        if (idx < 0 || idx > this.calendars.length - 1) return;
         // Ajustar el valor interno de idxCalendar
         this.idxCalendar = idx
         // Añadir créditos totales
@@ -432,24 +443,35 @@ class View {
         document.querySelector("#credits-current").innerText = totalCredits;
     }
 
+    /**
+     * Ejecuta la búsqueda de cursos
+     * @param {event} e evento de btn
+    */
+    async searchCourse({ e, value }) {
+        // Normalizar input
+        const input = document.querySelector("#config-courseCode")
+        const val = value || input.value
+        const courseCode = val.toUpperCase().trim();
+        await this.viewModel.getSearchData(courseCode).then(() => this.showSearchedCourse(input));
+    }
 
     /**
      * Muestra la información del curso buscado en el panel de configuración
      * @param {event} event evento de input
      */
-    showSearchedCourse(event) {
+    showSearchedCourse(course_val) {
 
         // Normalizar input
-        const courseCode = event.target.value.toUpperCase().trim();
+        const courseCode = course_val.value.toUpperCase().trim();
 
-        const courseSections = this.viewModel.getCourseSections({courseCode});
-        if(courseSections.length) {
+        const courseSections = this.viewModel.getCourseSections({ courseCode });
+        if (courseSections.length) {
 
             // Se eliminan todos los nodos hijos del div de coincidencias de cursos course-coincidences
             document.querySelector("#course-coincidences").innerHTML = ""; // Elimina todos los hijos
 
             // Se crea un un objeto con los cursos únicos
-            let uniqueCourses  = {};
+            let uniqueCourses = {};
 
             courseSections.forEach(courseSection => {
                 if (!uniqueCourses[courseSection.courseCode]) {
@@ -521,7 +543,7 @@ class View {
                         document.querySelector("#course-options").innerHTML = ""; // Elimina todos los hijos
                         //elimina los demas nodos course-coincident cuyo titulo de curso sea diferente al del nodo seleccionado
                         document.querySelectorAll(".course-coincident").forEach(element => {
-                            if(element.querySelector("h2").innerText !== node.querySelector("h2").innerText) {
+                            if (element.querySelector("h2").innerText !== node.querySelector("h2").innerText) {
                                 element.remove();
                             }
                         });
@@ -563,78 +585,78 @@ class View {
     */
 
     showSearchedCourseAux(courseSections) {
-    courseSections.forEach(courseSection => {
-        // Muestra los botones de cursos
-        document.querySelector("#course-buttons").classList.remove("inactive");
+        courseSections.forEach(courseSection => {
+            // Muestra los botones de cursos
+            document.querySelector("#course-buttons").classList.remove("inactive");
 
 
-        // Se crea un nodo nuevo por cada sección
-        let node = document.createElement("div");
-        // Clases
-        node.classList.add("course-option");
-        if(courseSection.seatsavail <= 0) node.classList.add("unavailable-option");
-        if(this.config.courses.find(course => course.courseCode === courseSection.courseCode)?.sections.includes(courseSection.section)) node.classList.add("selected-option");
-        // Event listeners
-        node.addEventListener('click', (() => {
-            node.classList.toggle('selected-option');
-            this.toggleCourseSection(courseSection.courseCode, courseSection.section, courseSection.credits );
-        }));
-        let h2 = document.createElement("h2");
-        h2.innerText = `${courseSection.title}`
-        node.appendChild(h2);
+            // Se crea un nodo nuevo por cada sección
+            let node = document.createElement("div");
+            // Clases
+            node.classList.add("course-option");
+            if (courseSection.seatsavail <= 0) node.classList.add("unavailable-option");
+            if (this.config.courses.find(course => course.courseCode === courseSection.courseCode)?.sections.includes(courseSection.section)) node.classList.add("selected-option");
+            // Event listeners
+            node.addEventListener('click', (() => {
+                node.classList.toggle('selected-option');
+                this.toggleCourseSection(courseSection.courseCode, courseSection.section, courseSection.credits);
+            }));
+            let h2 = document.createElement("h2");
+            h2.innerText = `${courseSection.title}`
+            node.appendChild(h2);
 
-        let h4 = document.createElement("h4");
-        h4.innerText = `Sección ${courseSection.section} - NRC ${courseSection.nrc}`
-        node.appendChild(h4);
+            let h4 = document.createElement("h4");
+            h4.innerText = `Sección ${courseSection.section} - NRC ${courseSection.nrc}`
+            node.appendChild(h4);
 
-        let instructors = document.createElement("div");
-        let h5Instructors = document.createElement("h5");
-        h5Instructors.innerText = "Profesores";
-        instructors.appendChild(h5Instructors)
-        courseSection.instructors.forEach(name => {
-            let p = document.createElement("p");
-            p.innerText = name;
-            instructors.appendChild(p);
-        })
+            let instructors = document.createElement("div");
+            let h5Instructors = document.createElement("h5");
+            h5Instructors.innerText = "Profesores";
+            instructors.appendChild(h5Instructors)
+            courseSection.instructors.forEach(name => {
+                let p = document.createElement("p");
+                p.innerText = name;
+                instructors.appendChild(p);
+            })
 
-        let schedule= document.createElement("div");
-        let h5Schedule = document.createElement("h5");
-        h5Schedule.innerText = "Horarios";
-        schedule.appendChild(h5Schedule)
-        const days = ["l", "m", "i", "j", "v", "s"];
-        days.forEach(day => {
-            let dayTimeBlocks = courseSection.schedule.timeBlocks[day];
-            if(!dayTimeBlocks.length) return; // Ignorar días sin registros
-            let p = document.createElement("p");
-            let text = dayTimeBlocks
-                .map(timeBlock => timeBlock.toString())
-                .join(", ");
-            p.innerText = `${day.toUpperCase()}: ${text}`;
-            schedule.appendChild(p);
+            let schedule = document.createElement("div");
+            let h5Schedule = document.createElement("h5");
+            h5Schedule.innerText = "Horarios";
+            schedule.appendChild(h5Schedule)
+            const days = ["l", "m", "i", "j", "v", "s"];
+            days.forEach(day => {
+                let dayTimeBlocks = courseSection.schedule.timeBlocks[day];
+                if (!dayTimeBlocks.length) return; // Ignorar días sin registros
+                let p = document.createElement("p");
+                let text = dayTimeBlocks
+                    .map(timeBlock => timeBlock.toString())
+                    .join(", ");
+                p.innerText = `${day.toUpperCase()}: ${text}`;
+                schedule.appendChild(p);
+            });
+
+            let container = document.createElement("div");
+            container.appendChild(instructors);
+            container.appendChild(schedule);
+            node.appendChild(container);
+
+            let h5 = document.createElement("h5");
+            h5.innerText = `${courseSection.seatsavail} cupos disponibles`
+            node.appendChild(h5);
+
+            h5 = document.createElement("h5");
+            let a_tag = document.createElement("a");
+            a_tag.innerText = `¿Cuántos conflictos de horario tiene esta sección?`
+            a_tag.style.color = "red";
+            a_tag.href = "https://registroapps.uniandes.edu.co/schsolicitudes/?nrc=" + courseSection.nrc;
+            a_tag.target = "_blank"
+            //a.style.textDecorationLine = "underline";
+            h5.appendChild(a_tag);
+            node.appendChild(h5);
+
+            // Se añade a la lista de secciones
+            document.querySelector("#course-options").appendChild(node);
         });
-
-        let container = document.createElement("div");
-        container.appendChild(instructors);
-        container.appendChild(schedule);
-        node.appendChild(container);
-
-        let h5 = document.createElement("h5");
-        h5.innerText = `${courseSection.seatsavail} cupos disponibles`
-        node.appendChild(h5);
-
-        h5 = document.createElement("h5");
-        let a_tag = document.createElement("a");
-        a_tag.innerText = `¿Cuántos conflictos de horario tiene esta sección?`
-        a_tag.style.color = "red";
-        a_tag.href = "https://registroapps.uniandes.edu.co/schsolicitudes/?nrc=" + courseSection.nrc;
-        a_tag.target = "_blank"
-        //a.style.textDecorationLine = "underline";
-        h5.appendChild(a_tag);
-        node.appendChild(h5);
-
-        // Se añade a la lista de secciones
-        document.querySelector("#course-options").appendChild(node);
-    });
 
     }
 
@@ -654,10 +676,10 @@ class View {
     ) {
         // Hallar configuración previa, si existe
         let courseConfig = this.config.courses.find(course => course.courseCode === courseCode);
-        if(!courseConfig) {
+        if (!courseConfig) {
 
             // Añadir config del curso si no existe
-            courseConfig = {courseCode, sections: [], credits};
+            courseConfig = { courseCode, sections: [], credits };
             this.config.courses.push(courseConfig);
 
             // Añadir el curso a la lista de cursos de la interfaz
@@ -666,7 +688,7 @@ class View {
         }
         // Si no existe la sección, se agrega
         const idx = courseConfig.sections.indexOf(courseSection);
-        if(idx === -1) {
+        if (idx === -1) {
             courseConfig.sections.push(courseSection);
         }
         // Si existe la sección dentro del config, se elimina
@@ -675,7 +697,7 @@ class View {
         }
         document.querySelector(`#${courseCode} span`).innerText = courseConfig.sections.join(", ");
         // si no queda nada, se borra el curso
-        if(!courseConfig.sections.length) {
+        if (!courseConfig.sections.length) {
             this.config.courses = this.config.courses.filter(course => course.courseCode !== courseConfig.courseCode);
             document.getElementById(courseCode).remove();
         }
@@ -695,7 +717,7 @@ class View {
         sections,
         credits,
     }) {
-        if(!document.querySelector("#my-courses > p")) {
+        if (!document.querySelector("#my-courses > p")) {
             let p = document.createElement("p");
             p.innerText = "Puedes hacer clic en un curso para editar sus secciones 😁";
             document.getElementById("my-courses").prepend(p);
@@ -706,7 +728,7 @@ class View {
         node.id = courseCode;
         node.classList.add("my-course");
         let h3 = document.createElement("h3");
-        const title = this.viewModel.getCourseSections({courseCode})[0].title;
+        const title = this.viewModel.getCourseSections({ courseCode })[0].title;
         h3.innerText = title + " - " + courseCode;
         node.appendChild(h3);
         let container = document.createElement("div");
@@ -734,7 +756,7 @@ class View {
         // Al presionar, el nodo, se busca el codigo del curso, como si se colocase dentro del input config-courseCode
         node.addEventListener('click', () => {
             document.querySelector("#config-courseCode").value = courseCode;
-            this.showSearchedCourse({target: {value: courseCode}});
+            this.showSearchedCourse(courseCode);
         });
         // Boton que elimina el curso desde el que se pulsa
         let btn = document.createElement("button");
@@ -742,7 +764,7 @@ class View {
         btn.innerText = "Eliminar";
         btn.addEventListener('click', () => {
             document.querySelectorAll(`#course-options > div > h2`).forEach(node => {
-                if(node.innerText === title) {
+                if (node.innerText === title) {
                     node.parentElement.classList.remove('selected-option');
                 }
             });
@@ -750,7 +772,7 @@ class View {
             this.config.courses = this.config.courses.filter(course => course.courseCode !== courseCode);
             this.setConfig()
 
-            if(!document.querySelector("#my-courses > div")) {
+            if (!document.querySelector("#my-courses > div")) {
                 document.querySelector("#my-courses > p").remove();
             }
         });
@@ -763,7 +785,7 @@ class View {
      * Elimina todos los cursos de la configuración
      */
     resetCourses() {
-        this.config.courses=[] //Elimina la lista de cursos
+        this.config.courses = [] //Elimina la lista de cursos
 
         // Elimina todos los hijos
         const myCourses = document.getElementById("my-courses");
@@ -802,12 +824,12 @@ class View {
     getConfig() {
         // Lee el string y lo convierte de nuevo a un objeto, si está definido
         let config = localStorage.getItem('Mi-Horario-Uniandes-config');
-        if(config) return JSON.parse(config);
+        if (config) return JSON.parse(config);
         // Si no está definido, crea una nueva config
         return {
-            courses : [],
-            blocks : [],
-            metric : "MinHuecos",  // Valor por defecto
+            courses: [],
+            blocks: [],
+            metric: "MinHuecos",  // Valor por defecto
         };
     }
 }
