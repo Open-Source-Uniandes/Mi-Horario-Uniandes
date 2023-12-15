@@ -1,328 +1,488 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-    
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-58FE0LD0TN"></script>
-        <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-    
-        gtag('config', 'G-58FE0LD0TN');
-        </script>
-    
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mi Horario Uniandes</title>
-        <meta name="description" content="Construye el horario de tus sueños con un solo click 💛">
-        
-        <!-- Ícono de navegación -->
-        <link rel="shortcut icon" type="image/png" href="https://registroapps.uniandes.edu.co/SisAdmisiones/Pregrado/img/Seneca-01.png"/>
+	<head>
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-58FE0LD0TN"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
 
-        <link rel="stylesheet" href="./style.css">
-    </head>
-<body class="container">
-    <!-- Modal de bienvenida -->
-    <section id="welcome" class="modal">
-        <header>
-            <img src="https://medicina.uniandes.edu.co/sites/default/files/campus-uniandes.jpg" alt="Application Banner">
-            <div class="container-column">
-                <h1>Tu Horario Perfecto</h1>
-            </div>
-        </header>
+			gtag('config', 'G-58FE0LD0TN');
+		</script>
 
-        <main>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Mi Horario Uniandes</title>
+		<meta name="description" content="Construye el horario de tus sueños con un solo click 💛" />
 
-            <h2>Planear nunca había sido tan fácil </h2>
-            <p>¡Bienvenidx a Mi Horario Uniandes!</p>
-            <p>Creamos esta herramienta para hacer más fácil tu inscripción de materias. Con un solo click podrás ver todas las posibilidades para encontrar el horario de tus sueños. ¡Es tan sencillo como agregar los cursos que planeas ver!</p>
+		<!-- Ícono de navegación -->
+		<link rel="shortcut icon" type="image/png" href="https://registroapps.uniandes.edu.co/SisAdmisiones/Pregrado/img/Seneca-01.png" />
 
-            <h2>A tu medida</h2>
-            <p>Personaliza las opciones de búsqueda para considerar solo las secciones que tú quieres, en los horarios que tú quieres. Añade bloques de tiempo para reservar tus horas de almuerzo y de parchar con tus amigos. Optimiza tu horario para minimizar huecos o para salir más temprano. ¡Tu semestre perfecto a un solo click de distancia!</p>
+		<link rel="stylesheet" href="./style.css" />
+	</head>
+	<body class="container">
+		<!-- Modal de bienvenida -->
+		<section id="welcome" class="modal">
+			<header>
+				<img src="https://medicina.uniandes.edu.co/sites/default/files/campus-uniandes.jpg" alt="Application Banner" />
+				<div class="container-column">
+					<h1>Tu Horario Perfecto</h1>
+				</div>
+			</header>
 
-            <h2>Open Source</h2>
-            <p>Este es un proyecto de la comunidad Uniandina para la comunidad Uniandina. El código que hace posible esta herramienta es tuyo. Anímate a proponer nuevas funcionalidades, cambios de diseño, optimizaciones, o lo que tú quieras. ¡Tu aporte impactará toda la comunidad Uniandina!</p>
+			<main>
+				<h2>Planear nunca había sido tan fácil</h2>
+				<p>¡Bienvenidx a Mi Horario Uniandes!</p>
+				<p>
+					Creamos esta herramienta para hacer más fácil tu inscripción de materias. Con un solo click podrás ver todas las posibilidades
+					para encontrar el horario de tus sueños. ¡Es tan sencillo como agregar los cursos que planeas ver!
+				</p>
 
-            <h2>Inicia aquí 👇</h2>
-            <p>Queremos ofrecerte la información más actualizada desde Banner. Por esto, cada vez que recargues la página se descargará nuevamente la información de los cursos. Esto no suele tomar más de 30 segundos.</p>            
-            <p style="text-align: center;"><strong>Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automaticamente.</strong></p>
-        </main>
+				<h2>A tu medida</h2>
+				<p>
+					Personaliza las opciones de búsqueda para considerar solo las secciones que tú quieres, en los horarios que tú quieres. Añade
+					bloques de tiempo para reservar tus horas de almuerzo y de parchar con tus amigos. Optimiza tu horario para minimizar huecos o
+					para salir más temprano. ¡Tu semestre perfecto a un solo click de distancia!
+				</p>
 
-        <!-- Animación de carga -->
-        <div id="load-start" class="container-column">
-            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-            <p style="text-align: center;"><em>Un momento por favor <br> Estamos consultando Banner</em> 😎</p>
-        </div>
-        
-        <!-- Botón para iniciar la aplicación -->
-        <div class="container-column">
-            <button id="btn-start" class="inactive btn-primary" type="button">Arma tu horario</button>
-        </div>
+				<h2>Open Source</h2>
+				<p>
+					Este es un proyecto de la comunidad Uniandina para la comunidad Uniandina. El código que hace posible esta herramienta es tuyo.
+					Anímate a proponer nuevas funcionalidades, cambios de diseño, optimizaciones, o lo que tú quieras. ¡Tu aporte impactará toda la
+					comunidad Uniandina!
+				</p>
 
-        <!-- Mensaje de error -->
-        <div class="container-column">
-            <p id="load-error" class="inactive"><strong style="color: #731c24;">No pudimos cargar la oferta de cursos :(</strong> <br> Por favor intenta recargar la página. Si el error persiste, contáctanos al correo opensource@uniandes.edu.co</p>
-        </div>
+				<h2>Inicia aquí 👇</h2>
+				<p>
+					Queremos ofrecerte la información más actualizada desde Banner. Por esto, cada vez que recargues la página se descargará
+					nuevamente la información de los cursos. Esto no suele tomar más de 30 segundos.
+				</p>
+				<p style="text-align: center">
+					<strong>Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automaticamente.</strong>
+				</p>
+			</main>
 
-        <footer class="container-column">
-            <p>Hecho con 💛 en Uniandes</p>
-            <p><strong><a href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes">Sé parte de este proyecto aquí</a></strong></p>
-        </footer>
-    </section>
+			<!-- Animación de carga -->
+			<div id="load-start" class="container-column">
+				<div class="lds-ring">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+				<p style="text-align: center">
+					<em>
+						Un momento por favor <br />
+						Estamos consultando Banner
+					</em>
+					😎
+				</p>
+			</div>
 
-    <!-- Modal de configuración -->
-    <section id="config" class="modal inactive">
+			<!-- Botón para iniciar la aplicación -->
+			<div class="container-column">
+				<button id="btn-start" class="inactive btn-primary" type="button">Arma tu horario</button>
+			</div>
 
-        <header class="container-column">
-            <h1>Personaliza tu Horario</h1>
-        </header>
+			<!-- Mensaje de error -->
+			<div class="container-column">
+				<p id="load-error" class="inactive">
+					<strong style="color: #731c24">No pudimos cargar la oferta de cursos :(</strong> <br />
+					Por favor intenta recargar la página. Si el error persiste, contáctanos al correo opensource@uniandes.edu.co
+				</p>
+			</div>
 
-        <main>
+			<footer class="container-column">
+				<p>Hecho con 💛 en Uniandes</p>
+				<p>
+					<strong><a href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes">Sé parte de este proyecto aquí</a></strong>
+				</p>
+			</footer>
+		</section>
 
-            <div>
+		<!-- Modal de configuración -->
+		<section id="config" class="modal inactive">
+			<header class="container-column">
+				<h1>Personaliza tu Horario</h1>
+			</header>
 
-                <!-- Paso 1 -->
-                <article id="step1">
-                    <h2>Paso 1: Elige tus cursos</h2>
-                    <p>Empieza por ingresar uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu horario ideal.</p>
-                    <label class="small-em-text" for="config-courseCode">Ingresa el nombre, código o NRC del curso:</label>
-                    <input type="search" id="config-courseCode" placeholder="DECA1101, NRC o nombre">
-                    <p id="course-not-found" class="small-em-text inactive">No encontramos el curso <span></span></p>
-                    <div id="course-details" class="inactive">
-                        <p class="small-em-text">Curso(s) que pudimos encontrar:</p>
-                        <div id="course-coincidences" class="container-column">
-                            <!-- Aquí van los cursos a mostrar al usuario -->
-                        </div>
+			<main>
+				<div>
+					<!-- Paso 1 -->
+					<article id="step1">
+						<h2>Paso 1: Elige tus cursos</h2>
+						<p>Empieza por ingresar uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu horario ideal.</p>
+						<div class="search-container">
+							<div>
+								<label class="small-em-text" for="config-courseCode">Ingresa el nombre, código o NRC del curso:</label>
+								<input type="search" id="config-courseCode" placeholder="DECA1101, NRC o nombre" />
+								<button id="btn-search-course" class="btn-secondary">Buscar</button>
+							</div>
+						</div>
+						<p id="course-not-found" class="small-em-text inactive">No encontramos el curso <span></span></p>
+						<div id="course-details" class="inactive">
+							<p class="small-em-text">Curso(s) que pudimos encontrar:</p>
+							<div id="course-coincidences" class="container-column">
+								<!-- Aquí van los cursos a mostrar al usuario -->
+							</div>
 
-                        <div id="course-buttons" class="inactive">
-                            <h2 >Secciones disponibles:</h2>
+							<div id="course-buttons" class="inactive">
+								<h2>Secciones disponibles:</h2>
 
-                            <div style="display: flex; justify-content: center;">
-                              <div title="Seleccionar todas las secciones" id="btn-select-all-options" >
-                                  <svg class="selection-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 120.79" xml:space="preserve"><g><path d="M31.4,21.63h60.68V7.68c0-0.08-0.02-0.16-0.04-0.22c-0.03-0.07-0.08-0.14-0.13-0.19l-0.01-0.01 c-0.05-0.06-0.12-0.1-0.19-0.13c-0.07-0.03-0.15-0.04-0.23-0.04H7.68c-0.08,0-0.16,0.02-0.22,0.04C7.39,7.15,7.32,7.2,7.25,7.26 L7.23,7.28C7.19,7.33,7.15,7.39,7.12,7.46C7.09,7.53,7.08,7.6,7.08,7.68v83.8c0,0.08,0.02,0.16,0.05,0.22l0.01,0.03 c0.03,0.06,0.07,0.13,0.12,0.18c0.06,0.06,0.13,0.1,0.2,0.13l0.02,0.01c0.06,0.02,0.13,0.04,0.2,0.04h16.04V29.31 c0-1.03,0.21-2.03,0.58-2.93c0.39-0.94,0.96-1.79,1.67-2.5l0.04-0.04c0.7-0.69,1.54-1.25,2.46-1.63 C29.38,21.84,30.37,21.63,31.4,21.63L31.4,21.63z M51.99,75.95c-0.95-0.86-1.47-2.03-1.53-3.23c-0.06-1.19,0.34-2.4,1.2-3.35 c0.86-0.95,2.04-1.47,3.23-1.53c1.18-0.06,2.4,0.34,3.35,1.2l9.09,8.25l20.78-21.88c0.89-0.93,2.07-1.42,3.27-1.45 c1.19-0.03,2.4,0.4,3.33,1.28c0.93,0.89,1.42,2.07,1.45,3.27c0.03,1.19-0.4,2.4-1.28,3.33L69.84,88.19L69.59,88 c-0.58,0.28-1.21,0.43-1.85,0.46c-1.17,0.04-2.36-0.35-3.29-1.2L51.99,75.95L51.99,75.95z M99.15,21.63h16.04 c1.03,0,2.03,0.21,2.93,0.59c0.94,0.39,1.79,0.96,2.5,1.67l0.04,0.04c0.69,0.7,1.25,1.53,1.63,2.45c0.38,0.91,0.58,1.9,0.58,2.94 v83.8c0,1.04-0.21,2.03-0.58,2.93c-0.39,0.94-0.96,1.79-1.67,2.5c-0.71,0.71-1.55,1.28-2.5,1.67c-0.91,0.38-1.9,0.59-2.93,0.59 H31.4c-1.03,0-2.02-0.21-2.93-0.58c-0.94-0.39-1.79-0.96-2.5-1.67c-0.71-0.71-1.28-1.56-1.67-2.5c-0.38-0.91-0.58-1.9-0.58-2.93 V99.16H7.68c-1.03,0-2.03-0.21-2.93-0.59c-0.94-0.39-1.79-0.96-2.5-1.67c-0.71-0.71-1.28-1.56-1.67-2.5C0.21,93.5,0,92.51,0,91.48 V7.68c0-1.04,0.21-2.03,0.58-2.93c0.39-0.94,0.96-1.79,1.67-2.5c0.71-0.71,1.55-1.28,2.5-1.67C5.66,0.21,6.65,0,7.68,0h83.79 c1.04,0,2.03,0.21,2.93,0.58c0.94,0.39,1.79,0.96,2.5,1.67c1.4,1.4,2.26,3.31,2.26,5.43V21.63L99.15,21.63z M115.2,28.7H31.4 c-0.08,0-0.15,0.02-0.22,0.04c-0.08,0.03-0.15,0.08-0.2,0.14l-0.01,0.01c-0.06,0.05-0.1,0.12-0.13,0.19 c-0.03,0.07-0.04,0.14-0.04,0.22v83.8c0,0.08,0.02,0.16,0.04,0.22c0.03,0.07,0.08,0.14,0.14,0.2l0.02,0.02 c0.05,0.05,0.12,0.09,0.18,0.11c0.07,0.03,0.14,0.04,0.22,0.04h83.79c0.08,0,0.16-0.02,0.22-0.04l0.02-0.01 c0.07-0.03,0.13-0.07,0.18-0.13c0.05-0.06,0.1-0.12,0.13-0.19l0.01-0.02c0.02-0.06,0.03-0.13,0.03-0.21v-83.8 c0-0.08-0.02-0.15-0.04-0.22l-0.01-0.02c-0.03-0.06-0.07-0.12-0.12-0.17c-0.06-0.06-0.13-0.11-0.2-0.14 C115.35,28.72,115.28,28.7,115.2,28.7L115.2,28.7z"/></g></svg>
-                              </div>
+								<div style="display: flex; justify-content: center">
+									<div title="Seleccionar todas las secciones" id="btn-select-all-options">
+										<svg
+											class="selection-svg"
+											xmlns="http://www.w3.org/2000/svg"
+											xmlns:xlink="http://www.w3.org/1999/xlink"
+											x="0px"
+											y="0px"
+											viewBox="0 0 122.88 120.79"
+											xml:space="preserve"
+										>
+											<g>
+												<path
+													d="M31.4,21.63h60.68V7.68c0-0.08-0.02-0.16-0.04-0.22c-0.03-0.07-0.08-0.14-0.13-0.19l-0.01-0.01 c-0.05-0.06-0.12-0.1-0.19-0.13c-0.07-0.03-0.15-0.04-0.23-0.04H7.68c-0.08,0-0.16,0.02-0.22,0.04C7.39,7.15,7.32,7.2,7.25,7.26 L7.23,7.28C7.19,7.33,7.15,7.39,7.12,7.46C7.09,7.53,7.08,7.6,7.08,7.68v83.8c0,0.08,0.02,0.16,0.05,0.22l0.01,0.03 c0.03,0.06,0.07,0.13,0.12,0.18c0.06,0.06,0.13,0.1,0.2,0.13l0.02,0.01c0.06,0.02,0.13,0.04,0.2,0.04h16.04V29.31 c0-1.03,0.21-2.03,0.58-2.93c0.39-0.94,0.96-1.79,1.67-2.5l0.04-0.04c0.7-0.69,1.54-1.25,2.46-1.63 C29.38,21.84,30.37,21.63,31.4,21.63L31.4,21.63z M51.99,75.95c-0.95-0.86-1.47-2.03-1.53-3.23c-0.06-1.19,0.34-2.4,1.2-3.35 c0.86-0.95,2.04-1.47,3.23-1.53c1.18-0.06,2.4,0.34,3.35,1.2l9.09,8.25l20.78-21.88c0.89-0.93,2.07-1.42,3.27-1.45 c1.19-0.03,2.4,0.4,3.33,1.28c0.93,0.89,1.42,2.07,1.45,3.27c0.03,1.19-0.4,2.4-1.28,3.33L69.84,88.19L69.59,88 c-0.58,0.28-1.21,0.43-1.85,0.46c-1.17,0.04-2.36-0.35-3.29-1.2L51.99,75.95L51.99,75.95z M99.15,21.63h16.04 c1.03,0,2.03,0.21,2.93,0.59c0.94,0.39,1.79,0.96,2.5,1.67l0.04,0.04c0.69,0.7,1.25,1.53,1.63,2.45c0.38,0.91,0.58,1.9,0.58,2.94 v83.8c0,1.04-0.21,2.03-0.58,2.93c-0.39,0.94-0.96,1.79-1.67,2.5c-0.71,0.71-1.55,1.28-2.5,1.67c-0.91,0.38-1.9,0.59-2.93,0.59 H31.4c-1.03,0-2.02-0.21-2.93-0.58c-0.94-0.39-1.79-0.96-2.5-1.67c-0.71-0.71-1.28-1.56-1.67-2.5c-0.38-0.91-0.58-1.9-0.58-2.93 V99.16H7.68c-1.03,0-2.03-0.21-2.93-0.59c-0.94-0.39-1.79-0.96-2.5-1.67c-0.71-0.71-1.28-1.56-1.67-2.5C0.21,93.5,0,92.51,0,91.48 V7.68c0-1.04,0.21-2.03,0.58-2.93c0.39-0.94,0.96-1.79,1.67-2.5c0.71-0.71,1.55-1.28,2.5-1.67C5.66,0.21,6.65,0,7.68,0h83.79 c1.04,0,2.03,0.21,2.93,0.58c0.94,0.39,1.79,0.96,2.5,1.67c1.4,1.4,2.26,3.31,2.26,5.43V21.63L99.15,21.63z M115.2,28.7H31.4 c-0.08,0-0.15,0.02-0.22,0.04c-0.08,0.03-0.15,0.08-0.2,0.14l-0.01,0.01c-0.06,0.05-0.1,0.12-0.13,0.19 c-0.03,0.07-0.04,0.14-0.04,0.22v83.8c0,0.08,0.02,0.16,0.04,0.22c0.03,0.07,0.08,0.14,0.14,0.2l0.02,0.02 c0.05,0.05,0.12,0.09,0.18,0.11c0.07,0.03,0.14,0.04,0.22,0.04h83.79c0.08,0,0.16-0.02,0.22-0.04l0.02-0.01 c0.07-0.03,0.13-0.07,0.18-0.13c0.05-0.06,0.1-0.12,0.13-0.19l0.01-0.02c0.02-0.06,0.03-0.13,0.03-0.21v-83.8 c0-0.08-0.02-0.15-0.04-0.22l-0.01-0.02c-0.03-0.06-0.07-0.12-0.12-0.17c-0.06-0.06-0.13-0.11-0.2-0.14 C115.35,28.72,115.28,28.7,115.2,28.7L115.2,28.7z"
+												/>
+											</g>
+										</svg>
+									</div>
 
-                              <div title="Seleccionar secciones con cupo" id="btn-select-valid-options" >
-                                  <svg class="selection-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 122.88 120.79" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><g transform="translate(.004999 0)"><path d="M31.4,21.63h60.68v-13.95c0-.08-.02-.16-.04-.22-.03-.07-.08-.14-.13-.19l-.01-.01c-.05-.06-.12-.1-.19-.13s-.15-.04-.23-.04h-83.8c-.08,0-.16.02-.22.04-.07.02-.14.07-.21.13l-.02.02c-.04.05-.08.11-.11.18s-.04.14-.04.22v83.8c0,.08.02.16.05.22l.01.03c.03.06.07.13.12.18.06.06.13.1.2.13l.02.01c.06.02.13.04.2.04h16.04v-62.78c0-1.03.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5l.04-.04c.7-.69,1.54-1.25,2.46-1.63.91-.37,1.9-.58,2.93-.58v0Zm67.75,0h16.04c1.03,0,2.03.21,2.93.59.94.39,1.79.96,2.5,1.67l.04.04c.69.7,1.25,1.53,1.63,2.45.38.91.58,1.9.58,2.94v83.8c0,1.04-.21,2.03-.58,2.93-.39.94-.96,1.79-1.67,2.5s-1.55,1.28-2.5,1.67c-.91.38-1.9.59-2.93.59h-83.79c-1.03,0-2.02-.21-2.93-.58-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5c-.38-.91-.58-1.9-.58-2.93v-13.97h-16.04c-1.03,0-2.03-.21-2.93-.59-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5C0.21,93.5,0,92.51,0,91.48v-83.8c0-1.04.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5s1.55-1.28,2.5-1.67C5.66,0.21,6.65,0,7.68,0h83.79c1.04,0,2.03.21,2.93.58.94.39,1.79.96,2.5,1.67c1.4,1.4,2.26,3.31,2.26,5.43v13.95h-.01ZM115.2,28.7h-83.8c-.08,0-.15.02-.22.04-.08.03-.15.08-.2.14l-.01.01c-.06.05-.1.12-.13.19s-.04.14-.04.22v83.8c0,.08.02.16.04.22.03.07.08.14.14.2l.02.02c.05.05.12.09.18.11.07.03.14.04.22.04h83.79c.08,0,.16-.02.22-.04l.02-.01c.07-.03.13-.07.18-.13s.1-.12.13-.19l.01-.02c.02-.06.03-.13.03-.21v-83.8c0-.08-.02-.15-.04-.22l-.01-.02c-.03-.06-.07-.12-.12-.17-.06-.06-.13-.11-.2-.14-.06-.02-.13-.04-.21-.04v0Z"/></g><line x1="-10.553431" y1="-21.159236" x2="10.553431" y2="21.159236" transform="translate(62.266398 71.375875)" fill="none" stroke="#000" stroke-width="8"/><line x1="-10.553431" y1="21.159236" x2="10.553431" y2="-21.159236" transform="translate(83.47301 71.375875)" fill="none" stroke="#000" stroke-width="8"/><line x1="-3.609739" y1="0" x2="3.609738" y2="0" transform="translate(72.911585 93.697853)" fill="none" stroke="#000" stroke-width="1.2288"/><line x1="-2.812635" y1="0.581371" x2="2.812635" y2="-0.581371" transform="translate(72.114481 93.116482)" fill="none" stroke="#000" stroke-width="1.2288"/></svg>
-                              </div>
-                              <div title="Eliminar todas las secciones" id="btn-select-none-options" >
-                                  <svg class="selection-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 122.88 120.79" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><g><path d="M31.4,21.63h60.68v-13.95c0-.08-.02-.16-.04-.22-.03-.07-.08-.14-.13-.19l-.01-.01c-.05-.06-.12-.1-.19-.13s-.15-.04-.23-.04h-83.8c-.08,0-.16.02-.22.04-.07.02-.14.07-.21.13l-.02.02c-.04.05-.08.11-.11.18s-.04.14-.04.22v83.8c0,.08.02.16.05.22l.01.03c.03.06.07.13.12.18.06.06.13.1.2.13l.02.01c.06.02.13.04.2.04h16.04v-62.78c0-1.03.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5l.04-.04c.7-.69,1.54-1.25,2.46-1.63.91-.37,1.9-.58,2.93-.58v0Zm67.75,0h16.04c1.03,0,2.03.21,2.93.59.94.39,1.79.96,2.5,1.67l.04.04c.69.7,1.25,1.53,1.63,2.45.38.91.58,1.9.58,2.94v83.8c0,1.04-.21,2.03-.58,2.93-.39.94-.96,1.79-1.67,2.5s-1.55,1.28-2.5,1.67c-.91.38-1.9.59-2.93.59h-83.79c-1.03,0-2.02-.21-2.93-.58-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5c-.38-.91-.58-1.9-.58-2.93v-13.97h-16.04c-1.03,0-2.03-.21-2.93-.59-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5C0.21,93.5,0,92.51,0,91.48v-83.8c0-1.04.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5s1.55-1.28,2.5-1.67C5.66,0.21,6.65,0,7.68,0h83.79c1.04,0,2.03.21,2.93.58.94.39,1.79.96,2.5,1.67c1.4,1.4,2.26,3.31,2.26,5.43v13.95h-.01ZM115.2,28.7h-83.8c-.08,0-.15.02-.22.04-.08.03-.15.08-.2.14l-.01.01c-.06.05-.1.12-.13.19s-.04.14-.04.22v83.8c0,.08.02.16.04.22.03.07.08.14.14.2l.02.02c.05.05.12.09.18.11.07.03.14.04.22.04h83.79c.08,0,.16-.02.22-.04l.02-.01c.07-.03.13-.07.18-.13s.1-.12.13-.19l.01-.02c.02-.06.03-.13.03-.21v-83.8c0-.08-.02-.15-.04-.22l-.01-.02c-.03-.06-.07-.12-.12-.17-.06-.06-.13-.11-.2-.14-.06-.02-.13-.04-.21-.04v0Z" transform="translate(0-.02)"/></g><line x1="0" y1="-42.38433" x2="0" y2="27.61567" transform="matrix(-.707107 0.707107-.707107-.707107 67.641975 65.86389)" fill="none" stroke="#000" stroke-width="8"/><line x1="0" y1="-42.38433" x2="0" y2="27.61567" transform="matrix(.707107 0.707107-.707107 0.707107 67.641975 76.306909)" fill="none" stroke="#000" stroke-width="8"/></svg>
-                              </div>
+									<div title="Seleccionar secciones con cupo" id="btn-select-valid-options">
+										<svg
+											class="selection-svg"
+											xmlns="http://www.w3.org/2000/svg"
+											xmlns:xlink="http://www.w3.org/1999/xlink"
+											viewBox="0 0 122.88 120.79"
+											shape-rendering="geometricPrecision"
+											text-rendering="geometricPrecision"
+										>
+											<g transform="translate(.004999 0)">
+												<path
+													d="M31.4,21.63h60.68v-13.95c0-.08-.02-.16-.04-.22-.03-.07-.08-.14-.13-.19l-.01-.01c-.05-.06-.12-.1-.19-.13s-.15-.04-.23-.04h-83.8c-.08,0-.16.02-.22.04-.07.02-.14.07-.21.13l-.02.02c-.04.05-.08.11-.11.18s-.04.14-.04.22v83.8c0,.08.02.16.05.22l.01.03c.03.06.07.13.12.18.06.06.13.1.2.13l.02.01c.06.02.13.04.2.04h16.04v-62.78c0-1.03.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5l.04-.04c.7-.69,1.54-1.25,2.46-1.63.91-.37,1.9-.58,2.93-.58v0Zm67.75,0h16.04c1.03,0,2.03.21,2.93.59.94.39,1.79.96,2.5,1.67l.04.04c.69.7,1.25,1.53,1.63,2.45.38.91.58,1.9.58,2.94v83.8c0,1.04-.21,2.03-.58,2.93-.39.94-.96,1.79-1.67,2.5s-1.55,1.28-2.5,1.67c-.91.38-1.9.59-2.93.59h-83.79c-1.03,0-2.02-.21-2.93-.58-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5c-.38-.91-.58-1.9-.58-2.93v-13.97h-16.04c-1.03,0-2.03-.21-2.93-.59-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5C0.21,93.5,0,92.51,0,91.48v-83.8c0-1.04.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5s1.55-1.28,2.5-1.67C5.66,0.21,6.65,0,7.68,0h83.79c1.04,0,2.03.21,2.93.58.94.39,1.79.96,2.5,1.67c1.4,1.4,2.26,3.31,2.26,5.43v13.95h-.01ZM115.2,28.7h-83.8c-.08,0-.15.02-.22.04-.08.03-.15.08-.2.14l-.01.01c-.06.05-.1.12-.13.19s-.04.14-.04.22v83.8c0,.08.02.16.04.22.03.07.08.14.14.2l.02.02c.05.05.12.09.18.11.07.03.14.04.22.04h83.79c.08,0,.16-.02.22-.04l.02-.01c.07-.03.13-.07.18-.13s.1-.12.13-.19l.01-.02c.02-.06.03-.13.03-.21v-83.8c0-.08-.02-.15-.04-.22l-.01-.02c-.03-.06-.07-.12-.12-.17-.06-.06-.13-.11-.2-.14-.06-.02-.13-.04-.21-.04v0Z"
+												/>
+											</g>
+											<line
+												x1="-10.553431"
+												y1="-21.159236"
+												x2="10.553431"
+												y2="21.159236"
+												transform="translate(62.266398 71.375875)"
+												fill="none"
+												stroke="#000"
+												stroke-width="8"
+											/>
+											<line
+												x1="-10.553431"
+												y1="21.159236"
+												x2="10.553431"
+												y2="-21.159236"
+												transform="translate(83.47301 71.375875)"
+												fill="none"
+												stroke="#000"
+												stroke-width="8"
+											/>
+											<line
+												x1="-3.609739"
+												y1="0"
+												x2="3.609738"
+												y2="0"
+												transform="translate(72.911585 93.697853)"
+												fill="none"
+												stroke="#000"
+												stroke-width="1.2288"
+											/>
+											<line
+												x1="-2.812635"
+												y1="0.581371"
+												x2="2.812635"
+												y2="-0.581371"
+												transform="translate(72.114481 93.116482)"
+												fill="none"
+												stroke="#000"
+												stroke-width="1.2288"
+											/>
+										</svg>
+									</div>
+									<div title="Eliminar todas las secciones" id="btn-select-none-options">
+										<svg
+											class="selection-svg"
+											xmlns="http://www.w3.org/2000/svg"
+											xmlns:xlink="http://www.w3.org/1999/xlink"
+											viewBox="0 0 122.88 120.79"
+											shape-rendering="geometricPrecision"
+											text-rendering="geometricPrecision"
+										>
+											<g>
+												<path
+													d="M31.4,21.63h60.68v-13.95c0-.08-.02-.16-.04-.22-.03-.07-.08-.14-.13-.19l-.01-.01c-.05-.06-.12-.1-.19-.13s-.15-.04-.23-.04h-83.8c-.08,0-.16.02-.22.04-.07.02-.14.07-.21.13l-.02.02c-.04.05-.08.11-.11.18s-.04.14-.04.22v83.8c0,.08.02.16.05.22l.01.03c.03.06.07.13.12.18.06.06.13.1.2.13l.02.01c.06.02.13.04.2.04h16.04v-62.78c0-1.03.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5l.04-.04c.7-.69,1.54-1.25,2.46-1.63.91-.37,1.9-.58,2.93-.58v0Zm67.75,0h16.04c1.03,0,2.03.21,2.93.59.94.39,1.79.96,2.5,1.67l.04.04c.69.7,1.25,1.53,1.63,2.45.38.91.58,1.9.58,2.94v83.8c0,1.04-.21,2.03-.58,2.93-.39.94-.96,1.79-1.67,2.5s-1.55,1.28-2.5,1.67c-.91.38-1.9.59-2.93.59h-83.79c-1.03,0-2.02-.21-2.93-.58-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5c-.38-.91-.58-1.9-.58-2.93v-13.97h-16.04c-1.03,0-2.03-.21-2.93-.59-.94-.39-1.79-.96-2.5-1.67s-1.28-1.56-1.67-2.5C0.21,93.5,0,92.51,0,91.48v-83.8c0-1.04.21-2.03.58-2.93.39-.94.96-1.79,1.67-2.5s1.55-1.28,2.5-1.67C5.66,0.21,6.65,0,7.68,0h83.79c1.04,0,2.03.21,2.93.58.94.39,1.79.96,2.5,1.67c1.4,1.4,2.26,3.31,2.26,5.43v13.95h-.01ZM115.2,28.7h-83.8c-.08,0-.15.02-.22.04-.08.03-.15.08-.2.14l-.01.01c-.06.05-.1.12-.13.19s-.04.14-.04.22v83.8c0,.08.02.16.04.22.03.07.08.14.14.2l.02.02c.05.05.12.09.18.11.07.03.14.04.22.04h83.79c.08,0,.16-.02.22-.04l.02-.01c.07-.03.13-.07.18-.13s.1-.12.13-.19l.01-.02c.02-.06.03-.13.03-.21v-83.8c0-.08-.02-.15-.04-.22l-.01-.02c-.03-.06-.07-.12-.12-.17-.06-.06-.13-.11-.2-.14-.06-.02-.13-.04-.21-.04v0Z"
+													transform="translate(0-.02)"
+												/>
+											</g>
+											<line
+												x1="0"
+												y1="-42.38433"
+												x2="0"
+												y2="27.61567"
+												transform="matrix(-.707107 0.707107-.707107-.707107 67.641975 65.86389)"
+												fill="none"
+												stroke="#000"
+												stroke-width="8"
+											/>
+											<line
+												x1="0"
+												y1="-42.38433"
+												x2="0"
+												y2="27.61567"
+												transform="matrix(.707107 0.707107-.707107 0.707107 67.641975 76.306909)"
+												fill="none"
+												stroke="#000"
+												stroke-width="8"
+											/>
+										</svg>
+									</div>
+								</div>
+							</div>
 
-                          </div>
-                        </div>
+							<div id="course-options" class="container-column">
+								<!-- Aquí van las secciones a mostrar al usuario -->
+							</div>
+						</div>
+					</article>
+				</div>
 
+				<div>
+					<!-- Paso 2 -->
+					<article id="step2">
+						<h2>Paso 2: Añade tus bloques</h2>
+						<p>
+							¿No quieres madrugar a las 6:30? ¿Quieres almorzar con tus amigos a las 12:30? ¡Agrega esos momentos en los cuales, por
+							ningún motivo, quieres que se te cruce una clase!
+						</p>
+						<label class="small-em-text">¿Qué días aplica?</label>
+						<div class="container-row" style="justify-content: space-around">
+							<div id="block-chkbox-l" class="checkbox">L</div>
+							<div id="block-chkbox-m" class="checkbox">M</div>
+							<div id="block-chkbox-i" class="checkbox">I</div>
+							<div id="block-chkbox-j" class="checkbox">J</div>
+							<div id="block-chkbox-v" class="checkbox">V</div>
+							<div id="block-chkbox-s" class="checkbox">S</div>
+						</div>
+						<label class="small-em-text" for="block-time-start">¿Entre qué horas?</label>
+						<div class="container-row" style="justify-content: center; gap: 20px">
+							<input type="time" id="block-time-start" min="06:00" max="21:00" required />
+							<div style="height: 1px; width: 10px; border-top: 1px solid black"></div>
+							<input type="time" id="block-time-end" min="06:00" max="21:00" required />
+						</div>
+						<div class="container-column">
+							<button type="button" class="btn-secondary" id="btn-add-block">Crear Bloque</button>
+						</div>
+					</article>
 
+					<!-- Paso 3 -->
+					<article id="step3">
+						<h2>Paso 3: Optimiza</h2>
+						<p>
+							¿Quieres un horario con menos huecos? ¿O quizás buscas salir más temprano de clases? Solo selecciona qué deseas y los
+							resultados se ordenarán para ti. ¡Recuerda revisar que hayas agregado todos tus cursos y bloques!
+						</p>
+						<p class="small-em-text">¿Qué deseas optimizar?</p>
+						<ul>
+							<li>
+								<input type="radio" id="opt-min-huecos" value="MinHuecos" name="optimizar" />
+								<label for="opt-min-huecos">Quiero un horario sin huecos</label>
+							</li>
+							<li>
+								<input type="radio" id="opt-min-salida" value="MinSalida" name="optimizar" />
+								<label for="opt-min-salida">Quiero salir temprano</label>
+							</li>
+							<li>
+								<input type="radio" id="opt-max-entrada" value="MaxEntrada" name="optimizar" />
+								<label for="opt-max-entrada">Quiero entrar un poco más tarde</label>
+							</li>
+							<li>
+								<input type="radio" id="opt-aleatorio" value="Aleatorio" name="optimizar" />
+								<label for="opt-aleatorio">¡Sorpréndeme! (aleatorio 😉)</label>
+							</li>
+						</ul>
+						<p class="small-em-text">Tus cursos:</p>
+						<div id="my-courses">
+							<!-- Aquí van los cursos agregados -->
+							<!-- Aquí van los botones de reinicio -->
+							<button id="btn-reset-courses" class="btn-secondary">Reiniciar cursos</button>
+						</div>
+						<p class="small-em-text">Tus bloques:</p>
+						<div id="my-blocks">
+							<!-- Aquí van los bloques agregados -->
+							<!-- Aquí van los botones de reinicio -->
+							<button id="btn-reset-blocks" class="btn-secondary">Reiniciar bloques</button>
+						</div>
 
-                        <div id="course-options" class="container-column">
-                            <!-- Aquí van las secciones a mostrar al usuario -->
-                        </div>
-                    </div>
-                </article>
+						<div class="container-column">
+							<button id="btn-open-calendar" class="btn-primary">Construir tu horario</button>
+							<p id="no-calendars" class="inactive">
+								<strong style="color: #731c24">No encontramos horarios para ti :(</strong> <br />
+								Te recomendamos incluir más secciones de los cursos que ya tienes, o reducir la cantidad de cursos únicos y bloques.
+							</p>
+						</div>
+					</article>
+				</div>
+			</main>
 
-            </div>
+			<footer>
+				<p>Datos recuperados de Banner: <span class="date-last-fetch"></span></p>
+			</footer>
+		</section>
 
-            <div>
+		<!-- Panel del calendario -->
+		<section id="calendar" class="modal inactive">
+			<header class="container-row">
+				<svg id="btn-open-config" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.8)" width="47.997" height="48.001">
+					<g fill="#1a171b">
+						<path
+							d="M35.619 18.212h-1.476a13.756 13.756 0 0 0-.445-1.654l1.28-.739a1.5 1.5 0 0 0 .549-2.052l-1.164-2.018a1.5 1.5 0 0 0-2.052-.549l-1.282.74a13.68 13.68 0 0 0-1.21-1.21l.739-1.282a1.5 1.5 0 0 0-.551-2.048l-2.015-1.169a1.5 1.5 0 0 0-2.053.55l-.739 1.28a13.22 13.22 0 0 0-1.655-.445V6.139a1.5 1.5 0 0 0-1.5-1.5h-2.33a1.5 1.5 0 0 0-1.5 1.5v1.477a13.206 13.206 0 0 0-1.654.445l-.739-1.28a1.5 1.5 0 0 0-2.053-.55L11.75 7.4a1.5 1.5 0 0 0-.55 2.053l.739 1.282a13.806 13.806 0 0 0-1.209 1.21L9.448 11.2a1.507 1.507 0 0 0-2.053.551l-1.164 2.016a1.5 1.5 0 0 0 .55 2.053l1.279.738a13.47 13.47 0 0 0-.444 1.654H6.139a1.506 1.506 0 0 0-1.5 1.5v2.327a1.505 1.505 0 0 0 1.5 1.5h1.477A13.6 13.6 0 0 0 8.06 25.2l-1.279.738a1.5 1.5 0 0 0-.55 2.054L7.4 30.008a1.5 1.5 0 0 0 2.053.55l1.282-.74a13.681 13.681 0 0 0 1.209 1.211l-.744 1.282a1.5 1.5 0 0 0 .55 2.053l2.016 1.163a1.5 1.5 0 0 0 2.053-.55l.739-1.279a13.247 13.247 0 0 0 1.654.444v1.477a1.506 1.506 0 0 0 1.5 1.5h2.328a1.5 1.5 0 0 0 1.5-1.5v-1.477a13.343 13.343 0 0 0 1.66-.442l.739 1.278a1.5 1.5 0 0 0 2.053.551l2.015-1.163a1.5 1.5 0 0 0 .551-2.054l-.739-1.281a13.547 13.547 0 0 0 1.209-1.211l1.283.74a1.506 1.506 0 0 0 2.053-.55l1.163-2.015a1.5 1.5 0 0 0-.55-2.054L33.7 25.2a13.523 13.523 0 0 0 .445-1.654h1.476a1.505 1.505 0 0 0 1.5-1.5v-2.33a1.505 1.505 0 0 0-1.502-1.504zm0 3.879h-2.085a.728.728 0 0 0-.719.618 12.04 12.04 0 0 1-.687 2.553.729.729 0 0 0 .313.894l1.825 1.109-1.229 2.035-1.811-1.045a.726.726 0 0 0-.931.175 12.22 12.22 0 0 1-1.868 1.87.728.728 0 0 0-.174.931l1.026 1.869-2.079 1.15-1.043-1.808a.727.727 0 0 0-.894-.313 11.954 11.954 0 0 1-2.553.686.728.728 0 0 0-.618.719l-.048 2.135-2.376-.049v-2.086a.729.729 0 0 0-.618-.719 11.887 11.887 0 0 1-2.552-.686.736.736 0 0 0-.264-.05.727.727 0 0 0-.63.363l-1.114 1.825-2.032-1.229 1.044-1.81a.728.728 0 0 0-.174-.931 12.22 12.22 0 0 1-1.868-1.868.728.728 0 0 0-.932-.175L8.652 29.28 7.506 27.2l1.808-1.043a.726.726 0 0 0 .313-.895 12.14 12.14 0 0 1-.686-2.552.727.727 0 0 0-.719-.618l-2.134-.048.048-2.376h2.086a.727.727 0 0 0 .719-.618 12.1 12.1 0 0 1 .686-2.55.728.728 0 0 0-.313-.895l-1.825-1.113 1.229-2.033 1.81 1.045a.731.731 0 0 0 .932-.174 12.138 12.138 0 0 1 1.868-1.869.729.729 0 0 0 .174-.932l-1.026-1.876 2.081-1.146L15.6 9.316a.728.728 0 0 0 .894.313 11.945 11.945 0 0 1 2.552-.686.729.729 0 0 0 .618-.72l.048-2.134 2.376.048v2.086a.73.73 0 0 0 .618.72 11.911 11.911 0 0 1 2.553.686.729.729 0 0 0 .894-.313l1.111-1.826L29.3 8.719l-1.044 1.81a.728.728 0 0 0 .174.932 12.189 12.189 0 0 1 1.87 1.869.728.728 0 0 0 .931.174l1.869-1.027 1.146 2.082L32.44 15.6a.728.728 0 0 0-.313.895 12.091 12.091 0 0 1 .687 2.552.726.726 0 0 0 .719.618h2.085l.048.049z"
+						/>
+						<path
+							d="m46.368 38.476-7.329-7.328a20.878 20.878 0 1 0-7.89 7.892l7.327 7.328a5.58 5.58 0 0 0 7.892-7.892zm-14.586-.864a.728.728 0 0 0-.891-.108 19.43 19.43 0 1 1 6.609-6.616.729.729 0 0 0 .109.891l5.591 5.583a12.031 12.031 0 0 1-5.837 5.838zm13.552 7.725a4.122 4.122 0 0 1-5.829 0L38.468 44.3a13.841 13.841 0 0 0 5.832-5.832l1.037 1.037a4.127 4.127 0 0 1-.003 5.832z"
+						/>
+						<path
+							d="M26.243 13.577a.727.727 0 0 0-1.028 0L13.579 25.213a.727.727 0 0 0 0 1.028.728.728 0 0 0 1.029 0l11.636-11.636a.728.728 0 0 0-.001-1.028zM27.154 19.4 19.4 27.154a.728.728 0 0 0 .515 1.241.72.72 0 0 0 .514-.214l7.758-7.757a.727.727 0 1 0-1.033-1.024z"
+						/>
+					</g>
+				</svg>
+				<h1>Mi Horario Uniandes</h1>
+				<div class="container-row" style="gap: 5px">
+					<svg id="prev-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="transform: rotate(180deg)">
+						<path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
+					</svg>
+					<svg id="next-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+						<path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
+					</svg>
+				</div>
+			</header>
 
-                <!-- Paso 2 -->
-                <article id="step2">
-                    <h2>Paso 2: Añade tus bloques</h2>
-                    <p>¿No quieres madrugar a las 6:30? ¿Quieres almorzar con tus amigos a las 12:30? ¡Agrega esos momentos en los cuales, por ningún motivo, quieres que se te cruce una clase!</p>
-                    <label class="small-em-text">¿Qué días aplica?</label>
-                    <div class="container-row" style="justify-content: space-around;">
-                        <div id="block-chkbox-l" class="checkbox">L</div>
-                        <div id="block-chkbox-m" class="checkbox">M</div>
-                        <div id="block-chkbox-i" class="checkbox">I</div>
-                        <div id="block-chkbox-j" class="checkbox">J</div>
-                        <div id="block-chkbox-v" class="checkbox">V</div>
-                        <div id="block-chkbox-s" class="checkbox">S</div>
-                    </div>
-                    <label class="small-em-text" for="block-time-start">¿Entre qué horas?</label>
-                    <div class="container-row" style="justify-content: center; gap: 20px;">
-                        <input type="time" id="block-time-start" min="06:00" max="21:00" required>
-                        <div style="height: 1px; width: 10px; border-top: 1px solid black;"></div>
-                        <input type="time" id="block-time-end" min="06:00" max="21:00" required>
-                    </div>
-                    <div class="container-column">
-                        <button type="button" class="btn-secondary" id="btn-add-block">Crear Bloque</button>
-                    </div>
-                </article>
+			<main>
+				<!-- Horas del día -->
+				<aside>
+					<p style="height: 50px">
+						<!-- Usado únicamente para dejar un espacio antes de la primera hora -->
+					</p>
+					<div class="container-column"><p>&nbsp 6:00 am</p></div>
+					<div class="container-column"><p>&nbsp 7:00 am</p></div>
+					<div class="container-column"><p>&nbsp 8:00 am</p></div>
+					<div class="container-column"><p>&nbsp 9:00 am</p></div>
+					<div class="container-column"><p>10:00 am</p></div>
+					<div class="container-column"><p>11:00 am</p></div>
+					<div class="container-column"><p>12:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 1:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 2:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 3:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 4:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 5:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 6:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 7:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 8:00 pm</p></div>
+					<div class="container-column"><p>&nbsp 9:00 pm</p></div>
+				</aside>
+				<!-- Días de la semana y contenido -->
+				<div class="table">
+					<div class="table-header">
+						<div class="container-column"><h2>Lunes</h2></div>
+						<div class="container-column"><h2>Martes</h2></div>
+						<div class="container-column"><h2>Miércoles</h2></div>
+						<div class="container-column"><h2>Jueves</h2></div>
+						<div class="container-column"><h2>Viernes</h2></div>
+						<div class="container-column"><h2>Sábado</h2></div>
+					</div>
+					<div class="table-content">
+						<!-- Aquí se insertan los time blocks -->
+						<div
+							class="time-block"
+							style="height: 60px; position: absolute; left: calc(16.7% * 2); top: 80px; background-color: rebeccapurple"
+						></div>
+					</div>
+				</div>
+			</main>
 
-                <!-- Paso 3 -->
-                <article id="step3">
-                    <h2>Paso 3: Optimiza</h2>
-                    <p>¿Quieres un horario con menos huecos? ¿O quizás buscas salir más temprano de clases? Solo selecciona qué deseas y los resultados se ordenarán para ti. ¡Recuerda revisar que hayas agregado todos tus cursos y bloques!</p>
-                    <p class="small-em-text">¿Qué deseas optimizar?</p>
-                    <ul>
-                        <li>
-                            <input type="radio" id="opt-min-huecos" value="MinHuecos" name="optimizar">
-                            <label for="opt-min-huecos">Quiero un horario sin huecos</label>
-                        </li>
-                        <li>
-                            <input type="radio" id="opt-min-salida" value="MinSalida" name="optimizar">
-                            <label for="opt-min-salida">Quiero salir temprano</label>
-                        </li>
-                        <li>
-                            <input type="radio" id="opt-max-entrada" value="MaxEntrada" name="optimizar">
-                            <label for="opt-max-entrada">Quiero entrar un poco más tarde</label>
-                        </li>
-                        <li>
-                            <input type="radio" id="opt-aleatorio" value="Aleatorio" name="optimizar">
-                            <label for="opt-aleatorio">¡Sorpréndeme! (aleatorio 😉)</label>
-                        </li>
-                    </ul>
-                    <p class="small-em-text">Tus cursos:</p>
-                    <div id="my-courses">
-                        <!-- Aquí van los cursos agregados -->
-                        <!-- Aquí van los botones de reinicio -->
-                        <button id="btn-reset-courses" class="btn-secondary">Reiniciar cursos</button>
-                    </div>
-                    <p class="small-em-text">Tus bloques:</p>
-                    <div id="my-blocks">
-                        <!-- Aquí van los bloques agregados -->
-                        <!-- Aquí van los botones de reinicio -->
-                        <button id="btn-reset-blocks" class="btn-secondary">Reiniciar bloques</button>
-                    </div>
+			<footer>
+				<p>Cantidad de creditos planeados: <span id="credits-current"></span></p>
+				<p>
+					Mostrando horario <input style="width: 50px" type="text" id="calendar-current" /> de <span id="calendar-total"></span> posibles
+					encontrados
+				</p>
+				<p>Datos recuperados de Banner: <span class="date-last-fetch"></span></p>
+				<button id="btn-open-cbus" class="btn-primary">Encuentra CBU's para este horario</button>
+			</footer>
+		</section>
 
-                    <div class="container-column">
-                        <button id="btn-open-calendar" class="btn-primary">Construir tu horario</button>
-                        <p id="no-calendars" class="inactive"><strong style="color: #731c24;">No encontramos horarios para ti :(</strong> <br> Te recomendamos incluir más secciones de los cursos que ya tienes, o reducir la cantidad de cursos únicos y bloques.</p>
-                    </div>
+		<!-- Panel de cbu's -->
+		<section id="cbus" class="modal inactive">
+			<header class="container-row">
+				<svg id="btn-close-cbus" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.8)" width="47.997" height="48.001">
+					<g fill="#1a171b">
+						<path
+							d="M35.619 18.212h-1.476a13.756 13.756 0 0 0-.445-1.654l1.28-.739a1.5 1.5 0 0 0 .549-2.052l-1.164-2.018a1.5 1.5 0 0 0-2.052-.549l-1.282.74a13.68 13.68 0 0 0-1.21-1.21l.739-1.282a1.5 1.5 0 0 0-.551-2.048l-2.015-1.169a1.5 1.5 0 0 0-2.053.55l-.739 1.28a13.22 13.22 0 0 0-1.655-.445V6.139a1.5 1.5 0 0 0-1.5-1.5h-2.33a1.5 1.5 0 0 0-1.5 1.5v1.477a13.206 13.206 0 0 0-1.654.445l-.739-1.28a1.5 1.5 0 0 0-2.053-.55L11.75 7.4a1.5 1.5 0 0 0-.55 2.053l.739 1.282a13.806 13.806 0 0 0-1.209 1.21L9.448 11.2a1.507 1.507 0 0 0-2.053.551l-1.164 2.016a1.5 1.5 0 0 0 .55 2.053l1.279.738a13.47 13.47 0 0 0-.444 1.654H6.139a1.506 1.506 0 0 0-1.5 1.5v2.327a1.505 1.505 0 0 0 1.5 1.5h1.477A13.6 13.6 0 0 0 8.06 25.2l-1.279.738a1.5 1.5 0 0 0-.55 2.054L7.4 30.008a1.5 1.5 0 0 0 2.053.55l1.282-.74a13.681 13.681 0 0 0 1.209 1.211l-.744 1.282a1.5 1.5 0 0 0 .55 2.053l2.016 1.163a1.5 1.5 0 0 0 2.053-.55l.739-1.279a13.247 13.247 0 0 0 1.654.444v1.477a1.506 1.506 0 0 0 1.5 1.5h2.328a1.5 1.5 0 0 0 1.5-1.5v-1.477a13.343 13.343 0 0 0 1.66-.442l.739 1.278a1.5 1.5 0 0 0 2.053.551l2.015-1.163a1.5 1.5 0 0 0 .551-2.054l-.739-1.281a13.547 13.547 0 0 0 1.209-1.211l1.283.74a1.506 1.506 0 0 0 2.053-.55l1.163-2.015a1.5 1.5 0 0 0-.55-2.054L33.7 25.2a13.523 13.523 0 0 0 .445-1.654h1.476a1.505 1.505 0 0 0 1.5-1.5v-2.33a1.505 1.505 0 0 0-1.502-1.504zm0 3.879h-2.085a.728.728 0 0 0-.719.618 12.04 12.04 0 0 1-.687 2.553.729.729 0 0 0 .313.894l1.825 1.109-1.229 2.035-1.811-1.045a.726.726 0 0 0-.931.175 12.22 12.22 0 0 1-1.868 1.87.728.728 0 0 0-.174.931l1.026 1.869-2.079 1.15-1.043-1.808a.727.727 0 0 0-.894-.313 11.954 11.954 0 0 1-2.553.686.728.728 0 0 0-.618.719l-.048 2.135-2.376-.049v-2.086a.729.729 0 0 0-.618-.719 11.887 11.887 0 0 1-2.552-.686.736.736 0 0 0-.264-.05.727.727 0 0 0-.63.363l-1.114 1.825-2.032-1.229 1.044-1.81a.728.728 0 0 0-.174-.931 12.22 12.22 0 0 1-1.868-1.868.728.728 0 0 0-.932-.175L8.652 29.28 7.506 27.2l1.808-1.043a.726.726 0 0 0 .313-.895 12.14 12.14 0 0 1-.686-2.552.727.727 0 0 0-.719-.618l-2.134-.048.048-2.376h2.086a.727.727 0 0 0 .719-.618 12.1 12.1 0 0 1 .686-2.55.728.728 0 0 0-.313-.895l-1.825-1.113 1.229-2.033 1.81 1.045a.731.731 0 0 0 .932-.174 12.138 12.138 0 0 1 1.868-1.869.729.729 0 0 0 .174-.932l-1.026-1.876 2.081-1.146L15.6 9.316a.728.728 0 0 0 .894.313 11.945 11.945 0 0 1 2.552-.686.729.729 0 0 0 .618-.72l.048-2.134 2.376.048v2.086a.73.73 0 0 0 .618.72 11.911 11.911 0 0 1 2.553.686.729.729 0 0 0 .894-.313l1.111-1.826L29.3 8.719l-1.044 1.81a.728.728 0 0 0 .174.932 12.189 12.189 0 0 1 1.87 1.869.728.728 0 0 0 .931.174l1.869-1.027 1.146 2.082L32.44 15.6a.728.728 0 0 0-.313.895 12.091 12.091 0 0 1 .687 2.552.726.726 0 0 0 .719.618h2.085l.048.049z"
+						/>
+						<path
+							d="m46.368 38.476-7.329-7.328a20.878 20.878 0 1 0-7.89 7.892l7.327 7.328a5.58 5.58 0 0 0 7.892-7.892zm-14.586-.864a.728.728 0 0 0-.891-.108 19.43 19.43 0 1 1 6.609-6.616.729.729 0 0 0 .109.891l5.591 5.583a12.031 12.031 0 0 1-5.837 5.838zm13.552 7.725a4.122 4.122 0 0 1-5.829 0L38.468 44.3a13.841 13.841 0 0 0 5.832-5.832l1.037 1.037a4.127 4.127 0 0 1-.003 5.832z"
+						/>
+						<path
+							d="M26.243 13.577a.727.727 0 0 0-1.028 0L13.579 25.213a.727.727 0 0 0 0 1.028.728.728 0 0 0 1.029 0l11.636-11.636a.728.728 0 0 0-.001-1.028zM27.154 19.4 19.4 27.154a.728.728 0 0 0 .515 1.241.72.72 0 0 0 .514-.214l7.758-7.757a.727.727 0 1 0-1.033-1.024z"
+						/>
+					</g>
+				</svg>
+				<h1>CBU's perfectos</h1>
+				<div class="container-row" style="gap: 5px"></div>
+			</header>
 
-                </article>
+			<main>
+				<div class="cbu_checkbox">
+					<label for="cbca_check">
+						<input type="checkbox" id="cbca_check" name="cbus" value="cbca" />
+						<span class="checkbox_text">Cultura, Artes y Humanidades (CBCA)</span>
+					</label>
 
-            </div>
+					<label for="cbco_check">
+						<input type="checkbox" id="cbco_check" name="cbus" value="cbco" /> <span class="checkbox_text">Común en Colombia (CBCO)</span>
+					</label>
 
-        </main>
+					<label for="cbpc_check">
+						<input type="checkbox" id="cbpc_check" name="cbus" value="cbpc" />
+						<span class="checkbox_text">Pensamiento Científico (CBCP)</span>
+					</label>
 
-        <footer>
-            <p>
-                Datos recuperados de Banner: <span class="date-last-fetch"></span>
-            </p>
-        </footer>
+					<label for="cbcc_check">
+						<input type="checkbox" id="cbcc_check" name="cbus" value="cbcc" />
+						<span class="checkbox_text">Colombia - Espacio, Tiempo, Diferencia (CBCC-1177)</span>
+					</label>
+				</div>
+				<p class="welcome-cbu">
+					Selecciona la categoria de CBU que te interese para ver todos los que son compatibles con tu horario, luego puedes regresar al
+					menu principal y añadirlos
+				</p>
+				<div class="cbu_list">
+					<div id="cbca" class="cbus-list inactive">
+						<!-- Aquí van los cbca -->
+					</div>
 
-    </section>
+					<div id="cbco" class="cbus-list inactive">
+						<!-- Aquí van los cbco -->
+					</div>
 
-    <!-- Panel del calendario -->
-    <section id="calendar" class="modal inactive">
+					<div id="cbpc" class="cbus-list inactive">
+						<!-- Aquí van los cbpc -->
+					</div>
 
-        <header class="container-row">
-            <svg id="btn-open-config" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.8)" width="47.997" height="48.001"><g fill="#1a171b"><path d="M35.619 18.212h-1.476a13.756 13.756 0 0 0-.445-1.654l1.28-.739a1.5 1.5 0 0 0 .549-2.052l-1.164-2.018a1.5 1.5 0 0 0-2.052-.549l-1.282.74a13.68 13.68 0 0 0-1.21-1.21l.739-1.282a1.5 1.5 0 0 0-.551-2.048l-2.015-1.169a1.5 1.5 0 0 0-2.053.55l-.739 1.28a13.22 13.22 0 0 0-1.655-.445V6.139a1.5 1.5 0 0 0-1.5-1.5h-2.33a1.5 1.5 0 0 0-1.5 1.5v1.477a13.206 13.206 0 0 0-1.654.445l-.739-1.28a1.5 1.5 0 0 0-2.053-.55L11.75 7.4a1.5 1.5 0 0 0-.55 2.053l.739 1.282a13.806 13.806 0 0 0-1.209 1.21L9.448 11.2a1.507 1.507 0 0 0-2.053.551l-1.164 2.016a1.5 1.5 0 0 0 .55 2.053l1.279.738a13.47 13.47 0 0 0-.444 1.654H6.139a1.506 1.506 0 0 0-1.5 1.5v2.327a1.505 1.505 0 0 0 1.5 1.5h1.477A13.6 13.6 0 0 0 8.06 25.2l-1.279.738a1.5 1.5 0 0 0-.55 2.054L7.4 30.008a1.5 1.5 0 0 0 2.053.55l1.282-.74a13.681 13.681 0 0 0 1.209 1.211l-.744 1.282a1.5 1.5 0 0 0 .55 2.053l2.016 1.163a1.5 1.5 0 0 0 2.053-.55l.739-1.279a13.247 13.247 0 0 0 1.654.444v1.477a1.506 1.506 0 0 0 1.5 1.5h2.328a1.5 1.5 0 0 0 1.5-1.5v-1.477a13.343 13.343 0 0 0 1.66-.442l.739 1.278a1.5 1.5 0 0 0 2.053.551l2.015-1.163a1.5 1.5 0 0 0 .551-2.054l-.739-1.281a13.547 13.547 0 0 0 1.209-1.211l1.283.74a1.506 1.506 0 0 0 2.053-.55l1.163-2.015a1.5 1.5 0 0 0-.55-2.054L33.7 25.2a13.523 13.523 0 0 0 .445-1.654h1.476a1.505 1.505 0 0 0 1.5-1.5v-2.33a1.505 1.505 0 0 0-1.502-1.504zm0 3.879h-2.085a.728.728 0 0 0-.719.618 12.04 12.04 0 0 1-.687 2.553.729.729 0 0 0 .313.894l1.825 1.109-1.229 2.035-1.811-1.045a.726.726 0 0 0-.931.175 12.22 12.22 0 0 1-1.868 1.87.728.728 0 0 0-.174.931l1.026 1.869-2.079 1.15-1.043-1.808a.727.727 0 0 0-.894-.313 11.954 11.954 0 0 1-2.553.686.728.728 0 0 0-.618.719l-.048 2.135-2.376-.049v-2.086a.729.729 0 0 0-.618-.719 11.887 11.887 0 0 1-2.552-.686.736.736 0 0 0-.264-.05.727.727 0 0 0-.63.363l-1.114 1.825-2.032-1.229 1.044-1.81a.728.728 0 0 0-.174-.931 12.22 12.22 0 0 1-1.868-1.868.728.728 0 0 0-.932-.175L8.652 29.28 7.506 27.2l1.808-1.043a.726.726 0 0 0 .313-.895 12.14 12.14 0 0 1-.686-2.552.727.727 0 0 0-.719-.618l-2.134-.048.048-2.376h2.086a.727.727 0 0 0 .719-.618 12.1 12.1 0 0 1 .686-2.55.728.728 0 0 0-.313-.895l-1.825-1.113 1.229-2.033 1.81 1.045a.731.731 0 0 0 .932-.174 12.138 12.138 0 0 1 1.868-1.869.729.729 0 0 0 .174-.932l-1.026-1.876 2.081-1.146L15.6 9.316a.728.728 0 0 0 .894.313 11.945 11.945 0 0 1 2.552-.686.729.729 0 0 0 .618-.72l.048-2.134 2.376.048v2.086a.73.73 0 0 0 .618.72 11.911 11.911 0 0 1 2.553.686.729.729 0 0 0 .894-.313l1.111-1.826L29.3 8.719l-1.044 1.81a.728.728 0 0 0 .174.932 12.189 12.189 0 0 1 1.87 1.869.728.728 0 0 0 .931.174l1.869-1.027 1.146 2.082L32.44 15.6a.728.728 0 0 0-.313.895 12.091 12.091 0 0 1 .687 2.552.726.726 0 0 0 .719.618h2.085l.048.049z"/><path d="m46.368 38.476-7.329-7.328a20.878 20.878 0 1 0-7.89 7.892l7.327 7.328a5.58 5.58 0 0 0 7.892-7.892zm-14.586-.864a.728.728 0 0 0-.891-.108 19.43 19.43 0 1 1 6.609-6.616.729.729 0 0 0 .109.891l5.591 5.583a12.031 12.031 0 0 1-5.837 5.838zm13.552 7.725a4.122 4.122 0 0 1-5.829 0L38.468 44.3a13.841 13.841 0 0 0 5.832-5.832l1.037 1.037a4.127 4.127 0 0 1-.003 5.832z"/><path d="M26.243 13.577a.727.727 0 0 0-1.028 0L13.579 25.213a.727.727 0 0 0 0 1.028.728.728 0 0 0 1.029 0l11.636-11.636a.728.728 0 0 0-.001-1.028zM27.154 19.4 19.4 27.154a.728.728 0 0 0 .515 1.241.72.72 0 0 0 .514-.214l7.758-7.757a.727.727 0 1 0-1.033-1.024z"/></g></svg>
-            <h1>Mi Horario Uniandes</h1>
-            <div class="container-row" style="gap: 5px;">
-                <svg id="prev-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="transform: rotate(180deg)"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z"/></svg>
-                <svg id="next-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z"/></svg>
-            </div>
-        </header>
-
-        <main>
-            <!-- Horas del día -->
-            <aside>
-                <p style="height: 50px;">
-                    <!-- Usado únicamente para dejar un espacio antes de la primera hora -->
-                </p>
-                <div class="container-column"><p>&nbsp 6:00 am</p></div>
-                <div class="container-column"><p>&nbsp 7:00 am</p></div>
-                <div class="container-column"><p>&nbsp 8:00 am</p></div>
-                <div class="container-column"><p>&nbsp 9:00 am</p></div>
-                <div class="container-column"><p>10:00 am</p></div>
-                <div class="container-column"><p>11:00 am</p></div>
-                <div class="container-column"><p>12:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 1:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 2:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 3:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 4:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 5:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 6:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 7:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 8:00 pm</p></div>
-                <div class="container-column"><p>&nbsp 9:00 pm</p></div>
-            </aside>
-            <!-- Días de la semana y contenido -->
-            <div class="table">
-                <div class="table-header">
-                    <div class="container-column"><h2>Lunes</h2></div>
-                    <div class="container-column"><h2>Martes</h2></div>
-                    <div class="container-column"><h2>Miércoles</h2></div>
-                    <div class="container-column"><h2>Jueves</h2></div>
-                    <div class="container-column"><h2>Viernes</h2></div>
-                    <div class="container-column"><h2>Sábado</h2></div>
-                </div>
-                <div class="table-content">
-                    <!-- Aquí se insertan los time blocks -->
-                    <div class="time-block" style="height: 60px; position: absolute; left: calc(16.7%*2); top: 80px; background-color: rebeccapurple;"></div>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-
-            <p>Cantidad de creditos planeados: <span id="credits-current"></span></p>
-            <p>Mostrando horario <input style="width: 50px;" type="text" id="calendar-current"> de <span id="calendar-total"></span> posibles encontrados</p>
-            <p>
-                Datos recuperados de Banner: <span class="date-last-fetch"></span>
-            </p>
-            <button id="btn-open-cbus" class="btn-primary">Encuentra CBU's para este horario</button>
-        </footer>
-
-    </section>
-
-    <!-- Panel de cbu's -->
-    <section id="cbus" class="modal inactive">
-        <header class="container-row">
-            <svg id="btn-close-cbus" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.8)" width="47.997" height="48.001"><g fill="#1a171b"><path d="M35.619 18.212h-1.476a13.756 13.756 0 0 0-.445-1.654l1.28-.739a1.5 1.5 0 0 0 .549-2.052l-1.164-2.018a1.5 1.5 0 0 0-2.052-.549l-1.282.74a13.68 13.68 0 0 0-1.21-1.21l.739-1.282a1.5 1.5 0 0 0-.551-2.048l-2.015-1.169a1.5 1.5 0 0 0-2.053.55l-.739 1.28a13.22 13.22 0 0 0-1.655-.445V6.139a1.5 1.5 0 0 0-1.5-1.5h-2.33a1.5 1.5 0 0 0-1.5 1.5v1.477a13.206 13.206 0 0 0-1.654.445l-.739-1.28a1.5 1.5 0 0 0-2.053-.55L11.75 7.4a1.5 1.5 0 0 0-.55 2.053l.739 1.282a13.806 13.806 0 0 0-1.209 1.21L9.448 11.2a1.507 1.507 0 0 0-2.053.551l-1.164 2.016a1.5 1.5 0 0 0 .55 2.053l1.279.738a13.47 13.47 0 0 0-.444 1.654H6.139a1.506 1.506 0 0 0-1.5 1.5v2.327a1.505 1.505 0 0 0 1.5 1.5h1.477A13.6 13.6 0 0 0 8.06 25.2l-1.279.738a1.5 1.5 0 0 0-.55 2.054L7.4 30.008a1.5 1.5 0 0 0 2.053.55l1.282-.74a13.681 13.681 0 0 0 1.209 1.211l-.744 1.282a1.5 1.5 0 0 0 .55 2.053l2.016 1.163a1.5 1.5 0 0 0 2.053-.55l.739-1.279a13.247 13.247 0 0 0 1.654.444v1.477a1.506 1.506 0 0 0 1.5 1.5h2.328a1.5 1.5 0 0 0 1.5-1.5v-1.477a13.343 13.343 0 0 0 1.66-.442l.739 1.278a1.5 1.5 0 0 0 2.053.551l2.015-1.163a1.5 1.5 0 0 0 .551-2.054l-.739-1.281a13.547 13.547 0 0 0 1.209-1.211l1.283.74a1.506 1.506 0 0 0 2.053-.55l1.163-2.015a1.5 1.5 0 0 0-.55-2.054L33.7 25.2a13.523 13.523 0 0 0 .445-1.654h1.476a1.505 1.505 0 0 0 1.5-1.5v-2.33a1.505 1.505 0 0 0-1.502-1.504zm0 3.879h-2.085a.728.728 0 0 0-.719.618 12.04 12.04 0 0 1-.687 2.553.729.729 0 0 0 .313.894l1.825 1.109-1.229 2.035-1.811-1.045a.726.726 0 0 0-.931.175 12.22 12.22 0 0 1-1.868 1.87.728.728 0 0 0-.174.931l1.026 1.869-2.079 1.15-1.043-1.808a.727.727 0 0 0-.894-.313 11.954 11.954 0 0 1-2.553.686.728.728 0 0 0-.618.719l-.048 2.135-2.376-.049v-2.086a.729.729 0 0 0-.618-.719 11.887 11.887 0 0 1-2.552-.686.736.736 0 0 0-.264-.05.727.727 0 0 0-.63.363l-1.114 1.825-2.032-1.229 1.044-1.81a.728.728 0 0 0-.174-.931 12.22 12.22 0 0 1-1.868-1.868.728.728 0 0 0-.932-.175L8.652 29.28 7.506 27.2l1.808-1.043a.726.726 0 0 0 .313-.895 12.14 12.14 0 0 1-.686-2.552.727.727 0 0 0-.719-.618l-2.134-.048.048-2.376h2.086a.727.727 0 0 0 .719-.618 12.1 12.1 0 0 1 .686-2.55.728.728 0 0 0-.313-.895l-1.825-1.113 1.229-2.033 1.81 1.045a.731.731 0 0 0 .932-.174 12.138 12.138 0 0 1 1.868-1.869.729.729 0 0 0 .174-.932l-1.026-1.876 2.081-1.146L15.6 9.316a.728.728 0 0 0 .894.313 11.945 11.945 0 0 1 2.552-.686.729.729 0 0 0 .618-.72l.048-2.134 2.376.048v2.086a.73.73 0 0 0 .618.72 11.911 11.911 0 0 1 2.553.686.729.729 0 0 0 .894-.313l1.111-1.826L29.3 8.719l-1.044 1.81a.728.728 0 0 0 .174.932 12.189 12.189 0 0 1 1.87 1.869.728.728 0 0 0 .931.174l1.869-1.027 1.146 2.082L32.44 15.6a.728.728 0 0 0-.313.895 12.091 12.091 0 0 1 .687 2.552.726.726 0 0 0 .719.618h2.085l.048.049z"/><path d="m46.368 38.476-7.329-7.328a20.878 20.878 0 1 0-7.89 7.892l7.327 7.328a5.58 5.58 0 0 0 7.892-7.892zm-14.586-.864a.728.728 0 0 0-.891-.108 19.43 19.43 0 1 1 6.609-6.616.729.729 0 0 0 .109.891l5.591 5.583a12.031 12.031 0 0 1-5.837 5.838zm13.552 7.725a4.122 4.122 0 0 1-5.829 0L38.468 44.3a13.841 13.841 0 0 0 5.832-5.832l1.037 1.037a4.127 4.127 0 0 1-.003 5.832z"/><path d="M26.243 13.577a.727.727 0 0 0-1.028 0L13.579 25.213a.727.727 0 0 0 0 1.028.728.728 0 0 0 1.029 0l11.636-11.636a.728.728 0 0 0-.001-1.028zM27.154 19.4 19.4 27.154a.728.728 0 0 0 .515 1.241.72.72 0 0 0 .514-.214l7.758-7.757a.727.727 0 1 0-1.033-1.024z"/></g></svg>
-            <h1>CBU's perfectos</h1>
-            <div class="container-row" style="gap: 5px;">
-            </div>
-        </header>
-
-        <main>
-            
-            <div class="cbu_checkbox">
-                <label for="cbca_check">
-                    <input type="checkbox" id="cbca_check" name="cbus" value="cbca"> <span class="checkbox_text">Cultura, Artes y Humanidades (CBCA)</span>
-                </label>
-            
-                <label for="cbco_check">
-                    <input type="checkbox" id="cbco_check" name="cbus" value="cbco"> <span class="checkbox_text">Común en Colombia (CBCO)</span>
-                </label>
-            
-                <label for="cbpc_check">
-                    <input type="checkbox" id="cbpc_check" name="cbus" value="cbpc"> <span class="checkbox_text">Pensamiento Científico (CBCP)</span>
-                </label>
-            
-                <label for="cbcc_check">
-                    <input type="checkbox" id="cbcc_check" name="cbus" value="cbcc"> <span class="checkbox_text">Colombia - Espacio, Tiempo, Diferencia (CBCC-1177)</span>
-                </label>
-            </div>
-            <p class="welcome-cbu">Selecciona la categoria de CBU que te interese para ver todos los que son compatibles con tu horario, luego puedes regresar al menu principal y añadirlos</p>
-            <div class="cbu_list">
-                <div id="cbca" class="cbus-list inactive">
-                    <!-- Aquí van los cbca -->
-                </div>
-            
-
-                <div id="cbco" class="cbus-list inactive">
-                    <!-- Aquí van los cbco -->
-                </div>
-            
-
-                <div id="cbpc" class="cbus-list inactive">
-                    <!-- Aquí van los cbpc -->
-                </div>
-            
-
-                <div id="cbcc" class="cbus-list inactive">
-                    <!-- Aquí van los cbus cbcc -->
-                </div>
-            </div>
-            
-        </main>
-        
-    </section>
-    <script type="module" src="./script.js"></script>
-</body>
+					<div id="cbcc" class="cbus-list inactive">
+						<!-- Aquí van los cbus cbcc -->
+					</div>
+				</div>
+			</main>
+		</section>
+		<script type="module" src="./script.js"></script>
+	</body>
 </html>
-
