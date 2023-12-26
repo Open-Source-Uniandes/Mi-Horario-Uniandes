@@ -5,5 +5,4 @@ from models.BloqueSeleccion import BloqueSeleccion
 
 class Horario(BaseModel):
     id: int
-    secciones: list[Seccion] = []
-    bloqueSeleccion: list[BloqueSeleccion] = []
+    bloquesSeleccion: list[BloqueSeleccion]
