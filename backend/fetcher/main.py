@@ -1,5 +1,6 @@
 # main.py
-import asyncio, requests, settings
+import asyncio, requests
+from . import settings
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, BackgroundTasks
 from errors.errors import *

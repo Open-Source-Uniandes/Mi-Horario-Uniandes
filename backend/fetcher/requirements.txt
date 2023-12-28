@@ -1,2 +1,4 @@
 pydantic
 fastapi
+uvicorn
+requests
