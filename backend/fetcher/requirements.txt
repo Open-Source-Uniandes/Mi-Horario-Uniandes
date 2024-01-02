@@ -2,3 +2,5 @@ pydantic
 fastapi
 uvicorn
 requests
+pymongo
+logging

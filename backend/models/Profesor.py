@@ -3,4 +3,6 @@ from pydantic import BaseModel
 
 class Profesor(BaseModel):
     nombre: str
-    principal: bool
+
+    def __hash__(self):
+        return hash(self.name)

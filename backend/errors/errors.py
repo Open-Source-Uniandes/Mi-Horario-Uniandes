@@ -2,7 +2,12 @@
     Errores personalizados
 """
 
+from datetime import datetime
+from pydantic import BaseModel
 
-class BadHorarioResponseException(Exception):
-    def __init__(self):
-        super().__init__("No se pudo recuperar el horario de Oferta de Cursos.")
+
+class Error(BaseModel):
+    nombre: str
+    timestamp: datetime
+    descripcion: str
+    codigo: int
