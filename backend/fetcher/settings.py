@@ -18,7 +18,7 @@ SECCIONES = dict[Seccion]
 # Variable global de la base de datos
 DATABASES = {
     "default" : {
-        "URL" : "mongodb://localhost:27018/",
+        "URL" : "mongodb://localhost:27017/",
         "DATABASE_NAME" : "dump",
         "COLLECTION" : "dump",
     }
