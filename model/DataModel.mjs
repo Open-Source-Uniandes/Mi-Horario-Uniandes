@@ -1,6 +1,9 @@
 // Importa la clase CourseSection
 import { CourseSection } from "./CourseSection.mjs";
 
+const serviceId = "service_1flu7b1";
+const templateId = "template_heex7fg";
+
 // Define la clase DataModel
 class DataModel {
 
@@ -104,6 +107,22 @@ class DataModel {
         // Agrega el curso a los cursos agregados
         // Devuelve un nuevo objeto CourseSection basado en el objeto de datos procesado
         return new CourseSection(responseData);
+    }
+
+    async sendMail(message) {
+        const subject = "Mi Horario Uniandes";
+
+        let r;
+        try {
+            await emailjs.send(serviceId, templateId, {
+                message,
+                subject
+            })
+            r = "OK";
+        } catch (error) {
+            r = error.text;
+        }
+        return r;
     }
 }
 

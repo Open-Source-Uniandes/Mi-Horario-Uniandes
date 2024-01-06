@@ -34,6 +34,11 @@ class View {
         // Agregar event listeners
         // Welcome
         document.querySelector("#btn-start").addEventListener('click', this.openConfig.bind(this));
+
+        // Floating Mailbox
+        document.querySelector("#floating-mailbox").addEventListener('submit', this.sendMail.bind(this));
+        document.querySelector("#floating-button").addEventListener('click', this.openMailbox.bind(this));
+
         // Config
         document.querySelector("#btn-search-course").addEventListener('click', this.searchCourse.bind(this));
         document.querySelector("#btn-open-calendar").addEventListener('click', this.openCalendar.bind(this));
@@ -143,6 +148,36 @@ class View {
         document.querySelector("#load-start").classList.add("inactive");
         // Mostrar mensaje de error
         document.querySelector("#load-error").classList.remove("inactive");
+    }
+
+    /**
+     * Abre el campo del floating-mailbox
+     */
+    openMailbox() {
+        if (document.querySelector("#floating-mailbox").classList.contains("unactive")) {
+            document.querySelector("#floating-mailbox").classList.remove("unactive");
+        } else {
+            document.querySelector("#floating-mailbox").classList.add("unactive");
+        }
+        document.querySelector("#floating-button-svg").classList.remove("wiggler");
+    }
+
+    /**
+     * Envia el correo del floating-mailbox, cuando se envía
+     */
+    async sendMail() {
+        event.preventDefault();
+        const textarea = document.querySelector("#floating-mailbox-message");
+        const message = textarea.value;
+        const response = await this.viewModel.sendMail(message);
+        if (response !== "OK") {
+            document.querySelector("#floating-mailbox-disclaimer").classList.remove("unactive");
+            return;
+        }
+        document.querySelector("#floating-mailbox").classList.add("unactive");
+        document.querySelector("#floating-div").classList.add("unactive");
+        document.querySelector("#floating-div-sent").classList.remove("unactive");
+        document.querySelector("#floating-div-sent").classList.add("fade-out");
     }
 
 

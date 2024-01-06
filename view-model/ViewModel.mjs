@@ -214,6 +214,17 @@ class ViewModel {
             return Math.random();
         }
     }
+
+    /**
+     * Sends a mail using the provided message.
+     *
+     * @param {type} message - The message to be sent.
+     * @return {type} - The result of sending the mail.
+     */
+    async sendMail(message) {
+        const x = await this.dataModel.sendMail(message);
+        return x;
+    }
 }
 
 export { ViewModel };
