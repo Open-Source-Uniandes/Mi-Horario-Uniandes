@@ -1,6 +1,8 @@
 # main.py
 import asyncio, requests, pymongo, logging
 from . import settings
+from bson.json_util import dumps
+from json import loads
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, BackgroundTasks
 from errors.errors import *
@@ -58,6 +60,33 @@ def get_horarios_oferta():
         # Handle any request-related exceptions
         return None
     
+
+def get_horarios_backup():
+    """
+    Recupera toda la lista de horarios de la base de datos de respaldo
+    """
+    try:
+        url = settings.DATABASES.get("default").get("URL")
+        db_name = settings.DATABASES.get("default").get("DATABASE_NAME")
+        collection_name = settings.DATABASES.get("default").get("COLLECTION")
+
+        client = pymongo.MongoClient(url)
+        # accede a la base de datos
+        db = client[db_name]
+        # accede a la colección
+        collection = db[collection_name]
+
+        cursor = collection.find()
+        json_list = [loads(dumps(doc)) for doc in cursor]
+        # cierra la conección
+        client.close()
+
+        return json_list
+    
+    except Exception as e:
+        print(e)    
+        return None
+
 
 def save_horarios_oferta(json_data):
     """
@@ -167,4 +196,21 @@ def get_secciones()->list[Seccion]:
     """
     Retorna las secciones parseadas
     """
-    return settings.SECCIONES
+    # ya se cargó
+    if len(settings.SECCIONES) > 0:
+        return settings.SECCIONES
+    # toca cargarlo de la base de datos
+    else:
+        json_data = get_horarios_backup()
+        
+        # no se cargó
+        if len(json_data) == 0 :
+            return JSONResponse(content={}, status_code=404)
+        
+        # exitoso
+        if parse_horarios_oferta(json_data).status_code == 200:
+            return settings.SECCIONES
+        # error en el parseo
+        else:
+            return JSONResponse(content={}, status_code=503)
+    

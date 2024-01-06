@@ -9,11 +9,11 @@ from models.Seccion import Seccion
 API_COURSES = "https://ofertadecursos.uniandes.edu.co/api/courses"
 
 # Variable global de los profesores
-PROFESORES = dict[Profesor]
+PROFESORES = dict()
 # Variable global de los cursos
-CURSOS = dict[Curso]
+CURSOS = dict()
 # Variable global para las secciones
-SECCIONES = dict[Seccion]
+SECCIONES = dict()
 
 # Variable global de la base de datos
 DATABASES = {
