@@ -678,7 +678,7 @@ main #step3 #my-blocks .btn-remove-block {
     right: 20px;
     transition: all 0.3s ease-in-out;
     z-index: 999;
-    display: flex !important;
+    display: flex;
     justify-content: center !important;
   }
   
@@ -712,8 +712,7 @@ main #step3 #my-blocks .btn-remove-block {
   .floating-button-sent button {
     background-color: #3e8e41;
     cursor: default;
-    opacity: 0;
-    transition: opacity 3s ease-in-out;
+    padding: 0.375rem 0.75rem;
   }
   
   .floating-button button:hover {

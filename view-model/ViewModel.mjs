@@ -221,8 +221,9 @@ class ViewModel {
      * @param {type} message - The message to be sent.
      * @return {type} - The result of sending the mail.
      */
-    sendMail(message) {
-        this.dataModel.sendMail(message);
+    async sendMail(message) {
+        const x = await this.dataModel.sendMail(message);
+        return x;
     }
 }
 

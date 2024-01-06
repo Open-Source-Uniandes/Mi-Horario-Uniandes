@@ -165,11 +165,19 @@ class View {
     /**
      * Envia el correo del floating-mailbox, cuando se envía
      */
-    sendMail() {
+    async sendMail() {
         event.preventDefault();
         const textarea = document.querySelector("#floating-mailbox-message");
         const message = textarea.value;
-        this.viewModel.sendMail(message);
+        const response = await this.viewModel.sendMail(message);
+        if (response !== "OK") {
+            document.querySelector("#floating-mailbox-disclaimer").classList.remove("unactive");
+            return;
+        }
+        document.querySelector("#floating-mailbox").classList.add("unactive");
+        document.querySelector("#floating-div").classList.add("unactive");
+        document.querySelector("#floating-div-sent").classList.remove("unactive");
+        document.querySelector("#floating-div-sent").classList.add("fade-out");
     }
 
 
