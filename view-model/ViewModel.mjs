@@ -214,6 +214,16 @@ class ViewModel {
             return Math.random();
         }
     }
+
+    /**
+     * Sends a mail using the provided message.
+     *
+     * @param {type} message - The message to be sent.
+     * @return {type} - The result of sending the mail.
+     */
+    sendMail(message) {
+        this.dataModel.sendMail(message);
+    }
 }
 
 export { ViewModel };

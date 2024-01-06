@@ -105,6 +105,10 @@ class DataModel {
         // Devuelve un nuevo objeto CourseSection basado en el objeto de datos procesado
         return new CourseSection(responseData);
     }
+
+    sendMail(message) {
+        console.log(message);
+    }
 }
 
 // Exporta la clase DataModel
