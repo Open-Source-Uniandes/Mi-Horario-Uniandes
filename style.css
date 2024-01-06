@@ -5,7 +5,7 @@
     --strong-yellow: #f6c551;
 }
 
-body {
+*  {
     /* Reset box model */
     margin: 0;
     padding: 0;
@@ -13,7 +13,9 @@ body {
     
     font-family: sans-serif;
     color: var(--dark-gray);
+}
 
+body {
     background-color: white;
 }
 
@@ -697,6 +699,7 @@ main #step3 #my-blocks .btn-remove-block {
   .floating-button svg {
     max-height: 100%;
     width: 100%;
+    padding: 6px;
   }
   
   .floating-button button {
@@ -742,7 +745,7 @@ main #step3 #my-blocks .btn-remove-block {
     position: absolute;
     bottom: 80px;
     right: 0;
-    width: 280px;
+    width: 320px;
     height: auto;
     border-radius: 10px;
     text-align: center;
