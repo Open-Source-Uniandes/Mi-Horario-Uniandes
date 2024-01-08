@@ -114,7 +114,28 @@ a {
     display: none !important;
 }
 
+.rainbow-box {
+  border: 10px solid transparent;
+  border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 50%, #fd1892 100%);
+  border-image-slice: 1;
+}
+
 /* Modal de bienvenida */
+
+#welcome a:has(.rainbow-box) {
+    display: block;
+    margin: 0 auto;
+    text-decoration: none;
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 480px;
+}
+
+#welcome .rainbow-box {
+    margin: 0;
+    padding: 10px 20px;
+    text-align: center;
+}
 
 #welcome {
     width: 100vw;
