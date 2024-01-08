@@ -93,6 +93,16 @@ a {
     align-items: center; 
 }
 
+.searchBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#btn-search-course{
+    height: 45px;
+}
+
 .container-row {
     display: flex;
     flex-direction: row;

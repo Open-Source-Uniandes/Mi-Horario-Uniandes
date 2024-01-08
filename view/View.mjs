@@ -35,6 +35,13 @@ class View {
         // Welcome
         document.querySelector("#btn-start").addEventListener('click', this.openConfig.bind(this));
 
+        // Barra de busqueda (enter)
+        document.querySelector("#config-courseCode").addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                this.searchCourse({ event });
+            }
+        });
+
         // Floating Mailbox
         document.querySelector("#floating-mailbox").addEventListener('submit', this.sendMail.bind(this));
         document.querySelector("#floating-button").addEventListener('click', this.openMailbox.bind(this));
@@ -791,7 +798,7 @@ class View {
         // Al presionar, el nodo, se busca el codigo del curso, como si se colocase dentro del input config-courseCode
         node.addEventListener('click', () => {
             document.querySelector("#config-courseCode").value = courseCode;
-            this.showSearchedCourse(courseCode);
+            this.searchCourse({ value: courseCode });
         });
         // Boton que elimina el curso desde el que se pulsa
         let btn = document.createElement("button");
@@ -814,6 +821,8 @@ class View {
         node.appendChild(btn);
 
     }
+
+
 
 
     /**
