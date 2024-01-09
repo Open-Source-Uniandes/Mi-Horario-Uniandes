@@ -140,11 +140,11 @@ class View {
 
         this.config.courses.forEach(course => {
             this.searchCourse({ value: course.courseCode }).then(() => this.showAddedCourse.bind(this)(course));
-            // Mostrar los bloques guardados
-            this.config.blocks.forEach(this.showAddedBlock.bind(this));
-            // Mostrar la métrica guardada en la configuración
-            document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
         });
+        // Mostrar los bloques guardados
+        this.config.blocks.forEach(this.showAddedBlock.bind(this));
+        // Mostrar la métrica guardada en la configuración
+        document.querySelector(`input[name="optimizar"][value="${this.config.metric}"]`).checked = true;
     }
 
     /**
