@@ -294,13 +294,32 @@ class View {
                     h3Professor.innerText = `Profesor: ${course.instructors}`
                     node.appendChild(h3Professor);
 
-                    let h4 = document.createElement("h4");
-                    h4.innerText = `${course.credits} créditos`
-                    node.appendChild(h4);
+                    let h3Schedule = document.createElement("h3");
+                    h3Schedule.innerText = `Horarios:`
+                    node.appendChild(h3Schedule);
 
-                    let h5 = document.createElement("h5");
-                    h5.innerText = `Periodo: ${course.term}`
-                    node.appendChild(h5);
+                    let schedule = document.createElement("div");
+                    const days = ["l", "m", "i", "j", "v", "s"];
+                    days.forEach(day => {
+                        let dayTimeBlocks = course.schedule.timeBlocks[day];
+                        if (!dayTimeBlocks.length) return; // Ignorar días sin registros
+                        let p = document.createElement("p");
+                        let text = dayTimeBlocks
+                            .map(timeBlock => timeBlock.toString())
+                            .join(", ");
+                        p.innerText = `${day.toUpperCase()}: ${text}`;
+                        schedule.appendChild(p);
+                    });
+                    node.appendChild(schedule);
+
+
+                    let h5Seats = document.createElement("h5");
+                    h5Seats.innerText = `${course.seatsavail} cupos disponibles`
+                    node.appendChild(h5Seats);
+
+
+
+
 
                     document.querySelector("#" + key).appendChild(node);
                 });
