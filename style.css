@@ -231,6 +231,8 @@ a {
 
 #config main article {
     padding: 20px 30px;
+    margin: 5px;
+    margin-top: 2px;
 }
 
 #config main article h2 {
@@ -247,6 +249,7 @@ a {
     width: 100%;
     padding: 10px 5px;
     margin-bottom: 20px;
+    margin-right: 5px;
     border: none;
     border-radius: 5px;
     border: 1px solid var(--dark-gray);
