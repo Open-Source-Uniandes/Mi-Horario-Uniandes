@@ -1,5 +1,5 @@
 # Mi Horario Uniandes
-<img src=src/public/logoBanner.png>
+<img src=public/logoBanner.png>
 
 
 ¡Bienvenido!
