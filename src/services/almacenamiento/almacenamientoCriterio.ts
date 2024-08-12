@@ -13,6 +13,9 @@ const algoritmosOrdenamiento: {[nombre:string] : OrdenamientoHorario} = {
 
 export function obtenerAlgoritmoOrdenamiento() {
   if (typeof window !== "undefined") {
+    if (localStorage.getItem("criterio") === null) {
+      localStorage.setItem("criterio", JSON.stringify("sin huecos"));
+    }
     const algoritmoGuardado = JSON.parse(localStorage.getItem("criterio") || "");
     if (algoritmoGuardado) {
       return algoritmosOrdenamiento[algoritmoGuardado];

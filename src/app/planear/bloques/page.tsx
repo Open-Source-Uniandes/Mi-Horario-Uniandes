@@ -41,10 +41,11 @@ function FormularioBloque() {
   const { bloqueEnCreacion, setBloqueEnCreacion, setBloquesGuardados } = useContext(BloqueContext);
   const handleClic = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (!bloqueEnCreacion.titulo || !bloqueEnCreacion.lugar || !bloqueEnCreacion.horaInicio || !bloqueEnCreacion.horaFin) {
+    if (!bloqueEnCreacion.titulo || !bloqueEnCreacion.lugar || !bloqueEnCreacion.horaInicio || !bloqueEnCreacion.horaFin || bloqueEnCreacion.dias.length == 0) {
       alert("Por favor, llena todos los campos");
       return;
     }
+    
     guardarBloque(bloqueEnCreacion);
     setBloquesGuardados(obtenerBloquesGuardados());
     setBloqueEnCreacion(new BloqueTiempo(1, "", "", [], 630, 630));
@@ -97,7 +98,7 @@ function CheckBoxDiasSemana() {
     <div className='flex place-content-around'>
       {diasSemana.map((dia, index) => (
         <label key={index} className="text-3xl">
-          <input className="w-6 h-6" type="checkbox" name="dias" value={dia} onChange={handleChange}/>
+          <input className="w-6 h-6" type="checkbox" name="dias" value={dia} checked={bloqueEnCreacion.dias.includes(dia)}  onChange={handleChange}/>
           {dia.charAt(0).toUpperCase() + dia.slice(1)}
         </label>
       ))}
@@ -143,7 +144,7 @@ function BloquePlaneado({ bloque , funcionEliminar }: { bloque: BloqueTiempo, fu
       </div>
       <h3 className="text-lg font-semibold">{bloque.titulo}</h3>
       <p>{bloque.lugar}</p>
-      <p>{bloque.dias?.join(", ")}</p>
+      <p>{["l", "m", "i", "j", "v", "s"].filter(dia => bloque.dias.includes(dia)).map(dia => dia.toUpperCase()).join(", ")}</p>
       <p>{bloque.horaInicio + " - " + bloque.horaFin}</p>
     </div>
   );
