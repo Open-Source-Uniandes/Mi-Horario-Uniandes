@@ -5,6 +5,7 @@ import { obtenerDatosCursosGuardados } from "./fetcher";
 import OrdenamientoHorarios from "@/models/algoritmosOrdenamiento/OrdenamientoHorarios";
 import { obtenerAlgoritmoOrdenamiento } from "./almacenamiento/almacenamientoCriterio";
 import { obtenerBloquesGuardados } from "./almacenamiento/almacenamientoBloques";
+import Seccion from "@/models/Seccion";
 
 /*
   Función que verifica si un horario es válido
@@ -12,10 +13,63 @@ import { obtenerBloquesGuardados } from "./almacenamiento/almacenamientoBloques"
   @param horario El horario a verificar
 */
 export function horarioEsValido(horario: Horario) {
-  const bloquesPorDia: {[dia:string]: BloqueTiempo[]} = {};
+  const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= obtenerBloquesTotales(horario);
+  for (const dia in bloquesPorDiaTotal) {
+    for (let i = 1; i < bloquesPorDiaTotal[dia].length; i++) {
+      if ( bloquesPorDiaTotal[dia][i - 1].horaFin > bloquesPorDiaTotal[dia][i].horaInicio) return false;
+    }
+  }
+  return true;
+}
+
+/*
+  Función que une los bloques por día de un horario con los bloques por día de un usuario
+
+  @param bloquesPorDia Los bloques por día del horario
+  @param bloquesPorDiaUsuario Los bloques por día del usuario
+*/
+function obtenerBloquesTotales(horario: Horario) {
+  const bloquesPorDia: {[dia:string]: BloqueTiempo[]} = obtenerBloquesPorDia(horario);
   const bloquesUsuario: {[tituloBloque:string]: BloqueTiempo[]} = obtenerBloquesGuardados();
+  const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= {};
+  const dias = Object.keys(bloquesPorDia).concat(Object.keys(bloquesUsuario));
+  dias.forEach(dia => {
+    bloquesPorDiaTotal[dia] = bloquesPorDia[dia] || [];
+    bloquesPorDiaTotal[dia] = bloquesPorDiaTotal[dia].concat(bloquesUsuario[dia] || []);
+  } );
+  for (const dia in bloquesPorDiaTotal) {
+    bloquesPorDiaTotal[dia].sort((bloque1, bloque2) => bloque1.horaInicio - bloque2.horaInicio);
+  }
+  return bloquesPorDiaTotal;
+}
 
+/*
+  Función que filtra las secciones que colisionan con las secciones de un horario
 
+  @param horario El horario a comparar
+  @param secciones Las secciones a filtrar
+*/
+export function filtrarSeccionesQueColisionan(horario: Horario, secciones: Seccion[]) {
+  const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= obtenerBloquesTotales(horario);
+  return secciones.filter(seccion => {
+    for (const horario of seccion.horarios) {
+      for (const dia of horario.dias) {
+        for (const bloque of bloquesPorDiaTotal[dia]) {
+          if (horario.horaInicio < bloque.horaFin && horario.horaFin > bloque.horaInicio) return false;
+        }
+      }
+    }
+    return true;
+  });
+}
+
+/*
+  Función que obtiene los bloques por día de un horario
+
+  @param horario El horario a obtener los bloques
+*/
+function obtenerBloquesPorDia(horario: Horario) {
+  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {};
   horario.secciones.forEach(seccion => {
     seccion.horarios.forEach(bloque => {
       bloque.dias.forEach(dia => {
@@ -24,8 +78,12 @@ export function horarioEsValido(horario: Horario) {
       });
     });
   });
+  return bloquesPorDia;
+}
 
-  Object.values(bloquesUsuario).forEach(bloques => {
+function obtenerBloquesPorDiaUsuario(bloquesGuardados: {[titulo: string]: BloqueTiempo[]}) {
+  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {};
+  Object.values(bloquesGuardados).forEach(bloques => {
     bloques.forEach(bloque => {
       bloque.dias.forEach(dia => {
         if (!bloquesPorDia[dia]) bloquesPorDia[dia] = [];
@@ -33,13 +91,7 @@ export function horarioEsValido(horario: Horario) {
       });
     });
   });
-  for (const dia in bloquesPorDia) {
-    bloquesPorDia[dia].sort((bloque1, bloque2) => bloque1.horaInicio - bloque2.horaInicio);
-    for (let i = 1; i < bloquesPorDia[dia].length; i++) {
-      if ( bloquesPorDia[dia][i - 1].horaFin > bloquesPorDia[dia][i].horaInicio) return false;
-  }
-}
-return true;
+  return bloquesPorDia;
 }
 
 /*
