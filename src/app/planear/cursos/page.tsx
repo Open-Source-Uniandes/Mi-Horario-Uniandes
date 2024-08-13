@@ -228,7 +228,7 @@ function SeccionCursoSeleccionado({ seccion }: { seccion: Seccion }) {
         <p>nrc: {seccion.nrc} sección: {seccion.seccion}</p>
         <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
         <div className="w-full bg-gray-300 rounded-full h-3 dark:bg-gray-700">
-          {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(seccion.cuposTomados / seccion.cuposMaximos) * 100}%` }}></div>}
+          {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados,seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}
         </div>
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
         <p>{seccion.horarios.map((bloque) => bloque.dias.join("") + " " + bloque.horaInicio + " " + bloque.horaFin).join(", ")}</p>
