@@ -225,13 +225,13 @@ function SeccionCursoSeleccionado({ seccion }: { seccion: Seccion }) {
     <div className="bg-gray-100 text-center  flex  border border-3 border-black  sm:h-44  my-3">
       <div className='mx-auto flex flex-col justify-center'>
         <h3 className="text-lg font-semibold">{seccion.titulo}</h3>
-        <p>nrc: {seccion.nrc} sección: {seccion.seccion}</p>
+        <p>NRC: {seccion.nrc} SECCIÓN: {seccion.seccion}</p>
         <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
         <div className="w-full bg-gray-300 rounded-full h-3 dark:bg-gray-700">
           {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados,seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}
         </div>
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
-        <p>{seccion.horarios.map((bloque) => bloque.dias.join("") + " " + bloque.horaInicio + " " + bloque.horaFin).join(", ")}</p>
+        <p>{seccion.horarios.map((bloque) => bloque.dias.map(dia => dia.toUpperCase()).join("") + " " + bloque.horaInicio + " " + bloque.horaFin).join(", ")}</p>
       </div>
       <button className='bg-yellow-400 flex items-center justify-center w-8 text-2xl font-semibold' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.seccion) ? "-" : "+"}</button>
     </div>

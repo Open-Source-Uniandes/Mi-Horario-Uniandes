@@ -30,7 +30,7 @@ export function horarioEsValido(horario: Horario) {
 */
 function obtenerBloquesTotales(horario: Horario) {
   const bloquesPorDia: {[dia:string]: BloqueTiempo[]} = obtenerBloquesPorDia(horario);
-  const bloquesUsuario: {[tituloBloque:string]: BloqueTiempo[]} = obtenerBloquesGuardados();
+  const bloquesUsuario: {[tituloBloque:string]: BloqueTiempo[]} = obtenerBloquesPorDiaUsuario(obtenerBloquesGuardados());
   const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= {};
   const dias = Object.keys(bloquesPorDia).concat(Object.keys(bloquesUsuario));
   dias.forEach(dia => {
@@ -69,11 +69,10 @@ export function filtrarSeccionesQueColisionan(horario: Horario, secciones: Secci
   @param horario El horario a obtener los bloques
 */
 function obtenerBloquesPorDia(horario: Horario) {
-  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {};
+  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {"l":[], "m":[], "i":[], "j":[], "v":[], "s":[]};
   horario.secciones.forEach(seccion => {
     seccion.horarios.forEach(bloque => {
       bloque.dias.forEach(dia => {
-        if (!bloquesPorDia[dia]) bloquesPorDia[dia] = [];
         bloquesPorDia[dia].push(bloque);
       });
     });
@@ -82,7 +81,7 @@ function obtenerBloquesPorDia(horario: Horario) {
 }
 
 function obtenerBloquesPorDiaUsuario(bloquesGuardados: {[titulo: string]: BloqueTiempo[]}) {
-  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {};
+  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {"l":[], "m":[], "i":[], "j":[], "v":[], "s":[]};
   Object.values(bloquesGuardados).forEach(bloques => {
     bloques.forEach(bloque => {
       bloque.dias.forEach(dia => {
