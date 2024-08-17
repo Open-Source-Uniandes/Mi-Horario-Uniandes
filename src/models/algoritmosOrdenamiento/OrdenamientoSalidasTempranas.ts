@@ -1,5 +1,6 @@
 import OrdenamientoHorarios from '@/models/algoritmosOrdenamiento/OrdenamientoHorarios';
 import Horario from '@/models/Horario';
+import BloqueTiempo from '../BloqueTiempo';
 
 export default class OrdenamientoSalidasTempranas implements OrdenamientoHorarios{
   ordernar(horarios: Horario[]): void {
@@ -14,7 +15,7 @@ export default class OrdenamientoSalidasTempranas implements OrdenamientoHorario
     }, 0);
   }
 
-  private maxHoraFin(bloques: { horaFin: number }[]): number {
+  private maxHoraFin(bloques: BloqueTiempo[]): number {
     return bloques.reduce((max, bloque) => Math.max(max, bloque.horaFin), 0);
   }
 }
