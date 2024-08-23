@@ -32,7 +32,8 @@ El software lo construimos entre todos 💛
 ## Colaboradores
 
 - [Wilmer Arevalo](https://github.com/wareval0) - w.arevalo@uniandes.edu.co  
-- [Alejandro Pulido](https://github.com/alejandroPulido03)  
+- [Alejandro Pulido](https://github.com/alejandroPulido03)
+- [Juan Espitia](https://github.com/jmpizza)
 
 ## Contacto
 
