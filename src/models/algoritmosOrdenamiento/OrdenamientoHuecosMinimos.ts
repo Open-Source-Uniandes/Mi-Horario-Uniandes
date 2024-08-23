@@ -10,47 +10,64 @@ export default class OrdenamientoHuecosMinimos implements OrdenamientoHorarios {
   }
 
   /*
-  Calcula la cantidad de huecos en un horario dado.
-  
-  @param horario - El horario para el cual se calcularán los huecos.
-  @returns El total de huecos en minutos.
+    Calcula la cantidad total de huecos en un horario dado, considerando cada día por separado.
+    @param horario - El horario para el cual se calcularán los huecos.
+    @returns El total de huecos en minutos.
   */
   private calcularHuecos(horario: Horario): number {
-    const bloques = horario.secciones.flatMap(seccion => seccion.horarios);
-    const primerBloque = this.minHoraInicio(bloques);
-    const ultimoBloque = this.maxHoraFin(bloques);
-    /*
-    Calcula el span total (diferencia entre la primera entrada y la última salida).
-    */
-    let spanTotal = ultimoBloque - primerBloque;
-    /*
-    Resta las horas ocupadas en clase.
-    */
-    bloques.forEach(bloque => {
-      const duracionClase = bloque.horaFin - bloque.horaInicio;
-      spanTotal -= duracionClase;
+    const bloquesPorDia: { [dia: string]: BloqueTiempo[] } = this.bloquesPorDia(horario);
+    let huecosTotales = 0;
+
+    for (const dia in bloquesPorDia) {
+      const bloques = bloquesPorDia[dia];
+
+      bloques.sort((a, b) => a.horaInicio - b.horaInicio);
+
+      huecosTotales += this.huecosDia(bloques);
+    }
+
+    return huecosTotales;
+  }
+  /*
+    Organiza los bloques de tiempo de un horario en un objeto donde cada clave es un día.
+    @param horario - El horario del cual se obtendrán los bloques.
+    @returns Un objeto que mapea los días a sus respectivos bloques de tiempo.
+  */
+  private bloquesPorDia(horario: Horario): { [dia: string]: BloqueTiempo[] } {
+    const bloquesPorDia: { [dia: string]: BloqueTiempo[] } = {};
+    horario.secciones.forEach(seccion => {
+      seccion.horarios.forEach(bloque => {
+        bloque.dias.forEach(dia => {
+          if (!bloquesPorDia[dia]) {
+            bloquesPorDia[dia] = [];
+          }
+          bloquesPorDia[dia].push(bloque);
+        });
+      });
     });
 
-    return spanTotal;
+    return bloquesPorDia;
   }
-  
   /*
-    Obtiene la hora de inicio más temprana de un conjunto de bloques de tiempo.
-    
-    @param bloques - Los bloques de tiempo a evaluar.
-    @returns La hora de inicio más temprana en minutos.
+    Calcula los huecos dentro de un día específico, dado un conjunto de bloques de tiempo.
+    @param bloques - Los bloques de tiempo de un día específico.
+    @returns El total de huecos en minutos para ese día.
   */
-  private minHoraInicio(bloques: BloqueTiempo[]): number {
-    return bloques.reduce((min, bloque) => Math.min(min, bloque.horaInicio), 24 * 60);
-  }
+  private huecosDia(bloques: BloqueTiempo[]): number {
+    if (bloques.length === 0) return 0;
+    
+    let huecos = 0;
+    let ultimoFin = bloques[0].horaFin;
 
-  /*
-    Obtiene la hora de fin más tardía de un conjunto de bloques de tiempo.
-    
-    @param bloques - Los bloques de tiempo a evaluar.
-    @returns La hora de fin más tardía en minutos.
-  */
-  private maxHoraFin(bloques: BloqueTiempo[]): number {
-    return bloques.reduce((max, bloque) => Math.max(max, bloque.horaFin), 0);
+    for (let i = 1; i < bloques.length; i++) {
+      const bloque = bloques[i];
+
+      if (bloque.horaInicio > ultimoFin) {
+        huecos += bloque.horaInicio - ultimoFin;
+      }
+      ultimoFin = Math.max(ultimoFin, bloque.horaFin);
+    }
+
+    return huecos;
   }
 }
