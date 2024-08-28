@@ -43,13 +43,26 @@ function cargarProfesoresSeccion(seccion: Seccion, profesores: ProfesorAPI[]) {
 }
 
 /*
+  Función que obtiene el periodo de una sección (8A, 8B, Completo, etc)
+
+  @param seccion La sección de la que se obtendrá el periodo
+*/
+function obtenerPeriodoSeccion(seccion: SeccionAPI) {
+  let periodo: string = "16";
+  if (seccion.ptrm === "8A" || seccion.ptrm === "8B") {
+    periodo = seccion.ptrm;
+  }
+  return periodo;
+}
+
+/*
   Función que crea una sección de un curso
 
   @param curso El curso al que pertenece la sección
   @param informacionSeccion La información de la sección
 */
 function crearSeccionDeCurso(curso: Curso, informacionSeccion: SeccionAPI) {
-  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0].date_ini), new Date(informacionSeccion.schedules[0].date_fin), curso);
+  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0].date_ini), new Date(informacionSeccion.schedules[0].date_fin), curso, obtenerPeriodoSeccion(informacionSeccion));
   cargarProfesoresSeccion(seccion, informacionSeccion.instructors);
   cargarHorariosSeccion(seccion, informacionSeccion.schedules);
   return seccion;

@@ -16,7 +16,7 @@ export function Calendario({horario}: {horario: Horario}) {
   console.log(seccionesPorDia);
   return (
     <div className='flex justify-center items-center w-full pt-4'>
-      <div className='grid grid-cols-1 md:grid-cols-6 w-screen sm:w-11/12'>
+      <div className='grid grid-cols-1 lg:grid-cols-6 w-screen sm:w-11/12'>
         <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} className="border-l border-t border-b border-gray-400"/>
@@ -39,7 +39,7 @@ export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horari
 
   return (
     <div className='flex justify-center items-center w-full pt-4'>
-      <div className='grid grid-cols-1 md:grid-cols-6 w-screen sm:w-11/12'>
+      <div className='grid grid-cols-1 lg:grid-cols-6 w-screen sm:w-11/12'>
         <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} bloques={bloquesPorDia["l"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} bloques={bloquesPorDia["m"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} bloques={bloquesPorDia["i"]} className="border-l border-t border-b border-gray-400"/>
@@ -105,6 +105,73 @@ function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, clas
 }
 
 /*
+  Función que obtiene el ancho de una sección en porcentaje
+
+  @param seccion La sección a mostrar
+*/
+function obtenerAnchoSeccionPorcentaje(seccion: Seccion) {
+  if (seccion.periodo === "16") {
+    return 100;
+  }
+  return 48;
+}
+
+/*
+  Componente que muestra una sección en el horario
+
+  @param seccion La sección a mostrar
+  @param bloque El bloque de tiempo a mostrar
+*/
+function obtenerDistanciaBordeIzquierdo(seccion: Seccion) {
+  if (seccion.periodo === "8A") {
+    return "2px";
+  }
+  return "auto";
+}
+
+/*
+  Componente que muestra una sección en el horario
+
+  @param seccion La sección a mostrar
+  @param bloque El bloque de tiempo a mostrar
+*/
+function obtenerDistanciaBordeDerecho(seccion: Seccion) {
+  if (seccion.periodo === "8B") {
+    return "2px";
+  }
+  return "auto";
+}
+
+/*
+  Función que asigna un color de fondo a una sección dependiendo de su disponibilidad
+
+  @param seccion La sección a mostrar
+*/
+function obtenerColorFondoSeccion(seccion: Seccion) {
+  const disponibilidad = 1 - (Math.min(seccion.cuposTomados,seccion.cuposMaximos) / Math.max(seccion.cuposMaximos,1));
+  if (disponibilidad >= 0.8) return "#86efac";
+  if (disponibilidad >= 0.6) return "#bef264";
+  if (disponibilidad >= 0.4) return "#fde047";
+  if (disponibilidad >= 0.2) return "#fdba74";
+  if (disponibilidad > 0.0) return "#fca5a5";
+  return "#cbd5e1";
+}
+
+/*
+  Función que asigna un color de borde a una sección dependiendo de su disponibilidad
+
+  @param seccion La sección a mostrar
+*/
+function obtenerColorBordeSeccion(seccion: Seccion) {
+  const disponibilidad = 1 - (Math.min(seccion.cuposTomados,seccion.cuposMaximos) / Math.max(seccion.cuposMaximos,1));
+  if (disponibilidad >= 0.8) return "#22c55e";
+  if (disponibilidad >= 0.6) return "#84cc16";
+  if (disponibilidad >= 0.4) return "#eab308";
+  if (disponibilidad >= 0.2) return "#f97316";
+  if (disponibilidad > 0.0) return "#ef4444";
+  return "#6b7280";
+}
+/*
   Componente que muestra una sección en el horario
 
   @param seccion La sección a mostrar
@@ -114,14 +181,22 @@ function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiem
   const tiempoInicialAPixeles = Math.floor((tiempoAMinutos(bloque.horaInicio) - tiempoAMinutos(600)) * 0.75);
   const tiempoFinalAPixeles = Math.floor((tiempoAMinutos(bloque.horaFin) - tiempoAMinutos(600)) * 0.75);
   const alturaBloqueEnPixeles = tiempoFinalAPixeles - tiempoInicialAPixeles;
+  const anchobloqueEnPorcentaje = obtenerAnchoSeccionPorcentaje(seccion);
+  const distanciaBordeDerecho =  obtenerDistanciaBordeDerecho(seccion)
+  const distanciaBordeIzquierdo = obtenerDistanciaBordeIzquierdo(seccion)
+
+
   return (
-    <div className='absolute  w-11/12 rounded border-2 border-yellow-400 bg-yellow-200 flex items-center justify-center' style={{ top: `${(tiempoInicialAPixeles)}px` , height: `${alturaBloqueEnPixeles}px` }}>
+    <div className='absolute  w-11/12 rounded border-2 flex items-center justify-center' 
+      style={{height: `${alturaBloqueEnPixeles}px`, width: `${anchobloqueEnPorcentaje}%` , 
+        backgroundColor: `${obtenerColorFondoSeccion(seccion)}`, borderColor: `${obtenerColorBordeSeccion(seccion)}`,
+        top: `${(tiempoInicialAPixeles)}px` ,  left: `${distanciaBordeIzquierdo}`, right: `${distanciaBordeDerecho}`}}>
       <div>
-        <p className="text-center text-sm">{seccion.curso.programa + seccion.curso.curso}</p>
-        <p className="text-center text-sm">{seccion.seccion}</p>
+        <p className="text-center text-xs">{seccion.curso.programa + seccion.curso.curso}</p>
+        <p className="text-center text-xs">{seccion.seccion}</p>
+        <p className="text-center text-xs" >{bloque.horaInicio} - {bloque.horaFin}</p>
       </div>
-      <p className="text-center text-sm">{seccion.profesores[0].nombre}</p>
-      <p className="text-center text-sm" >{bloque.horaInicio} - {bloque.horaFin}</p>
+      <p className="text-center text-xs">{seccion.profesores[0].nombre}</p>
     </div>
   );
 }

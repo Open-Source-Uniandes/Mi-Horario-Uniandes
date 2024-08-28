@@ -15,8 +15,9 @@ import Seccion from "@/models/Seccion";
 export function horarioEsValido(horario: Horario) {
   const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= obtenerBloquesTotales(horario);
   for (const dia in bloquesPorDiaTotal) {
+    console.log(dia, bloquesPorDiaTotal[dia]);
     for (let i = 1; i < bloquesPorDiaTotal[dia].length; i++) {
-      if ( bloquesPorDiaTotal[dia][i - 1].horaFin > bloquesPorDiaTotal[dia][i].horaInicio) return false;
+      if ( Number(bloquesPorDiaTotal[dia][i - 1].horaFin) > Number(bloquesPorDiaTotal[dia][i].horaInicio)) return false;
     }
   }
   return true;
@@ -31,14 +32,14 @@ export function horarioEsValido(horario: Horario) {
 function obtenerBloquesTotales(horario: Horario) {
   const bloquesPorDia: {[dia:string]: BloqueTiempo[]} = obtenerBloquesPorDia(horario);
   const bloquesUsuario: {[tituloBloque:string]: BloqueTiempo[]} = obtenerBloquesPorDiaUsuario(obtenerBloquesGuardados());
-  const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= {};
-  const dias = Object.keys(bloquesPorDia).concat(Object.keys(bloquesUsuario));
+  const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= crearObjetoBloquesPorDia();
+  const dias = Object.keys(bloquesPorDiaTotal);
   dias.forEach(dia => {
     bloquesPorDiaTotal[dia] = bloquesPorDia[dia] || [];
     bloquesPorDiaTotal[dia] = bloquesPorDiaTotal[dia].concat(bloquesUsuario[dia] || []);
   } );
   for (const dia in bloquesPorDiaTotal) {
-    bloquesPorDiaTotal[dia].sort((bloque1, bloque2) => bloque1.horaInicio - bloque2.horaInicio);
+    bloquesPorDiaTotal[dia].sort((bloque1, bloque2) => Number(bloque1.horaInicio) - Number(bloque2.horaInicio));
   }
   return bloquesPorDiaTotal;
 }
@@ -63,30 +64,51 @@ export function filtrarSeccionesQueColisionan(horario: Horario, secciones: Secci
   });
 }
 
+
+/*
+  Función que crea un objeto con los bloques por día
+  el sufijo 1 indica ciclo 1 (8A) y el sufijo 2 indica ciclo 2 (8B)
+  si un bloque es de 16 semanas se guarda en ambos ciclos
+
+  @returns Un objeto con los bloques por día
+*/
+function crearObjetoBloquesPorDia() {
+  return {"l1":[], "m1":[], "i1":[], "j1":[], "v1":[], "s1":[],"l2":[], "m2":[], "i2":[], "j2":[], "v2":[], "s2":[] };
+}
+
 /*
   Función que obtiene los bloques por día de un horario
 
   @param horario El horario a obtener los bloques
 */
 function obtenerBloquesPorDia(horario: Horario) {
-  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {"l":[], "m":[], "i":[], "j":[], "v":[], "s":[]};
+  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = crearObjetoBloquesPorDia();
   horario.secciones.forEach(seccion => {
     seccion.horarios.forEach(bloque => {
       bloque.dias.forEach(dia => {
-        bloquesPorDia[dia].push(bloque);
+        if (seccion.periodo === "8A" || seccion.periodo === "16")
+          bloquesPorDia[dia + "1"].push(bloque);
+        if (seccion.periodo === "8B" || seccion.periodo === "16")
+          bloquesPorDia[dia + "2"].push(bloque);
       });
     });
   });
   return bloquesPorDia;
 }
 
+
+/*
+  Función que obtiene los bloques guardados
+
+  @returns Los bloques guardados
+*/
 function obtenerBloquesPorDiaUsuario(bloquesGuardados: {[titulo: string]: BloqueTiempo[]}) {
-  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = {"l":[], "m":[], "i":[], "j":[], "v":[], "s":[]};
+  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = crearObjetoBloquesPorDia();
   Object.values(bloquesGuardados).forEach(bloques => {
     bloques.forEach(bloque => {
       bloque.dias.forEach(dia => {
-        if (!bloquesPorDia[dia]) bloquesPorDia[dia] = [];
-        bloquesPorDia[dia].push(bloque);
+        bloquesPorDia[dia + "1"].push(bloque);
+        bloquesPorDia[dia + "2"].push(bloque);
       });
     });
   });

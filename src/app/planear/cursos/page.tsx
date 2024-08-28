@@ -268,7 +268,7 @@ function CursoPlaneado({ codigo, secciones}: { codigo: string, secciones: number
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <div className="bg-gray-100 text-center  flex flex-col  border border-3 border-black  h-24  my-3">
+    <div className="bg-gray-100 text-center  flex flex-col  border border-3 border-black  min-h-24  my-3">
       <div className='bg-yellow-400 flex h-8 place-content-end'>
         <Image src="/lupa.svg" alt="Buscar curso" width="0" height="0"   className='cursor-pointer mr-3 w-6 h-auto' onClick={handleBusqueda} title="Buscar curso"/>
         <Image src="/cruz.svg" alt="Eliminar curso"  width="0" height="0" className='cursor-pointer mr-3 w-6 h-auto' onClick={handleEliminacion} title="Eliminar curso"/>
