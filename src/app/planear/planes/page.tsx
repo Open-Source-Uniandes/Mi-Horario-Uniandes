@@ -59,7 +59,7 @@ function Plan({planId, cursos, setPlanes}: {planId : number, cursos: {[codigoCur
 function BotonVerPlan({planId}: {planId: number}) {
   return (
     <button className="w-40 h-12 mx-auto block bg-yellow-300  border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out">
-      <Link href={`/editar/${planId}`}>
+      <Link href={`/Mi-Horario-Uniandes/editar/${planId}`}>
         Ver
       </Link>
     </button>

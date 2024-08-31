@@ -41,7 +41,7 @@ function Main(){
             <p className="my-4 text-lg font-bold">Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automáticamente.</p>
         <ServicioNotificaciones/>
         <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out">
-          <Link href="planear">Arma tu horario</Link>
+          <Link href="Mi-Horario-Uniandes/planear">Arma tu horario</Link>
         </button>
     </main>
   )
@@ -78,7 +78,7 @@ function Footer() {
         <p className="text-center text-lg">Hecho con 💛 en Uniandes</p>
         <Link href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes" className="font-semibold text-yellow-300  hover:text-yellow-500 transition-colors duration-300 ease-in-out">Sé parte de este proyecto aquí</Link>
       </div>
-      <Image src="/static/seneca-icon.svg" alt="Icono seneca" width={70} height={70} className="ml-6" />
+      <Image src="/Mi-Horario-Uniandes/static/seneca-icon.svg" alt="Icono seneca" width={70} height={70} className="ml-6" />
     </footer>
   )
 }

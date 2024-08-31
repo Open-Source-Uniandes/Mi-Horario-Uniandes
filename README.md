@@ -1,5 +1,5 @@
 # Mi Horario Uniandes
-[![Video del proyecto](public/logoBanner.png)](https://www.youtube.com/watch?v=WNirDylLHS8)
+[![Video del proyecto](public/static/logoBanner.png)](https://www.youtube.com/watch?v=WNirDylLHS8)
 *Haz clic en la imagen para ver una demostración de la aplicación.*
 
 ## ¡Bienvenido a Mi Horario Uniandes!

@@ -35,7 +35,7 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
   const nombreOpcion = partesRuta[partesRuta.length - 1]
   return (
     <button>
-      <Link className="text-sm font-medium flex flex-col items-center" href={ruta}>
+      <Link className="text-sm font-medium flex flex-col items-center" href={ ruta }>
         <div className="flex items-center justify-center w-12 h-12 rounded-md border border-black">
           {children}
         </div>
@@ -51,7 +51,7 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
 function BotonCursos() {
     return (
       <BotonLateral ruta={"/planear/cursos"}>
-        <Image src="/static/universidad.svg" alt="Cursos" width={24} height={24}/>
+        <Image src="/Mi-Horario-Uniandes/static/universidad.svg" alt="Cursos" width={24} height={24}/>
       </BotonLateral>
     )
 }
@@ -62,7 +62,7 @@ function BotonCursos() {
 function BotonBloques() {
   return (
     <BotonLateral ruta={"/planear/bloques"}>
-      <Image src="/static/reloj.svg" alt="Bloques" width={24} height={24}/>
+      <Image src="/Mi-Horario-Uniandes/static/reloj.svg" alt="Bloques" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -73,7 +73,7 @@ function BotonBloques() {
 function BotonGrupos() {
     return (
       <BotonLateral ruta={"/planear/grupos"}>
-        <Image src="/static/canasta.svg" alt="Grupos" width={24} height={24}/>
+        <Image src="/Mi-Horario-Uniandes/static/canasta.svg" alt="Grupos" width={24} height={24}/>
       </BotonLateral>
     )
 }
@@ -84,7 +84,7 @@ function BotonGrupos() {
 function BotonPlanes() {
   return (
     <BotonLateral ruta={"/planear/planes"}>
-      <Image src="/static/lista.svg" alt="Planes" width={24} height={24}/>
+      <Image src="/Mi-Horario-Uniandes/static/lista.svg" alt="Planes" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -95,7 +95,7 @@ function BotonPlanes() {
 function BotonCriterios() {
   return (
     <BotonLateral ruta={"/planear/criterios"}>
-      <Image src="/static/engranaje.svg" alt="Ordenamientos" width={24} height={24}/>
+      <Image src="/Mi-Horario-Uniandes/static/engranaje.svg" alt="Ordenamientos" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -106,7 +106,7 @@ function BotonCriterios() {
 function BotonVerHorarios() {
   return (
     <BotonLateral ruta={"/ver"}>
-      <Image src="/static/calendario.svg" alt="Ver Horarios" width={24} height={24}/>
+      <Image src="/Mi-Horario-Uniandes/static/calendario.svg" alt="Ver Horarios" width={24} height={24}/>
     </BotonLateral>
   )
 }

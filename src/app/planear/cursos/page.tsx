@@ -110,7 +110,7 @@ function CursoEncontrado({ curso, funcionSeleccionDeCurso }: { curso: Curso, fun
         <p>{curso.creditos}</p>
       </div>
       <button className='bg-yellow-400 flex items-center justify-center w-8' onClick={funcionSeleccionDeCurso} title='Seleccionar curso'>
-        <Image src="static/lupa.svg" alt="Seleccionar curso" width="0" height="0" className='w-6 h-auto' />
+        <Image src="/Mi-Horario-Uniandes/static/lupa.svg" alt="Seleccionar curso" width="0" height="0" className='w-6 h-auto' />
       </button>
     </div>
   )
@@ -176,7 +176,7 @@ function BotonSeleccionarTodas({ curso }: { curso: Curso }) {
   }
   return (
     <button title='Seleccionar todas' onClick={handleClic}>
-      <Image src="static/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
+      <Image src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
     </button>
   )
 }
@@ -194,7 +194,7 @@ function BotonSeleccionarValidas({ curso }: { curso: Curso }) {
   }
   return (
     <button title='Seleccionar con cupo' onClick={handleClic}>
-      <Image src="static/seleccionarValidas.svg" alt="Seleccionar validas" width={35} height={35} />
+      <Image src="/Mi-Horario-Uniandes/static/seleccionarValidas.svg" alt="Seleccionar validas" width={35} height={35} />
     </button>
   )
 }
@@ -212,7 +212,7 @@ function BotonEliminarTodas({ curso }: { curso: Curso }) {
   }
   return (
     <button title='Eliminar todas'  onClick={handleClic}>
-      <Image src="static/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
+      <Image src="/Mi-Horario-Uniandes/static/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
     </button>
   )
 }
@@ -277,8 +277,8 @@ function CursoPlaneado({ codigo, secciones}: { codigo: string, secciones: number
   return (
     <div className="bg-gray-100 text-center  flex flex-col  border border-3 border-black  min-h-24  my-3">
       <div className='bg-yellow-400 flex h-8 place-content-end'>
-        <Image src="/static/lupa.svg" alt="Buscar curso" width="0" height="0"   className='cursor-pointer mr-3 w-6 h-auto' onClick={handleBusqueda} title="Buscar curso"/>
-        <Image src="/static/cruz.svg" alt="Eliminar curso"  width="0" height="0" className='cursor-pointer mr-3 w-6 h-auto' onClick={handleEliminacion} title="Eliminar curso"/>
+        <Image src="/Mi-Horario-Uniandes/static/lupa.svg" alt="Buscar curso" width="0" height="0"   className='cursor-pointer mr-3 w-6 h-auto' onClick={handleBusqueda} title="Buscar curso"/>
+        <Image src="/Mi-Horario-Uniandes/static/cruz.svg" alt="Eliminar curso"  width="0" height="0" className='cursor-pointer mr-3 w-6 h-auto' onClick={handleEliminacion} title="Eliminar curso"/>
       </div>
       <h3 className="text-lg font-semibold">{codigo}</h3>
       <p className="text-muted-foreground">Secciones: {secciones.join(", ")}</p>

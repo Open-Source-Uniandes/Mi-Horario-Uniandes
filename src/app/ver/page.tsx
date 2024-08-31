@@ -53,7 +53,7 @@ export default function Ver() {
 function NoHayHorarios() {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center my-auto">
-      <Image src="/static/senecaSorprendida.svg" alt="Error" width={200} height={200} />
+      <Image src="/Mi-Horario-Uniandes/static/senecaSorprendida.svg" alt="Error" width={200} height={200} />
       <p className="text-xl font-semibold">No se encontraron horarios</p>
       <p className="text-lg">Intenta eliminar bloques o secciones para obtener horarios</p>
     </div>
