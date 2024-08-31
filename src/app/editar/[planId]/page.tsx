@@ -41,3 +41,4 @@ export default function Editar({ params }: { params: { planId: string } }) {
     </div>
   )
 }
+

@@ -2,7 +2,7 @@
   Layout principal de la aplicación
 */
 
-import type { Metadata } from "next";
+import type { GetStaticPaths, Metadata } from "next";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import "./globals.css";
 
