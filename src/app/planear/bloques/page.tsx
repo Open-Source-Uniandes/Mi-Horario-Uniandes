@@ -154,7 +154,7 @@ function BloquePlaneado({ bloque , funcionEliminar }: { bloque: BloqueTiempo, fu
   return (
     <div className="bg-gray-100 text-center  flex flex-col  border border-3 border-black  h-36 my-3">
       <div className='bg-yellow-400 flex h-8 place-content-end'>
-        <Image src="/cruz.svg" alt="Eliminar" width="0" height={24} onClick={funcionEliminar} className='w-6 h-auto cursor-pointer'/>
+        <Image src="cruz.svg" alt="Eliminar" width="0" height={24} onClick={funcionEliminar} className='w-6 h-auto cursor-pointer'/>
       </div>
       <h3 className="text-lg font-semibold">{bloque.titulo}</h3>
       <p>{bloque.lugar}</p>
