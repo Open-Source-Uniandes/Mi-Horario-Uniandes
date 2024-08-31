@@ -1,17 +1,24 @@
 # Mi Horario Uniandes
+[![Video del proyecto](public/logoBanner.png)](https://www.youtube.com/watch?v=WNirDylLHS8)
+*Haz clic en la imagen para ver una demostración de la aplicación.*
 
-¡Bienvenido!
+## ¡Bienvenido a Mi Horario Uniandes!
 
-Mi Horario Uniandes es una aplicación web que se nutre de la API de cursos de la Universidad de los Andes para ayudarte a encontrar tu horario ideal.
+**Mi Horario Uniandes** es una aplicación web diseñada para ayudarte a crear el horario perfecto utilizando la API de cursos de la Universidad de los Andes. Con una interfaz intuitiva y diversas funcionalidades, puedes organizar tus clases y optimizar tu tiempo de estudio de manera eficiente.
 
-Actualmente, cuenta con 4 funcionalidades principales:
-1. Permite agregar secciones específicas de cursos que te interesa considerar entre tus opciones.
-2. Permite agregar bloques de tiempo personalizados en los cuales no deseas tener clase.
-3. Permite optimizar tus horarios según una métrica personalizada.
-4. Permite consultar todos los CBU's que cuadran dentro de un horario especifico
+### Funcionalidades Principales
+La aplicación ofrece las siguientes herramientas para facilitar la creación de tu horario:
 
+1. **Selección de secciones:** Agrega secciones específicas de cursos que deseas considerar entre tus opciones.
+2. **Bloques de tiempo personalizados:** Define bloques de tiempo en los que prefieres no tener clases.
+3. **Optimización de horarios:** Optimiza tus horarios según una métrica personalizada, adaptada a tus necesidades.
+4. **Consulta de CBU's:** Encuentra todos los CBU's que se ajusten a un horario específico.
+5. **Consulta de cursos especiales:** Filtra y consulta cursos especiales (Tipo E, Epsilon, etc.) que encajen dentro de un horario determinado.
+
+### Acceso a la Aplicación
 Visita la aplicación web desplegada [aquí](https://open-source-uniandes.github.io/Mi-Horario-Uniandes/)
-## Reporte de errores
+
+## Reporte de Errores y Sugerencias
 
 Si encuentras un error, por favor añádelo como un [issue](https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes/issues).
 
@@ -21,16 +28,20 @@ Si encuentras un error, por favor añádelo como un [issue](https://github.com/O
 
 El software lo construimos entre todos 💛
 
+
 ## Colaboradores
 
-**Daniel Diaz ([ddi4z](https://github.com/ddi4z))**
-* Implementación de la funcionalidad de consulta de CBU's.
-* Implementación de la opción de búsqueda de cursos por nombre.
-* Incorporación de botones para agilizar el proceso de selección de cursos y secciones.
-* Realización de cambios menores para mejorar la experiencia general del usuario.
+- [Wilmer Arevalo](https://github.com/wareval0) - w.arevalo@uniandes.edu.co  
+- [Alejandro Pulido](https://github.com/alejandroPulido03)
+- [Juan Espitia](https://github.com/jmpizza)
 
 ## Contacto
 
-Este proyecto es creado y mantenido por [Juan Sebastian Urrea](https://github.com/jsurrea) (js.urrea@uniandes.edu.co)
+Para cualquier consulta o sugerencia, puedes contactarnos en [opensource@uniandes.edu.co](mailto:opensource@uniandes.edu.co) o directamente con los líderes del proyecto:
 
-Conoce más del proyecto Open Source Uniandes [aquí](https://github.com/Open-Source-Uniandes) 👈
+- [Daniel Diaz](https://github.com/ddi4z) - d.diazm@uniandes.edu.co
+- [Álvaro Bacca](https://github.com/c4ts0up) - a.baccap@uniandes.edu.co
+
+Este proyecto es creado y mantenido por [Juan Sebastian Urrea](https://github.com/jsurrea) - js.urrea@uniandes.edu.co.
+
+Descubre más sobre el proyecto Open Source Uniandes [aquí](https://github.com/Open-Source-Uniandes) 👈
