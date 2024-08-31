@@ -40,12 +40,18 @@ function Planeacion() {
   const { cursoABuscar, setCursoABuscar } = useContext(CursoContext);
   const [ cursosEncontrados, setCursosEncontrados] = useState<{ [codigo: string]: Curso }>({});
   const [ cursoSeleccionado, setCursoSeleccionado] = useState<Curso | null>(null);
+  const [ cargando, setCargando ] = useState(false);
   useEffect(() => {
-  if (cursoABuscar) {
-      setCursosEncontrados({});
-      setCursoSeleccionado(null);
-      buscarCurso(cursoABuscar).then((courses) => setCursosEncontrados(courses));
-    }
+    const consultarCurso = async () => {
+      if (cursoABuscar) {
+        setCargando(true);
+        setCursosEncontrados({});
+        setCursoSeleccionado(null);
+        setCursosEncontrados(await buscarCurso(cursoABuscar));
+        setCargando(false);
+      }
+    };
+    consultarCurso();
   }, [cursoABuscar]);
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') setCursoABuscar((event.target as HTMLInputElement).value);
@@ -66,6 +72,8 @@ function Planeacion() {
           <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out" onClick={() => { if (inputRef.current) setCursoABuscar(inputRef.current.value); }}>Buscar</button>
         </div>
       </div>
+      {cargando && <p className='text-lg font-semibold'>Buscando cursos...</p>}
+      {cursoABuscar && !cargando && Object.keys(cursosEncontrados).length === 0 && <p className='text-lg font-semibold'>No se encontraron cursos</p>}
       {cursoSeleccionado ? <DetallesCursoSeleccionado curso={cursoSeleccionado} /> : <DetallesCursosEncontrados cursos={Object.values(cursosEncontrados)} funcionSeleccionDeCurso={handleSeleccionDeCurso} />}
     </div>
   )
@@ -80,7 +88,6 @@ function Planeacion() {
 function DetallesCursosEncontrados({ cursos, funcionSeleccionDeCurso }: { cursos: Curso[], funcionSeleccionDeCurso: (curso: Curso) => void }) {
   return (
     <div>
-      {cursos.length == 0 && <p className='text-lg font-semibold'>No has buscado ningún curso o no lo hemos encontrado</p>}
       {cursos.length > 0 && <p className='text-lg font-semibold'>Cursos encontrados:</p>}
       {cursos.map((curso) => <CursoEncontrado curso={curso} key={curso.programa + curso.curso} funcionSeleccionDeCurso={() => funcionSeleccionDeCurso(curso)} />)}
     </div>

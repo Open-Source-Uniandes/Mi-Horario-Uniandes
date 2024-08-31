@@ -11,6 +11,7 @@ import BloqueTiempo from "@/models/BloqueTiempo";
 import Seccion from "@/models/Seccion";
 import { atributosEspeciales, obtenerSeccionesPorAtributoYPrograma, programasEspeciales } from "@/services/fetcher";
 import { filtrarSeccionesQueColisionan } from "@/services/operacionesSobreHorario";
+import Spinner from "@/components/spinner";
 
 /*
   Página que muestra los horarios generados así como la opción de guardar un horario y ver cursos especiales que se ajustan
@@ -18,23 +19,30 @@ import { filtrarSeccionesQueColisionan } from "@/services/operacionesSobreHorari
 export default function Ver() {
   const [horariosGenerados, setHorariosGenerados] = useState<Horario[]>([]);
   const [indiceHorario, setIndiceHorario] = useState(0);
+  const [bloquesUsuario, setBloquesUsuario] = useState<{[titulo: string]: BloqueTiempo[]}>({});
+  const [cargando, setCargando] = useState(false);
   useEffect(() => {
-    async function fetchData() {
+    async function obtenerHorarios() {
+      setCargando(true);
+      setBloquesUsuario(obtenerBloquesGuardados());
       setHorariosGenerados(await generarHorarios());
+      setCargando(false);
     }
-    fetchData();
+    obtenerHorarios();
   }, []);
   const siguienteHorario = () => setIndiceHorario((indiceHorario + 1) % horariosGenerados.length);
   const anteriorHorario = () => setIndiceHorario((indiceHorario - 1 + horariosGenerados.length) % horariosGenerados.length);
   return (
     <div className="min-h-screen flex flex-col">
     <NavbarVer funcionHorarioSiguiente={siguienteHorario} funcionHorarioAnterior={anteriorHorario} />
-    <div className="pt-16 flex flex-1">
-      <SidebarCursosConAtributos> 
-        <CursosPorAtributo horario={horariosGenerados[indiceHorario]}/>
-      </SidebarCursosConAtributos>
-      <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} />
-    </div>
+    {cargando ? <Spinner mensajeDeCarga="Generando horarios..." mensajeAuxiliar="Intenta seleccionar menos secciones para obtener horarios más rápido"/> :
+      <div className="pt-16 flex flex-1">
+        <SidebarCursosConAtributos>
+          <CursosPorAtributo horario={horariosGenerados[indiceHorario]}/>
+        </SidebarCursosConAtributos>
+        <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario}/>
+      </div>
+    }
     </div>
   )
 }
@@ -44,13 +52,9 @@ export default function Ver() {
 
   @param horariosGenerados lista de horarios generados
   @param indiceHorario índice del horario a mostrar
+  @param bloquesUsuario bloques de tiempo guardados por el usuario
 */
-function PanelHorario({horariosGenerados, indiceHorario} : {horariosGenerados: Horario[], indiceHorario: number}) {
-  const [bloquesUsuario, setBloquesUsuario] = useState<{[titulo: string]: BloqueTiempo[]}>({});
-  useEffect(() => {
-    setBloquesUsuario(obtenerBloquesGuardados());
-  }, []);
-
+function PanelHorario({horariosGenerados, indiceHorario, bloquesUsuario} : {horariosGenerados: Horario[], indiceHorario: number, bloquesUsuario: {[titulo: string]: BloqueTiempo[]}}) {
   return (
     <main className="w-full flex flex-col justify-between">
       <div>
