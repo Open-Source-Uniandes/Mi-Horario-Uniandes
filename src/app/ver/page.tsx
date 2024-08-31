@@ -12,6 +12,7 @@ import Seccion from "@/models/Seccion";
 import { atributosEspeciales, obtenerSeccionesPorAtributoYPrograma, programasEspeciales } from "@/services/fetcher";
 import { filtrarSeccionesQueColisionan } from "@/services/operacionesSobreHorario";
 import Spinner from "@/components/spinner";
+import Image from "next/image";
 
 /*
   Página que muestra los horarios generados así como la opción de guardar un horario y ver cursos especiales que se ajustan
@@ -35,7 +36,8 @@ export default function Ver() {
   return (
     <div className="min-h-screen flex flex-col">
     <NavbarVer funcionHorarioSiguiente={siguienteHorario} funcionHorarioAnterior={anteriorHorario} />
-    {cargando ? <Spinner mensajeDeCarga="Generando horarios..." mensajeAuxiliar="Intenta seleccionar menos secciones para obtener horarios más rápido"/> :
+    {cargando && <Spinner mensajeDeCarga="Generando horarios..." mensajeAuxiliar="Intenta seleccionar menos secciones para obtener horarios más rápido"/> }
+    {!cargando && horariosGenerados.length > 0 &&
       <div className="pt-16 flex flex-1">
         <SidebarCursosConAtributos>
           <CursosPorAtributo horario={horariosGenerados[indiceHorario]}/>
@@ -43,8 +45,19 @@ export default function Ver() {
         <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario}/>
       </div>
     }
+    {!cargando && horariosGenerados.length === 0 && <NoHayHorarios />}
     </div>
   )
+}
+
+function NoHayHorarios() {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center my-auto">
+      <Image src="/senecaSorprendida.svg" alt="Error" width={200} height={200} />
+      <p className="text-xl font-semibold">No se encontraron horarios</p>
+      <p className="text-lg">Intenta eliminar bloques o secciones para obtener horarios</p>
+    </div>
+  );
 }
 
 /*
@@ -99,15 +112,21 @@ function CursosPorAtributo({horario}: {horario: Horario}) {
   const [seccionesEncontradas, setSeccionesEncontradas] = useState<Seccion[]>([]);
   const [atributoSeleccionado, setAtributoSeleccionado] = useState<string>("");
   const [programaSeleccionado, setProgramaSeleccionado] = useState<string>("");
+  const [cargando, setCargando] = useState(false);
   useEffect(() => {
     setSeccionesEncontradas([]);
-    async function fetchData() {
-      if (atributoSeleccionado === "" && programaSeleccionado === "") return;
+    async function buscarCursosEspeciales() {
+      setCargando(true);
+      if (atributoSeleccionado === "" && programaSeleccionado === "") {
+        setCargando(false);
+        return;
+      }
       const secciones = await obtenerSeccionesPorAtributoYPrograma(atributoSeleccionado, programaSeleccionado);
       const seccionesFiltradas = filtrarSeccionesQueColisionan(horario, secciones);
       setSeccionesEncontradas(seccionesFiltradas);
+      setCargando(false);
     }
-    fetchData();
+    buscarCursosEspeciales();
   }, [atributoSeleccionado, programaSeleccionado, horario]);
   return (
     <div>
@@ -117,7 +136,8 @@ function CursosPorAtributo({horario}: {horario: Horario}) {
         <h2>Selecciona un programa especial</h2>
         <InputsProgramaEspecial programaSeleccionado={programaSeleccionado} setProgramaSeleccionado={setProgramaSeleccionado}/>
         <BotonQuitarFiltros setAtributoSeleccionado={setAtributoSeleccionado} setProgramaSeleccionado={setProgramaSeleccionado}/>
-        <SeccionesEspeciales secciones={seccionesEncontradas}/>
+        {cargando? <p className="text-center font-semibold text-md">Buscando cursos ...</p> : <SeccionesEspeciales secciones={seccionesEncontradas}/> }
+        {seccionesEncontradas.length === 0 && !cargando && <p className="text-center font-semibold text-md">No se encontraron cursos</p>}
       </div>
     </div>
   )
@@ -202,7 +222,7 @@ function InputAtributo({ atributo, handleClick, seleccionado }: { atributo: stri
 function SeccionesEspeciales({secciones}: {secciones: Seccion[]}){
   return (
     <div>
-        <h2 className="text-center font-semibold">Secciones Encontradas</h2>
+        {secciones.length > 0 && <h2 className="text-center font-semibold">Secciones Encontradas</h2>}
         {secciones.map(seccion => (
           <SeccionEspecial key={seccion.nrc} seccion={seccion}/>
         ))}

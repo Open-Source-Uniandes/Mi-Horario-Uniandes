@@ -9,8 +9,8 @@ export default function Spinner({ mensajeDeCarga, mensajeAuxiliar }: { mensajeDe
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <ClipLoader color={"#FFD700"} loading={true} size={150} />
-        <p className="text-center text-lg mt-4 font-semibold">{mensajeDeCarga}</p>
-        {mensajeAuxiliar && <p className="text-center text-md mt-4">{mensajeAuxiliar}</p>}
+        <p className="text-center text-xl mt-4 font-semibold">{mensajeDeCarga}</p>
+        {mensajeAuxiliar && <p className="text-center text-lg mt-4">{mensajeAuxiliar}</p>}
       </div>
     );
   }

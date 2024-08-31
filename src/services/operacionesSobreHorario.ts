@@ -30,7 +30,7 @@ export function horarioEsValido(horario: Horario) {
   @param bloquesPorDiaUsuario Los bloques por día del usuario
 */
 function obtenerBloquesTotales(horario: Horario) {
-  const bloquesPorDia: {[dia:string]: BloqueTiempo[]} = obtenerBloquesPorDia(horario);
+  const bloquesPorDia: {[dia:string]: BloqueTiempo[]} = obtenerBloquesPorDiaHorario(horario);
   const bloquesUsuario: {[tituloBloque:string]: BloqueTiempo[]} = obtenerBloquesPorDiaUsuario(obtenerBloquesGuardados());
   const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= crearObjetoBloquesPorDia();
   const dias = Object.keys(bloquesPorDiaTotal);
@@ -53,10 +53,11 @@ function obtenerBloquesTotales(horario: Horario) {
 export function filtrarSeccionesQueColisionan(horario: Horario, secciones: Seccion[]) {
   const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= obtenerBloquesTotales(horario);
   return secciones.filter(seccion => {
-    for (const horario of seccion.horarios) {
-      for (const dia of horario.dias) {
-        for (const bloque of bloquesPorDiaTotal[dia]) {
-          if (horario.horaInicio < bloque.horaFin && horario.horaFin > bloque.horaInicio) return false;
+    let bloquesPorDiaSeccion = obtenerBloquesPorSeccion(seccion);
+    for (const dia in bloquesPorDiaSeccion) {
+      for (const bloqueSeccion of bloquesPorDiaSeccion[dia]) {
+        for (const bloqueHorario of bloquesPorDiaTotal[dia]) {
+          if (Number(bloqueSeccion.horaFin) > Number(bloqueHorario.horaInicio) && Number(bloqueSeccion.horaInicio) < Number(bloqueHorario.horaFin)) return false;
         }
       }
     }
@@ -81,7 +82,7 @@ function crearObjetoBloquesPorDia() {
 
   @param horario El horario a obtener los bloques
 */
-function obtenerBloquesPorDia(horario: Horario) {
+function obtenerBloquesPorDiaHorario(horario: Horario) {
   const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = crearObjetoBloquesPorDia();
   horario.secciones.forEach(seccion => {
     seccion.horarios.forEach(bloque => {
@@ -96,6 +97,23 @@ function obtenerBloquesPorDia(horario: Horario) {
   return bloquesPorDia;
 }
 
+/*
+  Función que obtiene los bloques por día de una sección
+
+  @param seccion La sección a obtener los bloques
+*/
+function obtenerBloquesPorSeccion(seccion : Seccion){
+  const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = crearObjetoBloquesPorDia();
+  seccion.horarios.forEach(bloque => {
+    bloque.dias.forEach(dia => {
+      if (seccion.periodo === "8A" || seccion.periodo === "16")
+        bloquesPorDia[dia + "1"].push(bloque);
+      if (seccion.periodo === "8B" || seccion.periodo === "16")
+        bloquesPorDia[dia + "2"].push(bloque);
+    });
+  });
+  return bloquesPorDia;
+}
 
 /*
   Función que obtiene los bloques guardados
