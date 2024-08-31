@@ -51,7 +51,7 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
 function BotonCursos() {
     return (
       <BotonLateral ruta={"/planear/cursos"}>
-        <Image src="universidad.svg" alt="Cursos" width={24} height={24}/>
+        <Image src="/static/universidad.svg" alt="Cursos" width={24} height={24}/>
       </BotonLateral>
     )
 }
@@ -62,7 +62,7 @@ function BotonCursos() {
 function BotonBloques() {
   return (
     <BotonLateral ruta={"/planear/bloques"}>
-      <Image src="reloj.svg" alt="Bloques" width={24} height={24}/>
+      <Image src="/static/reloj.svg" alt="Bloques" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -73,7 +73,7 @@ function BotonBloques() {
 function BotonGrupos() {
     return (
       <BotonLateral ruta={"/planear/grupos"}>
-        <Image src="canasta.svg" alt="Grupos" width={24} height={24}/>
+        <Image src="/static/canasta.svg" alt="Grupos" width={24} height={24}/>
       </BotonLateral>
     )
 }
@@ -84,7 +84,7 @@ function BotonGrupos() {
 function BotonPlanes() {
   return (
     <BotonLateral ruta={"/planear/planes"}>
-      <Image src="lista.svg" alt="Planes" width={24} height={24}/>
+      <Image src="/static/lista.svg" alt="Planes" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -95,7 +95,7 @@ function BotonPlanes() {
 function BotonCriterios() {
   return (
     <BotonLateral ruta={"/planear/criterios"}>
-      <Image src="engranaje.svg" alt="Ordenamientos" width={24} height={24}/>
+      <Image src="/static/engranaje.svg" alt="Ordenamientos" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -106,7 +106,7 @@ function BotonCriterios() {
 function BotonVerHorarios() {
   return (
     <BotonLateral ruta={"/ver"}>
-      <Image src="calendario.svg" alt="Ver Horarios" width={24} height={24}/>
+      <Image src="/static/calendario.svg" alt="Ver Horarios" width={24} height={24}/>
     </BotonLateral>
   )
 }

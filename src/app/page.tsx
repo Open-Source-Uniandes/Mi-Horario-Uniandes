@@ -78,7 +78,7 @@ function Footer() {
         <p className="text-center text-lg">Hecho con 💛 en Uniandes</p>
         <Link href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes" className="font-semibold text-yellow-300  hover:text-yellow-500 transition-colors duration-300 ease-in-out">Sé parte de este proyecto aquí</Link>
       </div>
-      <Image src="seneca-icon.svg" alt="Icono seneca" width={70} height={70} className="ml-6" />
+      <Image src="/static/seneca-icon.svg" alt="Icono seneca" width={70} height={70} className="ml-6" />
     </footer>
   )
 }

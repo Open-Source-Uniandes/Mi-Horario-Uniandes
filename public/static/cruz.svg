@@ -6,7 +6,6 @@
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="cursor-pointer"
     aria-label="Eliminar elemento"
 >
     <line x1="18" y1="6" x2="6" y2="18" />
