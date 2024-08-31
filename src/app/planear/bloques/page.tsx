@@ -11,7 +11,7 @@ import { eliminarBloque,obtenerBloquesGuardados, guardarBloque} from '@/services
 const BloqueContext = createContext<EstadoBloques>(
   { bloquesGuardados: {},
   setBloquesGuardados: () => {} ,
-  bloqueEnCreacion: new BloqueTiempo(1, "", "", [], 630, 630),
+  bloqueEnCreacion: new BloqueTiempo(1, "", "", [], 1300, 1430),
   setBloqueEnCreacion: () => {}
 });
 
@@ -19,7 +19,7 @@ const BloqueContext = createContext<EstadoBloques>(
   Componente que se encarga de mostrar los bloques de tiempo planeados por el usuario y de permitirle crear nuevos bloques
 */
 export default function Bloques() {
-  const [bloqueEnCreacion, setBloqueEnCreacion] = useState<BloqueTiempo>(new BloqueTiempo(1, "", "", [], 630, 630));
+  const [bloqueEnCreacion, setBloqueEnCreacion] = useState<BloqueTiempo>(new BloqueTiempo(1, "", "", [], 1300, 1430));
   const [bloquesGuardados, setBloquesGuardados] = useState<{ [key: string]: BloqueTiempo[] }>({});
   useEffect(() => {
     setBloquesGuardados(obtenerBloquesGuardados());
@@ -41,14 +41,17 @@ function FormularioBloque() {
   const { bloqueEnCreacion, setBloqueEnCreacion, setBloquesGuardados } = useContext(BloqueContext);
   const handleClic = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    if (bloqueEnCreacion.horaFin <= bloqueEnCreacion.horaInicio) {
+      alert("La hora de fin debe ser mayor que la hora de inicio.");
+      return;
+    }
     if (!bloqueEnCreacion.titulo || !bloqueEnCreacion.lugar || !bloqueEnCreacion.horaInicio || !bloqueEnCreacion.horaFin || bloqueEnCreacion.dias.length == 0) {
       alert("Por favor, llena todos los campos");
       return;
     }
-    
     guardarBloque(bloqueEnCreacion);
     setBloquesGuardados(obtenerBloquesGuardados());
-    setBloqueEnCreacion(new BloqueTiempo(1, "", "", [], 630, 630));
+    setBloqueEnCreacion(new BloqueTiempo(1, "", "", [], 1300, 1430));
   };
   return (
     <div className="mx-auto w-[80%] min-w-44 pt-8 space-y-4">
@@ -65,22 +68,33 @@ function FormularioBloque() {
 */
 function InputsBloque() {
   const { bloqueEnCreacion, setBloqueEnCreacion } = useContext(BloqueContext);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setBloqueEnCreacion({...bloqueEnCreacion, [name]: value});
+    let valorFormateado = value;
+    if (name === "horaInicio" || name === "horaFin") {
+      valorFormateado = value.replace(":", "");
+    }
+    setBloqueEnCreacion({ ...bloqueEnCreacion, [name]: valorFormateado });
   };
+
   return (
     <div>
       <label className='text-lg' htmlFor="nombre">Nombre</label>
       <input placeholder="Videojuegos" className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="text" id="titulo" name="titulo" value={bloqueEnCreacion.titulo} onChange={handleChange}/>
       <label className="text-lg" htmlFor="lugar">Lugar</label>
       <input placeholder="Centro deportivo" className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="text" id="lugar" name="lugar" value={bloqueEnCreacion.lugar} onChange={handleChange}/>
-      <label className="text-lg" htmlFor="horaInicio">Hora Inicio (HHMM)</label>
-      <input className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="number" id="horaInicio" name="horaInicio" value={bloqueEnCreacion.horaInicio !== undefined ? bloqueEnCreacion.horaInicio.toString() : ''} onChange={handleChange}/>
-      <label className="text-lg" htmlFor="horaFin">Hora Fin (HHMM)</label>
-      <input className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="number" id="horaFin" name="horaFin" value={bloqueEnCreacion.horaFin !== undefined ? bloqueEnCreacion.horaFin.toString()  : ''} onChange={handleChange}/>
+      <label className="text-lg" htmlFor="horaInicio">Hora Inicio</label>
+      <input className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="time" id="horaInicio" name="horaInicio" onChange={handleChange}
+        value={bloqueEnCreacion.horaInicio !== undefined ? bloqueEnCreacion.horaInicio.toString().padStart(4, '0').slice(0, 2) + ":" + bloqueEnCreacion.horaInicio.toString().padStart(4, '0').slice(2): ''}
+      />
+      <label className="text-lg" htmlFor="horaFin">Hora Fin</label>
+      <input className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400"
+        type="time" id="horaFin" name="horaFin" onChange={handleChange}
+        value={bloqueEnCreacion.horaFin !== undefined? bloqueEnCreacion.horaFin.toString().padStart(4, '0').slice(0, 2) + ":" + bloqueEnCreacion.horaFin.toString().padStart(4, '0').slice(2): ''}
+      />
     </div>
-  )
+  );
 }
 
 /*

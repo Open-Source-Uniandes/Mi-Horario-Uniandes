@@ -105,8 +105,8 @@ function CursosDelPlan({cursos}: {cursos: {[codigoCurso: string]: number}}) {
 */
 function CursoDePlan({codigoCurso, nrc}: {codigoCurso: string, nrc: number}) {
   return (
-    <div className="border border-black  h-16 mx-auto min-w-24">
-      <p className="text-lg font-semibold text-center" >{codigoCurso}</p>
+    <div className="border border-yellow-900  h-16 mx-auto min-w-24 bg-yellow-50">
+      <p className="text-lg font-semibold text-center text-yellow-900" >{codigoCurso}</p>
       <p className="text-lg text-center" >{nrc}</p>
     </div>
   )
