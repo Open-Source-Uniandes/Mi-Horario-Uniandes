@@ -73,7 +73,7 @@ function ServicioNotificaciones(){
 */
 function Footer() {
   return (
-    <footer  className="flex items-center justify-center bg-neutral-800 py-5 text-white w-screen mt-auto">
+    <footer  className="flex items-center justify-center bg-neutral-800 py-5 text-white w-full mt-auto">
       <div>
         <p className="text-center text-lg">Hecho con 💛 en Uniandes</p>
         <Link href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes" className="font-semibold text-yellow-300  hover:text-yellow-500 transition-colors duration-300 ease-in-out">Sé parte de este proyecto aquí</Link>
