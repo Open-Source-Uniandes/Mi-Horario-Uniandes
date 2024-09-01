@@ -36,6 +36,8 @@ function Main(){
             <p className="text-lg">Personaliza las opciones de búsqueda para considerar solo las secciones que tú quieres, en los horarios que tú quieres. Añade bloques de tiempo para reservar tus horas de almuerzo y de parchar con tus amigos. Optimiza tu horario para minimizar huecos o para salir más temprano. ¡Tu semestre perfecto a un solo clic de distancia!</p>
           <h2 className="text-xl font-medium mt-4">Open Source</h2>
             <p className="text-lg">Este es un proyecto de la comunidad Uniandina para la comunidad Uniandina. El código que hace posible esta herramienta es tuyo. Anímate a proponer nuevas funcionalidades, cambios de diseño, optimizaciones, o lo que tú quieras. ¡Tu aporte impactará toda la comunidad Uniandina! </p>
+          <h2 className="text-xl font-medium mt-4">Contacto</h2>
+          <InformacionContacto/>
           <h2 className="text-xl font-medium mt-4">Inicia aquí 👇</h2>
             <p className="text-lg"> Queremos ofrecerte la información más actualizada desde Banner. Por esto, cada vez que consultes un curso se descargará nuevamente la información. Esto no suele tomar mucho tiempo. </p>
             <p className="my-4 text-lg font-bold">Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automáticamente.</p>
@@ -44,6 +46,21 @@ function Main(){
           <Link href="/planear">Arma tu horario</Link>
         </button>
     </main>
+  )
+}
+
+/*
+  Contiene la información de contacto de la aplicación
+  Consiste en un párrafo con el correo de contacto y un enlace al repositorio de GitHub
+*/
+function InformacionContacto(){
+  return (
+    <p className="text-lg text-gray-700">
+      Puedes escribirnos tus dudas y sugerencias al correo 
+      <Link href="mailto:opensource@uniandes.edu.co " className="text-yellow-600 hover:underline"> opensource@uniandes.edu.co </Link>
+      o a través de nuestro 
+      <Link  href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes" target="_blank" rel="noopener noreferrer" className="text-yellow-600 hover:underline"> GitHub</Link>.
+    </p>
   )
 }
 
