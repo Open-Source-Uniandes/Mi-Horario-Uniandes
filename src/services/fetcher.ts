@@ -122,7 +122,15 @@ export async function obtenerSeccionesPorAtributoYPrograma(atributo: string, pro
 async function obtenerCursosAPartirDeSecciones(cursosGuardados: { [codigoCurso: string]: string[] }) {
   const promesasCursosActualizados = Object.keys(cursosGuardados).map(nombreCurso => buscarCurso(nombreCurso));
   const cursosActualizados = await Promise.all(promesasCursosActualizados);
-  const cursos = cursosActualizados.map(curso => Object.values(curso)[0]);
+  let cursosPorNombre: {[codigoCurso: string]: Curso} = {};
+  cursosActualizados.forEach(cursoActualizado => {
+    Object.keys(cursoActualizado).forEach(codigoCurso => {
+      if (!(codigoCurso in cursosPorNombre)) {
+        cursosPorNombre[codigoCurso] = cursoActualizado[codigoCurso];
+      }
+    });
+  });
+  const cursos = Object.values(cursosPorNombre);
   cursos.forEach(curso => {
     curso.secciones = curso.secciones.filter(seccion => cursosGuardados[curso.programa + curso.curso].includes(seccion.seccion));
   });

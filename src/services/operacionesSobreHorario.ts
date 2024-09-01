@@ -15,7 +15,6 @@ import Seccion from "@/models/Seccion";
 export function horarioEsValido(horario: Horario) {
   const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= obtenerBloquesTotales(horario);
   for (const dia in bloquesPorDiaTotal) {
-    console.log(dia, bloquesPorDiaTotal[dia]);
     for (let i = 1; i < bloquesPorDiaTotal[dia].length; i++) {
       if ( Number(bloquesPorDiaTotal[dia][i - 1].horaFin) > Number(bloquesPorDiaTotal[dia][i].horaInicio)) return false;
     }

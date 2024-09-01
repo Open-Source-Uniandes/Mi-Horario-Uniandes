@@ -12,8 +12,6 @@ import { obtenerBloquesGuardados } from '@/services/almacenamiento/almacenamient
 */
 export function Calendario({horario}: {horario: Horario}) {
   const seccionesPorDia: {[dia: string]: [Seccion, BloqueTiempo][]} = ObtenerSeccionesPorDia(horario);
-
-  console.log(seccionesPorDia);
   return (
     <div className='flex justify-center items-center w-full pt-4'>
       <div className='grid grid-cols-1 lg:grid-cols-6 w-screen sm:w-11/12'>
@@ -111,9 +109,9 @@ function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, clas
 */
 function obtenerAnchoSeccionPorcentaje(seccion: Seccion) {
   if (seccion.periodo === "16") {
-    return 100;
+    return 95;
   }
-  return 48;
+  return 45;
 }
 
 /*
