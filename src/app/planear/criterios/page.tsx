@@ -40,7 +40,7 @@ function InputRadio({ opcion, handleSeleccionDeCriterio } : { opcion:string , ha
         value={opcion}
         onChange={handleSeleccionDeCriterio}
       />
-      <label className="text-lg ml-2" htmlFor={opcion}>{opcion}</label>
+      <label className="text-lg ml-2" htmlFor={opcion}>{opcion.charAt(0).toUpperCase() + opcion.slice(1)}</label>
     </div>
   );
 }
