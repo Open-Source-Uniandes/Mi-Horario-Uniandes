@@ -39,7 +39,7 @@ export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horari
 
   return (
     <div className='flex justify-center items-center w-full pt-4'>
-      <div className='grid grid-cols-1 lg:grid-cols-6 w-screen sm:w-11/12'>
+      <div className='grid grid-cols-1 lg:grid-cols-6 w-full sm:w-11/12'>
         <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} bloques={bloquesPorDia["l"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} bloques={bloquesPorDia["m"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} bloques={bloquesPorDia["i"]} className="border-l border-t border-b border-gray-400"/>
