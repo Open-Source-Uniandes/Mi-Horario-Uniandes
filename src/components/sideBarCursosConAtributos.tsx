@@ -7,7 +7,7 @@ interface SidebarContextProps {
 const SidebarContext = createContext<SidebarContextProps | undefined>(undefined);
 
 export function SidebarCursosConAtributos({children}: {children: React.ReactNode}) {
-  const [expandido, setExpandido] = useState<boolean>(true);
+  const [expandido, setExpandido] = useState<boolean>(false);
   return (
     <SidebarContext.Provider value={{ estaExpandido: expandido }}>
       <aside>

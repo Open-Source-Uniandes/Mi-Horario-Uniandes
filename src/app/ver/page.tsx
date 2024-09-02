@@ -131,6 +131,7 @@ function CursosPorAtributo({horario}: {horario: Horario}) {
   return (
     <div>
       <div>
+        <h1 className="text-md font-semibold text-center mb-2">Busca cursos especiales que se ajusten al horario</h1>
         <h2>Selecciona un atributo</h2>
         <InputsAtributo atributoSeleccionado={atributoSeleccionado} setAtributoSeleccionado={setAtributoSeleccionado}/>
         <h2>Selecciona un programa especial</h2>
