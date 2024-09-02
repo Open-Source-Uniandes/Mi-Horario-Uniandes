@@ -131,7 +131,6 @@ async function obtenerCursosAPartirDeSecciones(cursosGuardados: { [codigoCurso: 
     });
   });
   const cursos = Object.values(cursosPorNombre);
-  console.log(cursos);
   cursos.forEach(curso => {
     curso.secciones = curso.secciones.filter(seccion => cursosGuardados[curso.programa + curso.curso].includes(seccion.seccion));
   });

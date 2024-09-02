@@ -13,7 +13,7 @@ export function SidebarCursosConAtributos({children}: {children: React.ReactNode
       <aside>
         <nav className="h-full  flex flex-col bg-gray-300 border-r shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
-            <button onClick={() => setExpandido((estadoActual) => !estadoActual)} className="p-1.5 rounded-lg bg-yellow-200 hover:bg-yellow-300">
+            <button onClick={() => setExpandido((estadoActual) => !estadoActual)} className="p-1.5 rounded-lg bg-yellow-200 hover:bg-yellow-300 transition-colors duration-300">
               {expandido ? <ChevronFirst /> : <ChevronLast />}
             </button>
           </div>

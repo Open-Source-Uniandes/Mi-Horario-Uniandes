@@ -6,6 +6,7 @@ import { cursoTieneSeccionGuardada, obtenerCursosGuardados, eliminarCursoGuardad
 import { EstadosCursos } from '@/types/contexto'
 import Curso from '@/models/Curso';
 import Seccion from '@/models/Seccion';
+import Tooltip from '@/components/tooltip';
 
 /*
   Contexto que comparte los estados y funciones que se comparten entre los componentes de la página de cursos
@@ -175,9 +176,11 @@ function BotonSeleccionarTodas({ curso }: { curso: Curso }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <button title='Seleccionar todas' onClick={handleClic}>
-      <Image src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
-    </button>
+    <Tooltip mensaje='Seleccionar todas'>
+      <button onClick={handleClic}>
+        <Image src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
+      </button>
+    </Tooltip>
   )
 }
 
@@ -193,9 +196,11 @@ function BotonSeleccionarValidas({ curso }: { curso: Curso }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <button title='Seleccionar con cupo' onClick={handleClic}>
-      <Image src="/Mi-Horario-Uniandes/static/seleccionarValidas.svg" alt="Seleccionar validas" width={35} height={35} />
-    </button>
+    <Tooltip mensaje='Seleccionar con cupo'>
+      <button onClick={handleClic}>
+        <Image src="/Mi-Horario-Uniandes/static/seleccionarValidas.svg" alt="Seleccionar validas" width={35} height={35} />
+      </button>
+    </Tooltip>
   )
 }
 
@@ -211,9 +216,11 @@ function BotonEliminarTodas({ curso }: { curso: Curso }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <button title='Eliminar todas'  onClick={handleClic}>
-      <Image src="/Mi-Horario-Uniandes/static/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
-    </button>
+    <Tooltip mensaje='Eliminar todas'>
+      <button onClick={handleClic}>
+        <Image src="/Mi-Horario-Uniandes/static/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
+      </button>
+    </Tooltip>
   )
 }
 
