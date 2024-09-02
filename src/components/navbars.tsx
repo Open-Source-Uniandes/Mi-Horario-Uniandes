@@ -77,12 +77,10 @@ function BotonSiguienteHorario({funcionClic}: {funcionClic: () => void}) {
 */
 function BotonRegresar() {
   return (
-    <button className="rounded-full">
-      <Link href="/planear">
-        <Image src="/Mi-Horario-Uniandes/static/salida.svg" alt="Seguir planeando" width={24} height={24}/>
-        <span className="sr-only">Regresar</span>
-      </Link>
-    </button>
+    <Link href="/planear" className="rounded-full">
+      <Image src="/Mi-Horario-Uniandes/static/salida.svg" alt="Seguir planeando" width={24} height={24}/>
+      <span className="sr-only">Regresar</span>
+    </Link>
   )
 }
 

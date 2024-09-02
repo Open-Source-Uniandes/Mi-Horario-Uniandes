@@ -40,9 +40,9 @@ function Main(){
           <h2 className="text-xl font-medium mt-4">Contacto</h2>
         <InformacionContacto/>
         <ServicioNotificaciones/>
-        <button className="my-2 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out">
-          <Link href="/planear">Arma tu horario</Link>
-        </button>
+    
+        <Link href="/planear" className="my-2 w-40 h-12 mx-auto bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out flex items-center justify-center">Arma tu horario</Link>
+
         <p className="my-4 text-lg font-bold text-center">Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automáticamente.</p>
     </main>
   )

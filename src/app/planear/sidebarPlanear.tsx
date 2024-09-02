@@ -34,14 +34,12 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
   const partesRuta = ruta.split("/")
   const nombreOpcion = partesRuta[partesRuta.length - 1]
   return (
-    <button>
-      <Link className="text-sm font-medium flex flex-col items-center" href={ ruta }>
-        <div className="flex items-center justify-center w-12 h-12 rounded-md border border-black">
-          {children}
-        </div>
-        <p>{nombreOpcion[0].toUpperCase() + nombreOpcion.slice(1)}</p>
-      </Link>
-    </button>
+    <Link className="text-sm font-medium flex flex-col items-center" href={ ruta }>
+      <div className="flex items-center justify-center w-12 h-12 rounded-md border border-black">
+        {children}
+      </div>
+      <p>{nombreOpcion[0].toUpperCase() + nombreOpcion.slice(1)}</p>
+    </Link>
   )
 }
 
