@@ -8,7 +8,7 @@ import Image from "next/image";
 */
 export function NavbarSimple() {
   return (
-    <header className="flex items-center h-16 px-4 bg-yellow-300  md:px-6 fixed w-screen">
+    <header className="flex items-center h-16 px-4 bg-yellow-300  md:px-6 fixed w-screen z-10">
       <Link className="text-lg font-medium mx-auto hover:font-bold hover:delay-75" href={"/"} >Mi horario Uniandes</Link>
     </header>
   )
