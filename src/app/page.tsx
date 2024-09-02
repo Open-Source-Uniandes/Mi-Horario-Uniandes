@@ -31,20 +31,19 @@ function Main(){
         <h1 className="text-3xl font-semibold">Tu Horario Perfecto</h1>
           <h2 className="text-2xl font-semibold">Planear nunca había sido tan fácil</h2>
             <p className="text-xl font-medium mt-4">¡Bienvenidx a Mi Horario Uniandes!</p>
-            <p className="text-lg">Creamos esta herramienta para hacer más fácil tu inscripción de materias. Con un solo clic podrás ver todas las posibilidades para encontrar el horario de tus sueños. ¡Es tan sencillo como agregar los cursos que planeas ver!</p>
+            <p className="text-lg">Creamos esta herramienta para hacer más fácil tu inscripción de materias. Podrás ver todas las posibilidades para encontrar el horario de tus sueños. ¡Es tan sencillo como agregar los cursos que planeas ver!</p>
+            <p className="text-lg">Mira nuestro video de introducción para saber más sobre la app y cómo usarla: <Link href="https://www.youtube.com/watch?v=WNirDylLHS8" target="_blank" rel="noopener noreferrer" className="text-yellow-600 hover:underline hover:text-yellow-700">¡Descúbrelo aquí!</Link></p>
           <h2 className="text-xl font-medium mt-4">A tu medida</h2>
             <p className="text-lg">Personaliza las opciones de búsqueda para considerar solo las secciones que tú quieres, en los horarios que tú quieres. Añade bloques de tiempo para reservar tus horas de almuerzo y de parchar con tus amigos. Optimiza tu horario para minimizar huecos o para salir más temprano. ¡Tu semestre perfecto a un solo clic de distancia!</p>
           <h2 className="text-xl font-medium mt-4">Open Source</h2>
             <p className="text-lg">Este es un proyecto de la comunidad Uniandina para la comunidad Uniandina. El código que hace posible esta herramienta es tuyo. Anímate a proponer nuevas funcionalidades, cambios de diseño, optimizaciones, o lo que tú quieras. ¡Tu aporte impactará toda la comunidad Uniandina! </p>
           <h2 className="text-xl font-medium mt-4">Contacto</h2>
-          <InformacionContacto/>
-          <h2 className="text-xl font-medium mt-4">Inicia aquí 👇</h2>
-            <p className="text-lg"> Queremos ofrecerte la información más actualizada desde Banner. Por esto, cada vez que consultes un curso se descargará nuevamente la información. Esto no suele tomar mucho tiempo. </p>
-            <p className="my-4 text-lg font-bold">Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automáticamente.</p>
+        <InformacionContacto/>
         <ServicioNotificaciones/>
-        <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out">
+        <button className="my-2 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out">
           <Link href="/planear">Arma tu horario</Link>
         </button>
+        <p className="my-4 text-lg font-bold text-center">Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automáticamente.</p>
     </main>
   )
 }
