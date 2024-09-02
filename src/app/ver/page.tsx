@@ -74,8 +74,6 @@ function PanelHorario({horariosGenerados, indiceHorario, bloquesUsuario} : {hora
         <CalendarioConBloques horario={horariosGenerados[indiceHorario]} bloquesUsuario={bloquesUsuario} />
         {horariosGenerados.length === 0 && <p className="text-center text-md">Total creditos: 0</p>}
         {horariosGenerados.length > 0 && <p className="text-center text-md">Total creditos: {horariosGenerados[indiceHorario].secciones.reduce((acc, seccion) => acc + Number(seccion.curso.creditos), 0)}</p>}
-        <p className="text-center text-md ">¿Quieres guardar este horario para verlo más tarde, y usar nuestra herramienta para encontrar cursos especiales?</p>
-        <p className="text-center text-md font-semibold">Da clic en el botón</p>
         <BotonGuardarPlan horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} />
         <p className="text-center text-md font-semibold"> Mostrando el horario {horariosGenerados.length > 0 ? indiceHorario + 1 : 0} de {horariosGenerados.length} </p>
       </div>

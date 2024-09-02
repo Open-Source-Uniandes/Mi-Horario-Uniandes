@@ -15,7 +15,7 @@ export default function Planes() {
   return (
     <div className="mx-auto w-[80%] min-w-44 pt-8">
       <h1 className="text-2xl font-semibold">Planes</h1>
-      <p className="text-xl mt-3 mb-9">Aquí se muestran los planes que has gurdado</p>
+      <p className="text-xl mt-3 mb-9">Aquí se muestran los planes que has guardado</p>
       {
         Object.entries(planes).map(([planId, cursos]) => (
           <Plan key={planId} planId={Number(planId)} cursos={cursos} setPlanes={setPlanes} />

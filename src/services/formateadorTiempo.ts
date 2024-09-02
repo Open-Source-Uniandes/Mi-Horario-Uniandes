@@ -26,5 +26,5 @@ export function tiempoNumeroATexto(tiempo: number) {
   1 minuto = 0.75px
 */
 export function tiempoAPixeles(tiempo: number) {
-  return Math.floor((tiempoAMinutos(tiempo) - tiempoAMinutos(600)) * 0.75)
+  return Math.floor((tiempoAMinutos(tiempo) - tiempoAMinutos(600)) * 0.80)
 }

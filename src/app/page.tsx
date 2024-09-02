@@ -36,7 +36,7 @@ function Main(){
           <h2 className="text-xl font-medium mt-4">A tu medida</h2>
             <p className="text-lg">Personaliza las opciones de búsqueda para considerar solo las secciones que tú quieres, en los horarios que tú quieres. Añade bloques de tiempo para reservar tus horas de almuerzo y de parchar con tus amigos. Optimiza tu horario para minimizar huecos o para salir más temprano. ¡Tu semestre perfecto a un solo clic de distancia!</p>
           <h2 className="text-xl font-medium mt-4">Open Source</h2>
-            <p className="text-lg">Este es un proyecto de la comunidad Uniandina para la comunidad Uniandina. El código que hace posible esta herramienta es tuyo. Anímate a proponer nuevas funcionalidades, cambios de diseño, optimizaciones, o lo que tú quieras. ¡Tu aporte impactará toda la comunidad Uniandina! </p>
+            <p className="text-lg">Este es un proyecto de la comunidad Uniandina para la comunidad Uniandina. El código que hace posible esta herramienta es tuyo. Anímate a proponer nuevas funcionalidades, cambios de diseño, optimizaciones, o lo que tú quieras. ¡Tu aporte impactará a toda la comunidad Uniandina! </p>
           <h2 className="text-xl font-medium mt-4">Contacto</h2>
         <InformacionContacto/>
         <ServicioNotificaciones/>

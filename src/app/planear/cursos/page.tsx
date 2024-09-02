@@ -260,7 +260,7 @@ function CursosPlaneados() {
   return (
     <div className='mx-auto w-[80%] min-w-44 pt-8'>
       <h2 className='text-2xl font-semibold'>Tus cursos planeados</h2>
-      <p className='text-lg my-2'>Aqui puedes ver los cursos que has elegido</p>
+      <p className='text-lg my-2'>Aquí puedes ver los cursos que has elegido</p>
       {Object.keys(cursosGuardados).map((codigo) => <CursoPlaneado codigo={codigo} secciones={cursosGuardados[codigo]} key={codigo} />)}
     </div>
   )

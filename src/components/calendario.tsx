@@ -58,7 +58,7 @@ export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horari
 function HorasCalendario() {
   const horas = ObtenerRangoHoras();
   return (
-    <div className="relative h-[700px] hidden md:block w-12">
+    <div className="relative h-[720px] hidden md:block w-12">
       <div className="relative h-full">
         {horas.map(hora => (<p className="absolute text-gray-400 text-center w-full" style={{ top: `${tiempoAPixeles(hora) + 18}px` }} key={hora}>{tiempoNumeroATexto(hora)}</p>))}
       </div>
@@ -117,7 +117,7 @@ function ObtenerBloquesPorDia(bloques: BloqueTiempo[]) {
 function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, className: string, secciones: [Seccion, BloqueTiempo][], bloques?: BloqueTiempo[] }) {
   const horas = ObtenerRangoHoras();
   return (
-    <div className={`flex flex-col relative ${className} h-[700px]`}>
+    <div className={`flex flex-col relative ${className} h-[720px]`}>
       <h2 className='text-center text-lg'>{dia}</h2>
       <div className="relative h-full">
         {horas.map(hora => (<hr className="border-gray-300 absolute border-1 w-full" style={{ top: `${tiempoAPixeles(hora)}px` }} key={hora}></hr>))}
@@ -217,10 +217,10 @@ function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiem
       style={{height: `${alturaBloqueEnPixeles}px`, width: `${anchobloqueEnPorcentaje}%` , 
         backgroundColor: `${obtenerColorFondoSeccion(seccion)}`, borderColor: `${obtenerColorBordeSeccion(seccion)}`,
         top: `${(tiempoInicialAPixeles)}px` ,  left: `${distanciaBordeIzquierdo}`, right: `${distanciaBordeDerecho}`}}>
-      <div className="text-center text-[11px] md:text-xs px-1 truncate">
-        <p className="whitespace-nowrap overflow-hidden text-ellipsis">{`${seccion.curso.programa} ${seccion.curso.curso} ${seccion.seccion}`}</p>
-        <p className="whitespace-nowrap overflow-hidden text-ellipsis">{seccion.profesores[0].nombre}</p>
-        <p className="whitespace-nowrap overflow-hidden text-ellipsis">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
+      <div className="text-center truncate text-[10px] md:text-xs">
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{`${seccion.curso.programa} ${seccion.curso.curso} ${seccion.seccion}`}</p>
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis md:hidden">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{seccion.profesores[0].nombre}</p>
       </div>
     </div>
   );
@@ -238,8 +238,7 @@ function Bloque({bloque} : {bloque: BloqueTiempo}) {
   return (
     <div className='absolute rounded border-2 border-gray-400 bg-gray-200 flex items-center justify-center' style={{ top: `${(tiempoInicialAPixeles)}px` , height: `${alturaBloqueEnPixeles}px`, width:"95%"}}>
       <div>
-        <p className="text-center text-sm">{bloque.titulo}</p>
-        <p className="text-center text-sm">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
+        <p className="text-center text-sm">{bloque.titulo} <span className='md:hidden'>{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</span></p>
       </div>
     </div>
   );
