@@ -57,9 +57,9 @@ function InformacionContacto(){
   return (
     <p className="text-lg text-gray-700">
       Puedes escribirnos tus dudas y sugerencias al correo 
-      <Link href="mailto:opensource@uniandes.edu.co " className="text-yellow-600 hover:underline"> opensource@uniandes.edu.co </Link>
+      <Link href="mailto:opensource@uniandes.edu.co " className="text-yellow-600 hover:underline hover:text-yellow-700"> opensource@uniandes.edu.co </Link>
       o a través de nuestro 
-      <Link  href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes" target="_blank" rel="noopener noreferrer" className="text-yellow-600 hover:underline"> GitHub</Link>.
+      <Link  href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes" target="_blank" rel="noopener noreferrer" className="text-yellow-600 hover:underline hover:text-yellow-700"> GitHub</Link>.
     </p>
   )
 }

@@ -125,12 +125,13 @@ async function obtenerCursosAPartirDeSecciones(cursosGuardados: { [codigoCurso: 
   let cursosPorNombre: {[codigoCurso: string]: Curso} = {};
   cursosActualizados.forEach(cursoActualizado => {
     Object.keys(cursoActualizado).forEach(codigoCurso => {
-      if (!(codigoCurso in cursosPorNombre)) {
+      if (!(codigoCurso in cursosPorNombre) && (codigoCurso in cursosGuardados)) {
         cursosPorNombre[codigoCurso] = cursoActualizado[codigoCurso];
       }
     });
   });
   const cursos = Object.values(cursosPorNombre);
+  console.log(cursos);
   cursos.forEach(curso => {
     curso.secciones = curso.secciones.filter(seccion => cursosGuardados[curso.programa + curso.curso].includes(seccion.seccion));
   });
