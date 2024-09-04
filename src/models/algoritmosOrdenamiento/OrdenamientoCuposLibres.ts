@@ -16,7 +16,7 @@ export default class OrdenamientoCuposLibres implements OrdenamientoHorarios{
   */
   private disponibilidadTotal(horario: Horario): number {
     return horario.secciones.reduce((total, seccion) => {
-      return total * (1-(Math.min(seccion.cuposMaximos, seccion.cuposTomados)/seccion.cuposMaximos));
+      return total * (seccion.cuposMaximos == 0 ? 0 : 1 - (Math.min(seccion.cuposTomados, seccion.cuposMaximos) / seccion.cuposMaximos));;
     }, 1)
   }
 }
