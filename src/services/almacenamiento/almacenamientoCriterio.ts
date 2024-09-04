@@ -3,11 +3,13 @@ import OrdenamientoAleatorio from "@/models/algoritmosOrdenamiento/OrdenamientoA
 import OrdenamientoEntradasTardias from "@/models/algoritmosOrdenamiento/OrdenamientoEntradasTardias";
 import OrdenamientoSalidasTempranas from "@/models/algoritmosOrdenamiento/OrdenamientoSalidasTempranas";
 import OrdenamientoHuecosMinimos from "@/models/algoritmosOrdenamiento/OrdenamientoHuecosMinimos";
+import OrdenamientoCuposLibres from "@/models/algoritmosOrdenamiento/OrdenamientoCuposLibres";
 
 const algoritmosOrdenamiento: {[nombre:string] : OrdenamientoHorario} = {
   "sin huecos": new OrdenamientoHuecosMinimos(),
   "salir temprano": new OrdenamientoSalidasTempranas(),
   "entrar tarde": new OrdenamientoEntradasTardias(),
+  "cupos libres": new OrdenamientoCuposLibres(),
   "aleatorio": new OrdenamientoAleatorio()
 };
 
