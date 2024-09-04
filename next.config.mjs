@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  basePath: '/Mi-Horario-Uniandes',
+  assetPrefix: '/Mi-Horario-Uniandes/',
 };
 
 export default nextConfig;

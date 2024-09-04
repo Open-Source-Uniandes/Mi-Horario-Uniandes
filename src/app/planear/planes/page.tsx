@@ -15,7 +15,7 @@ export default function Planes() {
   return (
     <div className="mx-auto w-[80%] min-w-44 pt-8">
       <h1 className="text-2xl font-semibold">Planes</h1>
-      <p className="text-xl mt-3 mb-9">Aqui se muestran los planes que has gurdado</p>
+      <p className="text-xl mt-3 mb-9">Aquí se muestran los planes que has guardado</p>
       {
         Object.entries(planes).map(([planId, cursos]) => (
           <Plan key={planId} planId={Number(planId)} cursos={cursos} setPlanes={setPlanes} />
@@ -58,11 +58,9 @@ function Plan({planId, cursos, setPlanes}: {planId : number, cursos: {[codigoCur
 */
 function BotonVerPlan({planId}: {planId: number}) {
   return (
-    <button className="w-40 h-12 mx-auto block bg-yellow-300  border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out">
-      <Link href={`/editar/${planId}`}>
-        Ver
-      </Link>
-    </button>
+    <Link href={`/editar/${planId}`} className="w-40 h-12 mx-auto bg-yellow-300 border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out flex items-center justify-center">
+      Ver
+    </Link>
   )
 }
 

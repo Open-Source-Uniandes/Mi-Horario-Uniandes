@@ -1,5 +1,5 @@
 # Mi Horario Uniandes
-[![Video del proyecto](public/logoBanner.png)](https://www.youtube.com/watch?v=WNirDylLHS8)
+[![Video del proyecto](public/static/logoBanner.png)](https://www.youtube.com/watch?v=WNirDylLHS8)
 *Haz clic en la imagen para ver una demostración de la aplicación.*
 
 ## ¡Bienvenido a Mi Horario Uniandes!
@@ -31,7 +31,7 @@ El software lo construimos entre todos 💛
 
 ## Colaboradores
 
-- [Wilmer Arevalo](https://github.com/wareval0) - w.arevalo@uniandes.edu.co  
+- [Wilmer Arévalo](https://github.com/wareval0) - w.arevalo@uniandes.edu.co  
 - [Alejandro Pulido](https://github.com/alejandroPulido03)
 - [Juan Espitia](https://github.com/jmpizza)
 
@@ -42,6 +42,6 @@ Para cualquier consulta o sugerencia, puedes contactarnos en [opensource@uniande
 - [Daniel Diaz](https://github.com/ddi4z) - d.diazm@uniandes.edu.co
 - [Álvaro Bacca](https://github.com/c4ts0up) - a.baccap@uniandes.edu.co
 
-Este proyecto es creado y mantenido por [Juan Sebastian Urrea](https://github.com/jsurrea) - js.urrea@uniandes.edu.co.
+Este proyecto es creado y mantenido por [Juan Sebastián Urrea](https://github.com/jsurrea) - js.urrea@uniandes.edu.co.
 
 Descubre más sobre el proyecto Open Source Uniandes [aquí](https://github.com/Open-Source-Uniandes) 👈

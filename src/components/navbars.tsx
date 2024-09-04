@@ -8,7 +8,7 @@ import Image from "next/image";
 */
 export function NavbarSimple() {
   return (
-    <header className="flex items-center h-16 px-4 bg-yellow-300  md:px-6 fixed w-screen">
+    <header className="flex items-center h-16 px-4 bg-yellow-300  md:px-6 fixed w-screen z-10">
       <Link className="text-lg font-medium mx-auto hover:font-bold hover:delay-75" href={"/"} >Mi horario Uniandes</Link>
     </header>
   )
@@ -54,7 +54,7 @@ export function NavbarEditar() {
 function BotonHorarioAnterior({funcionClic}: {funcionClic: () => void}) {
   return (
     <button className="rounded-full" onClick={funcionClic}>
-      <Image src="/flechaIzquierda.svg" alt="Horario anterior" width={24} height={24}/>
+      <Image src="/Mi-Horario-Uniandes/static/flechaIzquierda.svg" alt="Horario anterior" width={24} height={24}/>
       <span className="sr-only">Anterior horario</span>
     </button>
   );
@@ -66,7 +66,7 @@ function BotonHorarioAnterior({funcionClic}: {funcionClic: () => void}) {
 function BotonSiguienteHorario({funcionClic}: {funcionClic: () => void}) {
   return (
     <button className="rounded-full" onClick={funcionClic}>
-      <Image src="/flechaDerecha.svg" alt="Horario siguiente" width={24} height={24}/>
+      <Image src="/Mi-Horario-Uniandes/static/flechaDerecha.svg" alt="Horario siguiente" width={24} height={24}/>
       <span className="sr-only">Siguiente horario</span>
     </button>
   )
@@ -77,12 +77,10 @@ function BotonSiguienteHorario({funcionClic}: {funcionClic: () => void}) {
 */
 function BotonRegresar() {
   return (
-    <button className="rounded-full">
-      <Link href="/planear">
-        <Image src="/salida.svg" alt="Seguir planeando" width={24} height={24}/>
-        <span className="sr-only">Regresar</span>
-      </Link>
-    </button>
+    <Link href="/planear" className="rounded-full">
+      <Image src="/Mi-Horario-Uniandes/static/salida.svg" alt="Seguir planeando" width={24} height={24}/>
+      <span className="sr-only">Regresar</span>
+    </Link>
   )
 }
 

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Una aplicación web que se nutre de la API de cursos de la Universidad de los Andes para ayudarte a encontrar tu horario ideal.",
   openGraph: {
     title: "Mi Horario Uniandes",
-    description: "Una aplicación web que se nutre de la API de cursos de la Universidad de los Andes para ayudarte a encontrar tu horario ideal.",
+    description: "Crea tu horario uniandino perfecto.",
     url: "https://open-source-uniandes.github.io/Mi-Horario-Uniandes/",
     siteName: "Mi Horario Uniandes",
     images: [
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 export default function LayoutPrincipal({children}: {children: React.ReactNode}) {
   return (
     <html lang="es">
-      <body className="h-screen w-screen">
+      <body className="h-full w-full">
           {children}
       </body>
       <GoogleAnalytics gaId="G-73PZCQ3GKB" />

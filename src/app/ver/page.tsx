@@ -53,7 +53,7 @@ export default function Ver() {
 function NoHayHorarios() {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center my-auto">
-      <Image src="/senecaSorprendida.svg" alt="Error" width={200} height={200} />
+      <Image src="/Mi-Horario-Uniandes/static/senecaSorprendida.svg" alt="Error" width={200} height={200} />
       <p className="text-xl font-semibold">No se encontraron horarios</p>
       <p className="text-lg">Intenta eliminar bloques o secciones para obtener horarios</p>
     </div>
@@ -74,8 +74,6 @@ function PanelHorario({horariosGenerados, indiceHorario, bloquesUsuario} : {hora
         <CalendarioConBloques horario={horariosGenerados[indiceHorario]} bloquesUsuario={bloquesUsuario} />
         {horariosGenerados.length === 0 && <p className="text-center text-md">Total creditos: 0</p>}
         {horariosGenerados.length > 0 && <p className="text-center text-md">Total creditos: {horariosGenerados[indiceHorario].secciones.reduce((acc, seccion) => acc + Number(seccion.curso.creditos), 0)}</p>}
-        <p className="text-center text-md ">¿Quieres guardar este horario para verlo más tarde, y usar nuestra herramienta para encontrar cursos especiales?</p>
-        <p className="text-center text-md font-semibold">Da clic en el botón</p>
         <BotonGuardarPlan horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} />
         <p className="text-center text-md font-semibold"> Mostrando el horario {horariosGenerados.length > 0 ? indiceHorario + 1 : 0} de {horariosGenerados.length} </p>
       </div>
@@ -131,6 +129,7 @@ function CursosPorAtributo({horario}: {horario: Horario}) {
   return (
     <div>
       <div>
+        <h1 className="text-md font-semibold text-center mb-2">Busca cursos especiales que se ajusten al horario</h1>
         <h2>Selecciona un atributo</h2>
         <InputsAtributo atributoSeleccionado={atributoSeleccionado} setAtributoSeleccionado={setAtributoSeleccionado}/>
         <h2>Selecciona un programa especial</h2>

@@ -6,6 +6,7 @@ import { cursoTieneSeccionGuardada, obtenerCursosGuardados, eliminarCursoGuardad
 import { EstadosCursos } from '@/types/contexto'
 import Curso from '@/models/Curso';
 import Seccion from '@/models/Seccion';
+import Tooltip from '@/components/tooltip';
 
 /*
   Contexto que comparte los estados y funciones que se comparten entre los componentes de la página de cursos
@@ -110,7 +111,7 @@ function CursoEncontrado({ curso, funcionSeleccionDeCurso }: { curso: Curso, fun
         <p>{curso.creditos}</p>
       </div>
       <button className='bg-yellow-400 flex items-center justify-center w-8' onClick={funcionSeleccionDeCurso} title='Seleccionar curso'>
-        <Image src="/lupa.svg" alt="Seleccionar curso" width="0" height="0" className='w-6 h-auto' />
+        <Image src="/Mi-Horario-Uniandes/static/lupa.svg" alt="Seleccionar curso" width="0" height="0" className='w-6 h-auto' />
       </button>
     </div>
   )
@@ -175,9 +176,11 @@ function BotonSeleccionarTodas({ curso }: { curso: Curso }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <button title='Seleccionar todas' onClick={handleClic}>
-      <Image src="/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
-    </button>
+    <Tooltip mensaje='Seleccionar todas'>
+      <button onClick={handleClic}>
+        <Image src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
+      </button>
+    </Tooltip>
   )
 }
 
@@ -193,9 +196,11 @@ function BotonSeleccionarValidas({ curso }: { curso: Curso }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <button title='Seleccionar con cupo' onClick={handleClic}>
-      <Image src="/seleccionarValidas.svg" alt="Seleccionar validas" width={35} height={35} />
-    </button>
+    <Tooltip mensaje='Seleccionar con cupo'>
+      <button onClick={handleClic}>
+        <Image src="/Mi-Horario-Uniandes/static/seleccionarValidas.svg" alt="Seleccionar validas" width={35} height={35} />
+      </button>
+    </Tooltip>
   )
 }
 
@@ -211,9 +216,11 @@ function BotonEliminarTodas({ curso }: { curso: Curso }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <button title='Eliminar todas'  onClick={handleClic}>
-      <Image src="/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
-    </button>
+    <Tooltip mensaje='Eliminar todas'>
+      <button onClick={handleClic}>
+        <Image src="/Mi-Horario-Uniandes/static/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
+      </button>
+    </Tooltip>
   )
 }
 
@@ -253,7 +260,7 @@ function CursosPlaneados() {
   return (
     <div className='mx-auto w-[80%] min-w-44 pt-8'>
       <h2 className='text-2xl font-semibold'>Tus cursos planeados</h2>
-      <p className='text-lg my-2'>Aqui puedes ver los cursos que has elegido</p>
+      <p className='text-lg my-2'>Aquí puedes ver los cursos que has elegido</p>
       {Object.keys(cursosGuardados).map((codigo) => <CursoPlaneado codigo={codigo} secciones={cursosGuardados[codigo]} key={codigo} />)}
     </div>
   )
@@ -277,8 +284,8 @@ function CursoPlaneado({ codigo, secciones}: { codigo: string, secciones: number
   return (
     <div className="bg-gray-100 text-center  flex flex-col  border border-3 border-black  min-h-24  my-3">
       <div className='bg-yellow-400 flex h-8 place-content-end'>
-        <Image src="/lupa.svg" alt="Buscar curso" width="0" height="0"   className='cursor-pointer mr-3 w-6 h-auto' onClick={handleBusqueda} title="Buscar curso"/>
-        <Image src="/cruz.svg" alt="Eliminar curso"  width="0" height="0" className='cursor-pointer mr-3 w-6 h-auto' onClick={handleEliminacion} title="Eliminar curso"/>
+        <Image src="/Mi-Horario-Uniandes/static/lupa.svg" alt="Buscar curso" width="0" height="0"   className='cursor-pointer mr-3 w-6 h-auto' onClick={handleBusqueda} title="Buscar curso"/>
+        <Image src="/Mi-Horario-Uniandes/static/cruz.svg" alt="Eliminar curso"  width="0" height="0" className='cursor-pointer mr-3 w-6 h-auto' onClick={handleEliminacion} title="Eliminar curso"/>
       </div>
       <h3 className="text-lg font-semibold">{codigo}</h3>
       <p className="text-muted-foreground">Secciones: {secciones.join(", ")}</p>

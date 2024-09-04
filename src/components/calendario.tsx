@@ -1,9 +1,9 @@
 "use client";
-import { tiempoAMinutos } from '@/services/formateadorTiempo';
+import { tiempoAPixeles, tiempoNumeroATexto } from '@/services/formateadorTiempo';
 import Horario from '@/models/Horario';
 import Seccion from '@/models/Seccion';
 import BloqueTiempo from '@/models/BloqueTiempo';
-import { obtenerBloquesGuardados } from '@/services/almacenamiento/almacenamientoBloques';
+
 
 /*
   Componente que muestra el horario de las secciones en una tabla
@@ -12,10 +12,9 @@ import { obtenerBloquesGuardados } from '@/services/almacenamiento/almacenamient
 */
 export function Calendario({horario}: {horario: Horario}) {
   const seccionesPorDia: {[dia: string]: [Seccion, BloqueTiempo][]} = ObtenerSeccionesPorDia(horario);
-
-  console.log(seccionesPorDia);
   return (
     <div className='flex justify-center items-center w-full pt-4'>
+      <HorasCalendario/>
       <div className='grid grid-cols-1 lg:grid-cols-6 w-screen sm:w-11/12'>
         <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} className="border-l border-t border-b border-gray-400"/>
@@ -39,7 +38,8 @@ export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horari
 
   return (
     <div className='flex justify-center items-center w-full pt-4'>
-      <div className='grid grid-cols-1 lg:grid-cols-6 w-screen sm:w-11/12'>
+      <HorasCalendario/>
+      <div className='grid grid-cols-1 lg:grid-cols-6 w-full sm:w-11/12'>
         <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} bloques={bloquesPorDia["l"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} bloques={bloquesPorDia["m"]} className="border-l border-t border-b border-gray-400"/>
         <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} bloques={bloquesPorDia["i"]} className="border-l border-t border-b border-gray-400"/>
@@ -49,6 +49,28 @@ export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horari
       </div>
     </div>
   );
+}
+
+/*
+  Componente que muestra las horas en el calendario
+  Se suma 18px para compensar el texto falta de alineación con las líneas del calendario que tiene text-lg (18px) de tamaño de fuente
+*/
+function HorasCalendario() {
+  const horas = ObtenerRangoHoras();
+  return (
+    <div className="relative h-[720px] hidden md:block w-12">
+      <div className="relative h-full">
+        {horas.map(hora => (<p className="absolute text-gray-400 text-center w-full" style={{ top: `${tiempoAPixeles(hora) + 18}px` }} key={hora}>{tiempoNumeroATexto(hora)}</p>))}
+      </div>
+    </div>
+  );
+}
+
+/*
+  Función que obtiene los rangos de horas a mostrar en el horario
+*/
+function ObtenerRangoHoras(){
+  return [600,700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000];
 }
 
 /*
@@ -93,12 +115,16 @@ function ObtenerBloquesPorDia(bloques: BloqueTiempo[]) {
   @param className La clase css adicional
 */
 function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, className: string, secciones: [Seccion, BloqueTiempo][], bloques?: BloqueTiempo[] }) {
+  const horas = ObtenerRangoHoras();
   return (
-    <div className={`flex flex-col relative ${className} h-[700px]`}>
-      <h2 className='text-center border-b border-gray-400 text-lg'>{dia}</h2>
-      <div className='relative h-full flex flex-col justify-center items-center'>
-        {secciones?.map(([seccion, bloque],idx) => <BloqueSeccion seccion={seccion} bloque={bloque} key={idx}/>)}
-        {bloques?.map((bloque,idx) => <Bloque bloque={bloque} key={idx}/>)}
+    <div className={`flex flex-col relative ${className} h-[720px]`}>
+      <h2 className='text-center text-lg'>{dia}</h2>
+      <div className="relative h-full">
+        {horas.map(hora => (<hr className="border-gray-300 absolute border-1 w-full" style={{ top: `${tiempoAPixeles(hora)}px` }} key={hora}></hr>))}
+        <div className='relative h-full flex flex-col justify-center items-center'>
+          {secciones?.map(([seccion, bloque],idx) => <BloqueSeccion seccion={seccion} bloque={bloque} key={idx}/>)}
+          {bloques?.map((bloque,idx) => <Bloque bloque={bloque} key={idx}/>)}
+        </div>
       </div>
     </div>
   );
@@ -111,9 +137,9 @@ function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, clas
 */
 function obtenerAnchoSeccionPorcentaje(seccion: Seccion) {
   if (seccion.periodo === "16") {
-    return 100;
+    return 95;
   }
-  return 48;
+  return 45;
 }
 
 /*
@@ -124,7 +150,7 @@ function obtenerAnchoSeccionPorcentaje(seccion: Seccion) {
 */
 function obtenerDistanciaBordeIzquierdo(seccion: Seccion) {
   if (seccion.periodo === "8A") {
-    return "2px";
+    return "2.5%";
   }
   return "auto";
 }
@@ -137,7 +163,7 @@ function obtenerDistanciaBordeIzquierdo(seccion: Seccion) {
 */
 function obtenerDistanciaBordeDerecho(seccion: Seccion) {
   if (seccion.periodo === "8B") {
-    return "2px";
+    return "2.5%";
   }
   return "auto";
 }
@@ -178,8 +204,8 @@ function obtenerColorBordeSeccion(seccion: Seccion) {
   @param bloque El bloque de tiempo a mostrar
 */
 function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiempo}) {
-  const tiempoInicialAPixeles = Math.floor((tiempoAMinutos(bloque.horaInicio) - tiempoAMinutos(600)) * 0.75);
-  const tiempoFinalAPixeles = Math.floor((tiempoAMinutos(bloque.horaFin) - tiempoAMinutos(600)) * 0.75);
+  const tiempoInicialAPixeles = tiempoAPixeles(bloque.horaInicio);
+  const tiempoFinalAPixeles = tiempoAPixeles(bloque.horaFin);
   const alturaBloqueEnPixeles = tiempoFinalAPixeles - tiempoInicialAPixeles;
   const anchobloqueEnPorcentaje = obtenerAnchoSeccionPorcentaje(seccion);
   const distanciaBordeDerecho =  obtenerDistanciaBordeDerecho(seccion)
@@ -187,16 +213,15 @@ function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiem
 
 
   return (
-    <div className='absolute  w-11/12 rounded border-2 flex items-center justify-center' 
+    <div className='absolute rounded border-2 flex items-center justify-center' 
       style={{height: `${alturaBloqueEnPixeles}px`, width: `${anchobloqueEnPorcentaje}%` , 
         backgroundColor: `${obtenerColorFondoSeccion(seccion)}`, borderColor: `${obtenerColorBordeSeccion(seccion)}`,
         top: `${(tiempoInicialAPixeles)}px` ,  left: `${distanciaBordeIzquierdo}`, right: `${distanciaBordeDerecho}`}}>
-      <div>
-        <p className="text-center text-xs">{seccion.curso.programa + seccion.curso.curso}</p>
-        <p className="text-center text-xs">{seccion.seccion}</p>
-        <p className="text-center text-xs" >{bloque.horaInicio} - {bloque.horaFin}</p>
+      <div className="text-center truncate text-[10px] md:text-xs">
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{`${seccion.curso.programa} ${seccion.curso.curso} ${seccion.seccion}`}</p>
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis md:hidden">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{seccion.profesores[0].nombre}</p>
       </div>
-      <p className="text-center text-xs">{seccion.profesores[0].nombre}</p>
     </div>
   );
 }
@@ -207,14 +232,13 @@ function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiem
   @param bloque El bloque de tiempo a mostrar
 */
 function Bloque({bloque} : {bloque: BloqueTiempo}) {
-  const tiempoInicialAPixeles = Math.floor((tiempoAMinutos(bloque.horaInicio) - tiempoAMinutos(600)) * 0.75);
-  const tiempoFinalAPixeles = Math.floor((tiempoAMinutos(bloque.horaFin) - tiempoAMinutos(600)) * 0.75);
+  const tiempoInicialAPixeles = tiempoAPixeles(bloque.horaInicio);
+  const tiempoFinalAPixeles = tiempoAPixeles(bloque.horaFin);
   const alturaBloqueEnPixeles = tiempoFinalAPixeles - tiempoInicialAPixeles;
   return (
-    <div className='absolute w-11/12 rounded border-2 border-gray-400 bg-gray-200 flex items-center justify-center' style={{ top: `${(tiempoInicialAPixeles)}px` , height: `${alturaBloqueEnPixeles}px` }}>
+    <div className='absolute rounded border-2 border-gray-400 bg-gray-200 flex items-center justify-center' style={{ top: `${(tiempoInicialAPixeles)}px` , height: `${alturaBloqueEnPixeles}px`, width:"95%"}}>
       <div>
-        <p className="text-center text-sm">{bloque.titulo}</p>
-        <p className="text-center text-sm">{bloque.horaInicio} - {bloque.horaFin}</p>
+        <p className="text-center text-sm">{bloque.titulo} <span className='md:hidden'>{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</span></p>
       </div>
     </div>
   );
