@@ -12,7 +12,7 @@ import {NavbarSimple} from "@/components/navbars";
 */
 export default function PaginaPrincipal() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen dark:bg-neutral-800">
 	    <NavbarSimple />
       <Main/>
       <Footer/>
@@ -27,7 +27,7 @@ export default function PaginaPrincipal() {
 */
 function Main(){
   return (
-    <main className="pt-24 px-8">
+    <main className="pt-24 px-8 dark:bg-neutral-800 dark:text-white">
         <h1 className="text-3xl font-semibold">Tu Horario Perfecto</h1>
           <h2 className="text-2xl font-semibold">Planear nunca había sido tan fácil</h2>
             <p className="text-xl font-medium mt-4">¡Bienvenidx a Mi Horario Uniandes!</p>
@@ -41,7 +41,7 @@ function Main(){
         <InformacionContacto/>
         <ServicioNotificaciones/>
     
-        <Link href="/planear" className="my-2 w-40 h-12 mx-auto bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out flex items-center justify-center">Arma tu horario</Link>
+        <Link href="/planear" className="my-2 w-40 h-12 mx-auto bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out flex items-center justify-center dark:text-black">Arma tu horario</Link>
 
         <p className="my-4 text-lg font-bold text-center">Recuerda que debes inscribir tus cursos a través de Banner, este proceso no se hace automáticamente.</p>
     </main>
@@ -54,7 +54,7 @@ function Main(){
 */
 function InformacionContacto(){
   return (
-    <p className="text-lg text-gray-700">
+    <p className="text-lg text-gray-700 dark:text-white dark:bg-neutral-800">
       Puedes escribirnos tus dudas y sugerencias al correo 
       <Link href="mailto:opensource@uniandes.edu.co " className="text-yellow-600 hover:underline hover:text-yellow-700"> opensource@uniandes.edu.co </Link>
       o a través de nuestro 
@@ -70,10 +70,10 @@ function InformacionContacto(){
 */
 function ServicioNotificaciones(){
   return (
-    <div className="my-4 w-fit h-fit rounded-md bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 p-2 mx-auto">
-      <div className="flex h-full items-center justify-center dark:bg-black bg-white p-3 hover:bg-yellow-100 transition-colors duration-300 ease-in-out">
+    <div className="my-4 w-fit h-fit rounded-md bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 p-2 mx-auto dark:bg-neutral-800">
+      <div className="flex h-full items-center justify-center dark:bg-neutral-800 bg-white p-3 hover:bg-yellow-100 transition-colors duration-300 ease-in-out">
         <Link href="https://open-source-uniandes.github.io/notifications/" target="_blank">
-          <div>
+          <div className="dark:text-white">
             <p className="text-lg font-semibold">¡Conoce nuestro servicio de notificaciones!</p>
             <p>Te avisamos cuando tus cursos se queden sin cupos.</p>
           </div>
@@ -89,7 +89,7 @@ function ServicioNotificaciones(){
 */
 function Footer() {
   return (
-    <footer  className="flex items-center justify-center bg-neutral-800 py-5 text-white w-full mt-auto">
+    <footer  className="flex items-center justify-center bg-neutral-800 dark:bg-neutral-900 py-5 text-white w-full mt-auto">
       <div>
         <p className="text-center text-lg">Hecho con 💛 en Uniandes</p>
         <Link href="https://github.com/Open-Source-Uniandes/Mi-Horario-Uniandes" className="font-semibold text-yellow-300  hover:text-yellow-500 transition-colors duration-300 ease-in-out">Sé parte de este proyecto aquí</Link>

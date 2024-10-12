@@ -12,9 +12,9 @@ export default function LayoutPlan({children}: {children: React.ReactNode}) {
   return (
     <div>
       <NavbarSimple />
-      <div className="pt-16 flex h-screen">
+      <div className="pt-16 flex h-screen dark:text-white">
         <SidebarPlanear/>
-        <main className="pl-24 w-full">
+        <main className="pl-24 w-full dark:bg-neutral-800">
             {children}
         </main>
       </div>

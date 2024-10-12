@@ -4,11 +4,11 @@
 */
 export default function Planear() {
   return (
-    <main className="p-8 space-y-4">
+    <main className="p-8 space-y-4 dark:bg-neutral-800 dark:text-white">
         <h1 className="text-3xl font-semibold">Planear Horario</h1>
-        <p className="sm:text-lg">Para crear el horario de tus sueños, cuentas con las siguientes funcionalidades disponibles en el menú lateral izquierdo:</p>
+        <p className="sm:text-lgdark:text-white">Para crear el horario de tus sueños, cuentas con las siguientes funcionalidades disponibles en el menú lateral izquierdo:</p>
         <h2 className="text-2xl font-semibold">🏫 Cursos</h2>
-        <p className="sm:text-lg">Aquí podrás seleccionar las secciones que te gusten de los cursos que piensas tomar.</p>
+        <p className="sm:text-lge">Aquí podrás seleccionar las secciones que te gusten de los cursos que piensas tomar.</p>
         <h2 className="text-2xl font-semibold">🕗 Bloques</h2>
         <p className="sm:text-lg">¿No quieres madrugar a las 6:30? ¿Quieres almorzar con tus amigos a las 12:30? ¡Agrega esos momentos en los cuales, por ningún motivo, quieres que se te cruce una clase!</p>
         <h2 className="text-2xl font-semibold">🧺 Grupos</h2>

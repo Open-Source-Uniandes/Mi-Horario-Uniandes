@@ -4,6 +4,7 @@
 
 import type { GetStaticPaths, Metadata } from "next";
 import { GoogleAnalytics } from '@next/third-parties/google';
+import DarkMode from '@/app/darkMode';
 import "./globals.css";
 
 /*
@@ -33,7 +34,7 @@ export default function LayoutPrincipal({children}: {children: React.ReactNode})
   return (
     <html lang="es">
       <body className="h-full w-full">
-          {children}
+        <DarkMode>{children}</DarkMode>
       </body>
       <GoogleAnalytics gaId="G-73PZCQ3GKB" />
     </html>

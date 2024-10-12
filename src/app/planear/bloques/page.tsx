@@ -58,7 +58,7 @@ function FormularioBloque() {
       <h2 className='text-2xl font-semibold'>Crea un bloque de tiempo</h2>
       <InputsBloque />
       <CheckBoxDiasSemana />
-      <button className="w-40 h-12 mx-auto block bg-yellow-300  rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out" onClick={handleClic}>Crear</button>
+      <button className="w-40 h-12 mx-auto block bg-yellow-300  rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black" onClick={handleClic}>Crear</button>
     </div>
   )
 }
@@ -81,15 +81,15 @@ function InputsBloque() {
   return (
     <div>
       <label className='text-lg' htmlFor="nombre">Nombre</label>
-      <input placeholder="Videojuegos" className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="text" id="titulo" name="titulo" value={bloqueEnCreacion.titulo} onChange={handleChange}/>
+      <input placeholder="Videojuegos" className="w-full text-lg bg-gray-100 dark:bg-neutral-600 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="text" id="titulo" name="titulo" value={bloqueEnCreacion.titulo} onChange={handleChange}/>
       <label className="text-lg" htmlFor="lugar">Lugar</label>
-      <input placeholder="Centro deportivo" className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="text" id="lugar" name="lugar" value={bloqueEnCreacion.lugar} onChange={handleChange}/>
+      <input placeholder="Centro deportivo" className="w-full text-lg bg-gray-100 dark:bg-neutral-600 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="text" id="lugar" name="lugar" value={bloqueEnCreacion.lugar} onChange={handleChange}/>
       <label className="text-lg" htmlFor="horaInicio">Hora Inicio</label>
-      <input className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="time" id="horaInicio" name="horaInicio" onChange={handleChange}
+      <input className="w-full text-lg bg-gray-100 dark:bg-neutral-600 focus:outline-none border border-1 border-gray-300 focus:border-gray-400" type="time" id="horaInicio" name="horaInicio" onChange={handleChange}
         value={bloqueEnCreacion.horaInicio !== undefined ? bloqueEnCreacion.horaInicio.toString().padStart(4, '0').slice(0, 2) + ":" + bloqueEnCreacion.horaInicio.toString().padStart(4, '0').slice(2): ''}
       />
       <label className="text-lg" htmlFor="horaFin">Hora Fin</label>
-      <input className="w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400"
+      <input className="w-full text-lg bg-gray-100 dark:bg-neutral-600 focus:outline-none border border-1 border-gray-300 focus:border-gray-400"
         type="time" id="horaFin" name="horaFin" onChange={handleChange}
         value={bloqueEnCreacion.horaFin !== undefined? bloqueEnCreacion.horaFin.toString().padStart(4, '0').slice(0, 2) + ":" + bloqueEnCreacion.horaFin.toString().padStart(4, '0').slice(2): ''}
       />
@@ -112,7 +112,7 @@ function CheckBoxDiasSemana() {
     <div className='flex place-content-around'>
       {diasSemana.map((dia, index) => (
         <label key={index} className="text-3xl">
-          <input className="w-6 h-6" type="checkbox" name="dias" value={dia} checked={bloqueEnCreacion.dias.includes(dia)}  onChange={handleChange}/>
+          <input className="w-6 h-6 accent-yellow-300" type="checkbox" name="dias" value={dia} checked={bloqueEnCreacion.dias.includes(dia)}  onChange={handleChange}/>
           {dia.charAt(0).toUpperCase() + dia.slice(1)}
         </label>
       ))}
@@ -152,7 +152,7 @@ function BloquesPlaneados() {
 */
 function BloquePlaneado({ bloque , funcionEliminar }: { bloque: BloqueTiempo, funcionEliminar: () => void }) {
   return (
-    <div className="bg-gray-100 text-center  flex flex-col  border border-3 border-black  h-36 my-3">
+    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex flex-col  border border-3 border-black  h-36 my-3">
       <div className='bg-yellow-400 flex h-8 place-content-end'>
         <Image src="/Mi-Horario-Uniandes/static/cruz.svg" alt="Eliminar" width="0" height={24} onClick={funcionEliminar} className='w-6 h-auto cursor-pointer'/>
       </div>

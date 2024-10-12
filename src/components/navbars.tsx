@@ -9,7 +9,7 @@ import Image from "next/image";
 export function NavbarSimple() {
   return (
     <header className="flex items-center h-16 px-4 bg-yellow-300  md:px-6 fixed w-screen z-10">
-      <Link className="text-lg font-medium mx-auto hover:font-bold hover:delay-75" href={"/"} >Mi horario Uniandes</Link>
+      <Link className="text-lg font-medium mx-auto hover:font-bold hover:delay-75 dark:text-black" href={"/"} >Mi horario Uniandes</Link>
     </header>
   )
 }
@@ -20,7 +20,7 @@ export function NavbarSimple() {
 */
 export function NavbarVer({funcionHorarioAnterior, funcionHorarioSiguiente}: {funcionHorarioAnterior: () => void, funcionHorarioSiguiente: () => void}) {
   return (
-    <header className="flex items-center justify-between h-16 px-4 bg-yellow-300 md:px-6 fixed z-10 w-full">
+    <header className="flex items-center justify-between h-16 px-4 bg-yellow-300 md:px-6 fixed z-10 w-full dark:text-black">
       <div className="flex items-center gap-4">
         <BotonRegresar/>
       </div>
