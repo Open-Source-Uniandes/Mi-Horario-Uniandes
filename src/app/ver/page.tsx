@@ -34,7 +34,7 @@ export default function Ver() {
   const siguienteHorario = () => setIndiceHorario((indiceHorario + 1) % horariosGenerados.length);
   const anteriorHorario = () => setIndiceHorario((indiceHorario - 1 + horariosGenerados.length) % horariosGenerados.length);
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col dark:text-white dark:bg-custom-dark">
     <NavbarVer funcionHorarioSiguiente={siguienteHorario} funcionHorarioAnterior={anteriorHorario} />
     {cargando && <Spinner mensajeDeCarga="Generando horarios..." mensajeAuxiliar="Intenta seleccionar menos secciones para obtener horarios más rápido"/> }
     {!cargando && horariosGenerados.length > 0 &&
@@ -97,7 +97,7 @@ function BotonGuardarPlan({horariosGenerados, indiceHorario} : {horariosGenerado
     }
   };
   return (
-    <button onClick={handleClic} className=" w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out"> 
+    <button onClick={handleClic} className=" w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black"> 
       Guardar como plan
     </button>
   )
@@ -147,7 +147,7 @@ function CursosPorAtributo({horario}: {horario: Horario}) {
 */
 function BotonQuitarFiltros({setAtributoSeleccionado, setProgramaSeleccionado}: {setAtributoSeleccionado: (atributo: string) => void, setProgramaSeleccionado: (programa: string) => void}) {
   return (
-    <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out"
+    <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black"
       onClick={() => {
         setAtributoSeleccionado("");
         setProgramaSeleccionado("");
@@ -234,7 +234,7 @@ function SeccionesEspeciales({secciones}: {secciones: Seccion[]}){
 */
 function SeccionEspecial({seccion}: {seccion: Seccion}){
   return (
-    <div className="bg-gray-100 text-center  flex  border border-3 border-black">
+    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black">
       <div className='flex flex-col justify-center'>
         <h3 className="text-md font-semibold">{seccion.titulo}</h3>
         <p>nrc: {seccion.nrc} sección: {seccion.seccion}</p>
@@ -249,4 +249,3 @@ function SeccionEspecial({seccion}: {seccion: Seccion}){
     </div>
   )
 }
-

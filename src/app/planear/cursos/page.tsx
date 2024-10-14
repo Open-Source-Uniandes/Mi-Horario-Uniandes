@@ -68,9 +68,9 @@ function Planeacion() {
       <div className=' my-4 '>
         <label className='w-full text-lg' htmlFor="searchCourses" >Empieza por ingresar uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu horario ideal.</label>
         <br />
-        <input ref={inputRef} className='w-full text-lg bg-gray-100 focus:outline-none border border-1 border-gray-300 focus:border-gray-400 text-center'  id="searchCourses" type="search" placeholder="DECA1101, NRC o nombre" onKeyDown={handleEnter} />
+        <input ref={inputRef} className='w-full text-lg bg-gray-100 dark:bg-neutral-600 focus:outline-none border border-1 border-gray-300 focus:border-gray-400 text-center'  id="searchCourses" type="search" placeholder="DECA1101, NRC o nombre" onKeyDown={handleEnter} />
         <div className='flex items-center mt-2 mb-4'>
-          <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out" onClick={() => { if (inputRef.current) setCursoABuscar(inputRef.current.value); }}>Buscar</button>
+          <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black" onClick={() => { if (inputRef.current) setCursoABuscar(inputRef.current.value); }}>Buscar</button>
         </div>
       </div>
       {cargando && <p className='text-lg font-semibold'>Buscando cursos...</p>}
@@ -103,7 +103,7 @@ function DetallesCursosEncontrados({ cursos, funcionSeleccionDeCurso }: { cursos
 */
 function CursoEncontrado({ curso, funcionSeleccionDeCurso }: { curso: Curso, funcionSeleccionDeCurso: () => void }) {
   return (
-    <div className="bg-gray-100 text-center  flex  border border-3 border-black  h-36   my-3" >
+    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black  h-36   my-3" >
       <div className='mx-auto flex flex-col justify-center'>
         <h3 className="text-lg font-semibold">{curso.descripcion}</h3>
         <p>{curso.programa}</p>
@@ -141,7 +141,7 @@ function DetallesCursoSeleccionado({ curso }: { curso: Curso}) {
 */
 function CursoSeleccionado({ curso }: { curso: Curso }) {
   return (
-    <div className="bg-gray-300 text-center  flex border border-3 border-black  h-36  flex-col justify-center my-3">
+    <div className="bg-gray-300 dark:bg-neutral-600 text-center  flex border border-3 border-black  h-36  flex-col justify-center my-3">
       <h3 className="text-lg font-semibold">{curso.descripcion}</h3>
       <p>{curso.programa}{curso.curso}</p>
       <p>{curso.creditos} créditos</p>
@@ -236,12 +236,12 @@ function SeccionCursoSeleccionado({ seccion }: { seccion: Seccion }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <div className="bg-gray-100 text-center  flex  border border-3 border-black  sm:h-44  my-3">
+    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black  sm:h-44  my-3">
       <div className='mx-auto flex flex-col justify-center'>
         <h3 className="text-lg font-semibold">{seccion.titulo}</h3>
         <p>NRC: {seccion.nrc} SECCIÓN: {seccion.seccion}</p>
         <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
-        <div className="w-full bg-gray-300 rounded-full h-3 dark:bg-gray-700">
+        <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-3">
           {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados,seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}
         </div>
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
@@ -282,7 +282,7 @@ function CursoPlaneado({ codigo, secciones}: { codigo: string, secciones: number
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <div className="bg-gray-100 text-center  flex flex-col  border border-3 border-black  min-h-24  my-3">
+    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex flex-col  border border-3 border-black  min-h-24  my-3">
       <div className='bg-yellow-400 flex h-8 place-content-end'>
         <Image src="/Mi-Horario-Uniandes/static/lupa.svg" alt="Buscar curso" width="0" height="0"   className='cursor-pointer mr-3 w-6 h-auto' onClick={handleBusqueda} title="Buscar curso"/>
         <Image src="/Mi-Horario-Uniandes/static/cruz.svg" alt="Eliminar curso"  width="0" height="0" className='cursor-pointer mr-3 w-6 h-auto' onClick={handleEliminacion} title="Eliminar curso"/>

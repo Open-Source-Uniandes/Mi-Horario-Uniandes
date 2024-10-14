@@ -4,20 +4,24 @@
 
 import Link from "next/link"
 import Image from "next/image"
+import { BotonTematico } from "@/app/darkMode";
 
 /*
   Sidebar de la vista planear
   Contiene las cinco opciones o funcionalidades basicas
 */
 export default function SidebarPlanear() {
+
+
   return (
-    <div className="flex flex-col items-center gap-6 bg-zinc-200 p-4 border-r w-24 fixed h-screen">
+    <div className="flex flex-col items-center gap-6 bg-zinc-200 p-4 border-r w-24 fixed h-screen dark:bg-neutral-900">
       <BotonCursos/>
       <BotonBloques/>
       <BotonGrupos/>
       <BotonPlanes/>
       <BotonCriterios/>
       <BotonVerHorarios/>
+      <BotonTematico/>
     </div>
   )
 }
@@ -35,7 +39,7 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
   const nombreOpcion = partesRuta[partesRuta.length - 1]
   return (
     <Link className="text-sm font-medium flex flex-col items-center" href={ ruta }>
-      <div className="flex items-center justify-center w-12 h-12 rounded-md border border-black">
+      <div className="flex items-center justify-center w-12 h-12 rounded-md border border-black dark:border-white">
         {children}
       </div>
       <p>{nombreOpcion[0].toUpperCase() + nombreOpcion.slice(1)}</p>
@@ -49,7 +53,7 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
 function BotonCursos() {
     return (
       <BotonLateral ruta={"/planear/cursos"}>
-        <Image src="/Mi-Horario-Uniandes/static/universidad.svg" alt="Cursos" width={24} height={24}/>
+        <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/universidad.svg" alt="Cursos" width={24} height={24}/>
       </BotonLateral>
     )
 }
@@ -60,7 +64,7 @@ function BotonCursos() {
 function BotonBloques() {
   return (
     <BotonLateral ruta={"/planear/bloques"}>
-      <Image src="/Mi-Horario-Uniandes/static/reloj.svg" alt="Bloques" width={24} height={24}/>
+      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/reloj.svg" alt="Bloques" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -71,7 +75,7 @@ function BotonBloques() {
 function BotonGrupos() {
     return (
       <BotonLateral ruta={"/planear/grupos"}>
-        <Image src="/Mi-Horario-Uniandes/static/canasta.svg" alt="Grupos" width={24} height={24}/>
+        <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/canasta.svg" alt="Grupos" width={24} height={24}/>
       </BotonLateral>
     )
 }
@@ -82,7 +86,7 @@ function BotonGrupos() {
 function BotonPlanes() {
   return (
     <BotonLateral ruta={"/planear/planes"}>
-      <Image src="/Mi-Horario-Uniandes/static/lista.svg" alt="Planes" width={24} height={24}/>
+      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/lista.svg" alt="Planes" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -93,7 +97,7 @@ function BotonPlanes() {
 function BotonCriterios() {
   return (
     <BotonLateral ruta={"/planear/criterios"}>
-      <Image src="/Mi-Horario-Uniandes/static/engranaje.svg" alt="Ordenamientos" width={24} height={24}/>
+      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/engranaje.svg" alt="Ordenamientos" width={24} height={24}/>
     </BotonLateral>
   )
 }
@@ -104,7 +108,7 @@ function BotonCriterios() {
 function BotonVerHorarios() {
   return (
     <BotonLateral ruta={"/ver"}>
-      <Image src="/Mi-Horario-Uniandes/static/calendario.svg" alt="Ver Horarios" width={24} height={24}/>
+      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/calendario.svg" alt="Ver Horarios" width={24} height={24}/>
     </BotonLateral>
   )
 }

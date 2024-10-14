@@ -57,6 +57,14 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  .icon-svg {
+    filter: invert(0);
+  }
+  
+  .dark .icon-svg {
+    filter: invert(1);
+  }
 }
 
 @layer base {
