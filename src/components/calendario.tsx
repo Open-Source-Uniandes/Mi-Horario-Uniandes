@@ -217,7 +217,7 @@ function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiem
       style={{height: `${alturaBloqueEnPixeles}px`, width: `${anchobloqueEnPorcentaje}%` , 
         backgroundColor: `${obtenerColorFondoSeccion(seccion)}`, borderColor: `${obtenerColorBordeSeccion(seccion)}`,
         top: `${(tiempoInicialAPixeles)}px` ,  left: `${distanciaBordeIzquierdo}`, right: `${distanciaBordeDerecho}`}}>
-      <div className="text-center truncate text-[10px] md:text-xs dark:text-neutral-600">
+      <div className="text-center truncate text-[10px] md:text-xs dark:text-black">
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{`${seccion.curso.programa} ${seccion.curso.curso} ${seccion.seccion}`}</p>
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis md:hidden">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{seccion.profesores[0].nombre}</p>

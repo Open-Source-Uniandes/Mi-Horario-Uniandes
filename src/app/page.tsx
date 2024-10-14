@@ -71,7 +71,7 @@ function InformacionContacto(){
 function ServicioNotificaciones(){
   return (
     <div className="my-4 w-fit h-fit rounded-md bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 p-2 mx-auto dark:bg-neutral-800">
-      <div className="flex h-full items-center justify-center dark:bg-neutral-800 bg-white p-3 hover:bg-yellow-100 transition-colors duration-300 ease-in-out">
+      <div className="flex h-full items-center justify-center dark:bg-neutral-800 bg-white p-3 hover:bg-yellow-100 dark:hover:bg-yellow-600 transition-colors duration-300 ease-in-out">
         <Link href="https://open-source-uniandes.github.io/notifications/" target="_blank">
           <div className="dark:text-white">
             <p className="text-lg font-semibold">¡Conoce nuestro servicio de notificaciones!</p>

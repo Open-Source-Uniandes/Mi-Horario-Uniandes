@@ -58,7 +58,7 @@ function Plan({planId, cursos, setPlanes}: {planId : number, cursos: {[codigoCur
 */
 function BotonVerPlan({planId}: {planId: number}) {
   return (
-    <Link href={`/editar/${planId}`} className="w-40 h-12 mx-auto bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out flex items-center justify-center dark:text-black">
+    <Link href={`/editar/${planId}`} className="w-40 h-12 mx-auto bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out flex items-center justify-center dark:text-black">
       Ver
     </Link>
   )
@@ -72,7 +72,7 @@ function BotonVerPlan({planId}: {planId: number}) {
 */
 function BotonEliminarPlan({planId, funcionEliminar}: {planId: number, funcionEliminar: (planId: number) => void}) {
   return (
-    <button className="w-40 h-12 mx-auto block bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black" onClick={() => funcionEliminar(planId)}>
+    <button className="w-40 h-12 mx-auto block bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out dark:text-black" onClick={() => funcionEliminar(planId)}>
       Eliminar
     </button>
   )
@@ -103,8 +103,8 @@ function CursosDelPlan({cursos}: {cursos: {[codigoCurso: string]: number}}) {
 */
 function CursoDePlan({codigoCurso, nrc}: {codigoCurso: string, nrc: number}) {
   return (
-    <div className="border border-yellow-900 dark:border-blue-500 h-16 mx-auto min-w-24 bg-yellow-50 dark:bg-neutral-700">
-      <p className="text-lg font-semibold text-center text-yellow-900 dark:text-blue-500" >{codigoCurso}</p>
+    <div className="border border-yellow-900 dark:border-orange-400 h-16 mx-auto min-w-24 bg-yellow-50 dark:bg-neutral-700">
+      <p className="text-lg font-semibold text-center text-yellow-900 dark:text-orange-400" >{codigoCurso}</p>
       <p className="text-lg text-center" >{nrc}</p>
     </div>
   )
