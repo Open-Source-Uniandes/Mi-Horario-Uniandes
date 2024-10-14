@@ -39,7 +39,7 @@ export function eliminarPlanGuardado(planId: number) {
 export function esPosibleCrearPlan() {
   if (typeof window !== "undefined") {
     const planesGuardados = JSON.parse(localStorage.getItem("planes") || "{}");
-    return Object.keys(planesGuardados).length <= 5;
+    return Object.keys(planesGuardados).length < 5;
   }
   return false;
 }

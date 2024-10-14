@@ -26,7 +26,7 @@ export default function Editar({ params }: { params: { planId: string } }) {
     descargarComoTxt(infoSecciones, "horario.txt");
   };
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col dark:bg-custom-dark">
       <NavbarEditar />
       {cargando ? <Spinner mensajeDeCarga="Cargando horario" /> :
         <div className="pt-16 flex flex-1">

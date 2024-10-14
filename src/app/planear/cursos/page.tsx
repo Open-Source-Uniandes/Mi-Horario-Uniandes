@@ -177,7 +177,7 @@ function BotonSeleccionarTodas({ curso }: { curso: Curso }) {
   }
   return (
     <Tooltip mensaje='Seleccionar todas'>
-      <button onClick={handleClic}>
+      <button className='icon-svg' onClick={handleClic}>
         <Image src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
       </button>
     </Tooltip>
@@ -197,7 +197,7 @@ function BotonSeleccionarValidas({ curso }: { curso: Curso }) {
   }
   return (
     <Tooltip mensaje='Seleccionar con cupo'>
-      <button onClick={handleClic}>
+      <button className='icon-svg' onClick={handleClic}>
         <Image src="/Mi-Horario-Uniandes/static/seleccionarValidas.svg" alt="Seleccionar validas" width={35} height={35} />
       </button>
     </Tooltip>
@@ -217,7 +217,7 @@ function BotonEliminarTodas({ curso }: { curso: Curso }) {
   }
   return (
     <Tooltip mensaje='Eliminar todas'>
-      <button onClick={handleClic}>
+      <button className='icon-svg' onClick={handleClic}>
         <Image src="/Mi-Horario-Uniandes/static/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
       </button>
     </Tooltip>
@@ -247,7 +247,7 @@ function SeccionCursoSeleccionado({ seccion }: { seccion: Seccion }) {
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
         <p>{seccion.horarios.map((bloque) => bloque.dias.map(dia => dia.toUpperCase()).join("") + " " + bloque.horaInicio + " " + bloque.horaFin).join(", ")}</p>
       </div>
-      <button className='bg-yellow-400 flex items-center justify-center w-8 text-2xl font-semibold' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.seccion) ? "-" : "+"}</button>
+      <button className='bg-yellow-400 flex items-center justify-center w-8 text-2xl font-semibold dark:text-black' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.seccion) ? "-" : "+"}</button>
     </div>
   )
 }
@@ -288,7 +288,7 @@ function CursoPlaneado({ codigo, secciones}: { codigo: string, secciones: number
         <Image src="/Mi-Horario-Uniandes/static/cruz.svg" alt="Eliminar curso"  width="0" height="0" className='cursor-pointer mr-3 w-6 h-auto' onClick={handleEliminacion} title="Eliminar curso"/>
       </div>
       <h3 className="text-lg font-semibold">{codigo}</h3>
-      <p className="text-muted-foreground">Secciones: {secciones.join(", ")}</p>
+      <p className="text-muted-foreground dark:text-neutral-300">Secciones: {secciones.join(", ")}</p>
     </div>
   )
 }
