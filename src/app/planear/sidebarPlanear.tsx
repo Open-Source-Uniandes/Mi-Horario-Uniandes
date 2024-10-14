@@ -11,21 +11,18 @@ import { BotonTematico } from "@/app/darkMode";
   Contiene las cinco opciones o funcionalidades basicas
 */
 export default function SidebarPlanear() {
-
-
   return (
-    <div className="flex flex-col items-center gap-3 bg-zinc-200 p-4 border-r w-24 fixed h-screen dark:bg-neutral-900">
-      <BotonCursos/>
-      <BotonBloques/>
-      <BotonGrupos/>
-      <BotonPlanes/>
-      <BotonCriterios/>
-      <BotonVerHorarios/>
-      <BotonTematico/>
+    <div className="flex flex-col justify-between items-center bg-zinc-200 pb-24 py-6 border-r w-24 fixed h-screen dark:bg-neutral-900">
+      <BotonCursos />
+      <BotonBloques />
+      <BotonGrupos />
+      <BotonPlanes />
+      <BotonCriterios />
+      <BotonVerHorarios />
+      <BotonTematico />
     </div>
-  )
+  );
 }
-
 /*
   Define una estructura generica para cualquier botón
   La estructura consiste en un Link que redirecciona a la opcion o funcionalidad en especifico
@@ -38,12 +35,15 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
   const partesRuta = ruta.split("/")
   const nombreOpcion = partesRuta[partesRuta.length - 1]
   return (
-    <Link className="text-sm font-medium flex flex-col items-center" href={ ruta }>
-      <div className="flex items-center justify-center w-12 h-12 rounded-md border border-black dark:border-white">
-        {children}
-      </div>
-      <p>{nombreOpcion[0].toUpperCase() + nombreOpcion.slice(1)}</p>
-    </Link>
+    <div className="flex-1">
+      <Link className="text-sm font-medium flex flex-col items-center" href={ ruta }>
+        <div className="flex items-center justify-center w-10 h-10 rounded-md border border-black dark:border-white">
+          {children}
+        </div>
+        <p>{nombreOpcion[0].toUpperCase() + nombreOpcion.slice(1)}</p>
+      </Link>
+    </div>
+
   )
 }
 
