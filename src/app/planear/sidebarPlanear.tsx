@@ -14,7 +14,7 @@ export default function SidebarPlanear() {
 
 
   return (
-    <div className="flex flex-col items-center gap-6 bg-zinc-200 p-4 border-r w-24 fixed h-screen dark:bg-neutral-900">
+    <div className="flex flex-col items-center gap-3 bg-zinc-200 p-4 border-r w-24 fixed h-screen dark:bg-neutral-900">
       <BotonCursos/>
       <BotonBloques/>
       <BotonGrupos/>

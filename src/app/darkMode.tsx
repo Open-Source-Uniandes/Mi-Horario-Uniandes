@@ -73,7 +73,7 @@ export function BotonTematico() {
   const { mode, cambiarTema } = useContext(DarkModeContext);
 
   return (
-    <button className="fixed w-12 h-12 bottom-16 rounded-full" onClick={cambiarTema}>
+    <button className="fixed w-9 h-9 bottom-9 rounded-full" onClick={cambiarTema}>
       <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/modoOscuro.svg" alt="Modo Oscuro" width={100} height={100}/>
     </button>
   );
