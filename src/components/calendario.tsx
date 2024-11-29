@@ -236,7 +236,7 @@ function Bloque({bloque} : {bloque: BloqueTiempo}) {
   const tiempoFinalAPixeles = tiempoAPixeles(bloque.horaFin);
   const alturaBloqueEnPixeles = tiempoFinalAPixeles - tiempoInicialAPixeles;
   return (
-    <div className='absolute rounded border-2 border-gray-400 bg-gray-200 flex items-center justify-center' style={{ top: `${(tiempoInicialAPixeles)}px` , height: `${alturaBloqueEnPixeles}px`, width:"95%"}}>
+    <div className='absolute rounded border-2 border-gray-400 bg-gray-200 flex items-center justify-center dark:bg-neutral-600 text-center' style={{ top: `${(tiempoInicialAPixeles)}px` , height: `${alturaBloqueEnPixeles}px`, width:"95%"}}>
       <div>
         <p className="text-center text-sm">{bloque.titulo} <span className='md:hidden'>{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</span></p>
       </div>

@@ -13,6 +13,7 @@ import { atributosEspeciales, obtenerSeccionesPorAtributoYPrograma, programasEsp
 import { filtrarSeccionesQueColisionan } from "@/services/operacionesSobreHorario";
 import Spinner from "@/components/spinner";
 import Image from "next/image";
+import CasillasDias from "@/components/casillasDias";
 
 /*
   Página que muestra los horarios generados así como la opción de guardar un horario y ver cursos especiales que se ajustan
@@ -241,7 +242,7 @@ function SeccionEspecial({seccion}: {seccion: Seccion}){
         <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
         <p>{seccion.curso.programa + seccion.curso.curso}</p>
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
-        <p>{seccion.horarios.map((bloque) => bloque.dias.join("") + " " + bloque.horaInicio + " " + bloque.horaFin).join(", ")}</p>
+        <p>{seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo}/>)}</p>
         {seccion.curso.atributos.map((atributo) => (
           <p key={atributo}>{atributo}</p>
         ))}

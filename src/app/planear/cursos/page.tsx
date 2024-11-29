@@ -7,6 +7,7 @@ import { EstadosCursos } from '@/types/contexto'
 import Curso from '@/models/Curso';
 import Seccion from '@/models/Seccion';
 import Tooltip from '@/components/tooltip';
+import CasillasDias from '@/components/casillasDias';
 
 /*
   Contexto que comparte los estados y funciones que se comparten entre los componentes de la página de cursos
@@ -103,14 +104,14 @@ function DetallesCursosEncontrados({ cursos, funcionSeleccionDeCurso }: { cursos
 */
 function CursoEncontrado({ curso, funcionSeleccionDeCurso }: { curso: Curso, funcionSeleccionDeCurso: () => void }) {
   return (
-    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black  h-36   my-3" >
-      <div className='mx-auto flex flex-col justify-center'>
+    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black my-3 flex-" >
+      <div className='mx-auto py-3 w-full'>
         <h3 className="text-lg font-semibold">{curso.descripcion}</h3>
         <p>{curso.programa}</p>
         <p>{curso.curso}</p>
         <p>{curso.creditos}</p>
       </div>
-      <button className='bg-yellow-400 flex items-center justify-center w-8' onClick={funcionSeleccionDeCurso} title='Seleccionar curso'>
+      <button className='bg-yellow-400 flex items-center justify-center ml-auto w-8 min-w-8' onClick={funcionSeleccionDeCurso} title='Seleccionar curso'>
         <Image src="/Mi-Horario-Uniandes/static/lupa.svg" alt="Seleccionar curso" width="0" height="0" className='w-6 h-auto' />
       </button>
     </div>
@@ -141,7 +142,7 @@ function DetallesCursoSeleccionado({ curso }: { curso: Curso}) {
 */
 function CursoSeleccionado({ curso }: { curso: Curso }) {
   return (
-    <div className="bg-gray-300 dark:bg-neutral-600 text-center  flex border border-3 border-black  h-36  flex-col justify-center my-3">
+    <div className="bg-gray-300 dark:bg-neutral-600 text-center  flex border border-3 border-black   flex-col justify-center my-3 py-3">
       <h3 className="text-lg font-semibold">{curso.descripcion}</h3>
       <p>{curso.programa}{curso.curso}</p>
       <p>{curso.creditos} créditos</p>
@@ -236,7 +237,7 @@ function SeccionCursoSeleccionado({ seccion }: { seccion: Seccion }) {
     setCursosGuardados(obtenerCursosGuardados());
   }
   return (
-    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black  sm:h-44  my-3">
+    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black  my-3">
       <div className='mx-auto flex flex-col justify-center'>
         <h3 className="text-lg font-semibold">{seccion.titulo}</h3>
         <p>NRC: {seccion.nrc} SECCIÓN: {seccion.seccion}</p>
@@ -245,9 +246,9 @@ function SeccionCursoSeleccionado({ seccion }: { seccion: Seccion }) {
           {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados,seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}
         </div>
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
-        <p>{seccion.horarios.map((bloque) => bloque.dias.map(dia => dia.toUpperCase()).join("") + " " + bloque.horaInicio + " " + bloque.horaFin).join(", ")}</p>
+        <p>{seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo}/>)}</p>
       </div>
-      <button className='bg-yellow-400 flex items-center justify-center w-8 text-2xl font-semibold dark:text-black' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.seccion) ? "-" : "+"}</button>
+      <button className='bg-yellow-400 flex items-center justify-center w-8 min-w-8 text-2xl font-semibold dark:text-black' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.seccion) ? "-" : "+"}</button>
     </div>
   )
 }

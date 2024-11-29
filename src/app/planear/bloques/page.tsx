@@ -5,6 +5,7 @@ import Image from "next/image";
 import { EstadoBloques } from '@/types/contexto'
 import { eliminarBloque,obtenerBloquesGuardados, guardarBloque} from '@/services/almacenamiento/almacenamientoBloques';
 import { tiempoNumeroATexto } from '@/services/formateadorTiempo';
+import CasillasDias from '@/components/casillasDias';
 
 /*
   Contexto de los bloques de tiempo
@@ -162,8 +163,7 @@ function BloquePlaneado({ bloque , funcionEliminar }: { bloque: BloqueTiempo, fu
       </div>
       <h3 className="text-lg font-semibold">{bloque.titulo}</h3>
       <p>{bloque.lugar}</p>
-      <p>{["l", "m", "i", "j", "v", "s"].filter(dia => bloque.dias.includes(dia)).map(dia => dia.toUpperCase()).join(", ")}</p>
-      <p>{tiempoNumeroATexto(bloque.horaInicio) + " - " + tiempoNumeroATexto(bloque.horaFin)}</p>
+      <CasillasDias bloque={bloque} />
     </div>
   );
 }
