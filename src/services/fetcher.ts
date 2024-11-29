@@ -37,8 +37,12 @@ function cargarHorariosSeccion(seccion: Seccion, horarios: HorarioAPI[]) {
   @param profesores Los profesores a cargar
 */
 function cargarProfesoresSeccion(seccion: Seccion, profesores: ProfesorAPI[]) {
+  if (profesores.length === 0) {
+    seccion.profesores.push(new Profesor("NO DEFINIDO"));
+  }
   for (let profesor of profesores) {
-    seccion.profesores.push(new Profesor(profesor.name));
+    const nombreProfesor = profesor.name || "NO DEFINIDO";
+    seccion.profesores.push(new Profesor(nombreProfesor));
   }
 }
 
