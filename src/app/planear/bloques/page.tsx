@@ -4,6 +4,7 @@ import BloqueTiempo from "@/models/BloqueTiempo";
 import Image from "next/image";
 import { EstadoBloques } from '@/types/contexto'
 import { eliminarBloque,obtenerBloquesGuardados, guardarBloque} from '@/services/almacenamiento/almacenamientoBloques';
+import { tiempoNumeroATexto } from '@/services/formateadorTiempo';
 
 /*
   Contexto de los bloques de tiempo
@@ -49,6 +50,9 @@ function FormularioBloque() {
       alert("Por favor, llena todos los campos");
       return;
     }
+    if (bloqueEnCreacion.horaInicio < 600) bloqueEnCreacion.horaInicio = 600;
+    if (bloqueEnCreacion.horaFin > 2000) bloqueEnCreacion.horaFin = 2000;
+
     guardarBloque(bloqueEnCreacion);
     setBloquesGuardados(obtenerBloquesGuardados());
     setBloqueEnCreacion(new BloqueTiempo(1, "", "", [], 1300, 1430));
@@ -159,7 +163,7 @@ function BloquePlaneado({ bloque , funcionEliminar }: { bloque: BloqueTiempo, fu
       <h3 className="text-lg font-semibold">{bloque.titulo}</h3>
       <p>{bloque.lugar}</p>
       <p>{["l", "m", "i", "j", "v", "s"].filter(dia => bloque.dias.includes(dia)).map(dia => dia.toUpperCase()).join(", ")}</p>
-      <p>{bloque.horaInicio + " - " + bloque.horaFin}</p>
+      <p>{tiempoNumeroATexto(bloque.horaInicio) + " - " + tiempoNumeroATexto(bloque.horaFin)}</p>
     </div>
   );
 }

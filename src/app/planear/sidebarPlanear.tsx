@@ -40,7 +40,7 @@ function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: str
         <div className="flex items-center justify-center w-10 h-10 rounded-md border border-black dark:border-white">
           {children}
         </div>
-        <p>{nombreOpcion[0].toUpperCase() + nombreOpcion.slice(1)}</p>
+        <p>{nombreOpcion[0]?.toUpperCase() + nombreOpcion.slice(1)}</p>
       </Link>
     </div>
 

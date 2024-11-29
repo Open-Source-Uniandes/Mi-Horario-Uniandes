@@ -220,7 +220,7 @@ function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiem
       <div className="text-center truncate text-[10px] md:text-xs dark:text-black">
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{`${seccion.curso.programa} ${seccion.curso.curso} ${seccion.seccion}`}</p>
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis md:hidden">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
-        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{seccion.profesores[0].nombre}</p>
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{seccion.profesores[0]?.nombre}</p>
       </div>
     </div>
   );

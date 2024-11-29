@@ -66,7 +66,7 @@ function obtenerPeriodoSeccion(seccion: SeccionAPI) {
   @param informacionSeccion La información de la sección
 */
 function crearSeccionDeCurso(curso: Curso, informacionSeccion: SeccionAPI) {
-  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0].date_ini), new Date(informacionSeccion.schedules[0].date_fin), curso, obtenerPeriodoSeccion(informacionSeccion));
+  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0]?.date_ini), new Date(informacionSeccion.schedules[0]?.date_fin), curso, obtenerPeriodoSeccion(informacionSeccion));
   cargarProfesoresSeccion(seccion, informacionSeccion.instructors);
   cargarHorariosSeccion(seccion, informacionSeccion.schedules);
   return seccion;
@@ -150,7 +150,11 @@ async function obtenerCursosAPartirDeSecciones(cursosGuardados: { [codigoCurso: 
 async function obtenerCursosAPartirDeNRC(cursosGuardados: { [codigoCurso: string]: number }) {
   const promesasCursosActualizados = Object.keys(cursosGuardados).map(nombreCurso => buscarCurso(nombreCurso));
   const cursosActualizados = await Promise.all(promesasCursosActualizados);
-  const cursos = cursosActualizados.map(curso => Object.values(curso)[0]);
+  const cursos: Curso[] = [];
+  cursosActualizados.map(curso => {
+    const valores: Curso[] = Object.values(curso);
+    if (valores && valores.length > 0) cursos.push(valores[0]);
+  });
   cursos.forEach(curso => {
     curso.secciones = curso.secciones.filter(seccion => cursosGuardados[curso.programa + curso.curso] === seccion.nrc);
   });
@@ -175,7 +179,10 @@ export async function obtenerDatosCursosGuardados() {
 */
 export async function obtenerHorarioAPartirDePlan(planId: number) {
   const cursos = await obtenerCursosAPartirDeNRC(obtenerPlanGuardado(planId));
-  const cursosASeccion = cursos.map(curso => curso.secciones[0]);
+  const cursosASeccion: Seccion[] = [];
+  cursos.forEach(curso => {
+    if (curso && curso.secciones.length > 0) cursosASeccion.push(curso.secciones[0])
+  })
   const horario = new Horario(1,cursosASeccion);
   return horario;
 }
