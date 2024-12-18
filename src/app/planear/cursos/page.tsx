@@ -56,7 +56,7 @@ function Planeacion() {
     consultarCurso();
   }, [cursoABuscar]);
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') setCursoABuscar((event.target as HTMLInputElement).value);
+    if (event.key === 'Enter') setCursoABuscar((event.target as HTMLInputElement).value.trim().replaceAll(" ", "_"));
   }
   const handleSeleccionDeCurso = (curso: Curso) => {
     setCursoABuscar("");

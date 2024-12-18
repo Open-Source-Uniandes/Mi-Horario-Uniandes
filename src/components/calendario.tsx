@@ -58,7 +58,7 @@ export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horari
 function HorasCalendario() {
   const horas = ObtenerRangoHoras();
   return (
-    <div className="relative h-[720px] hidden md:block w-12">
+    <div className="relative h-[750px] hidden md:block w-12">
       <div className="relative h-full">
         {horas.map(hora => (<p className="absolute text-gray-400 text-center w-full" style={{ top: `${tiempoAPixeles(hora) + 18}px` }} key={hora}>{tiempoNumeroATexto(hora)}</p>))}
       </div>
@@ -117,7 +117,7 @@ function ObtenerBloquesPorDia(bloques: BloqueTiempo[]) {
 function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, className: string, secciones: [Seccion, BloqueTiempo][], bloques?: BloqueTiempo[] }) {
   const horas = ObtenerRangoHoras();
   return (
-    <div className={`flex flex-col relative ${className} h-[720px]`}>
+    <div className={`flex flex-col relative ${className} h-[750px]`}>
       <h2 className='text-center text-lg'>{dia}</h2>
       <div className="relative h-full">
         {horas.map(hora => (<hr className="border-gray-300 absolute border-1 w-full" style={{ top: `${tiempoAPixeles(hora)}px` }} key={hora}></hr>))}
