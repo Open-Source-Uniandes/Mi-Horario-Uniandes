@@ -23,6 +23,7 @@ export default function Ver() {
   const [indiceHorario, setIndiceHorario] = useState(0);
   const [bloquesUsuario, setBloquesUsuario] = useState<{[titulo: string]: BloqueTiempo[]}>({});
   const [cargando, setCargando] = useState(false);
+  const [verNombreCurso, setVerNombreCurso] = useState(false);
   useEffect(() => {
     async function obtenerHorarios() {
       setCargando(true);
@@ -41,9 +42,9 @@ export default function Ver() {
     {!cargando && horariosGenerados.length > 0 &&
       <div className="pt-16 flex flex-1">
         <SidebarCursosConAtributos>
-          <CursosPorAtributo horario={horariosGenerados[indiceHorario]}/>
+          <CursosPorAtributo horario={horariosGenerados[indiceHorario]} verNombreCurso={verNombreCurso} setVerNombreCurso={setVerNombreCurso}/>
         </SidebarCursosConAtributos>
-        <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario}/>
+        <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario} verNombreCurso={verNombreCurso}/>
       </div>
     }
     {!cargando && horariosGenerados.length === 0 && <NoHayHorarios />}
@@ -68,11 +69,11 @@ function NoHayHorarios() {
   @param indiceHorario índice del horario a mostrar
   @param bloquesUsuario bloques de tiempo guardados por el usuario
 */
-function PanelHorario({horariosGenerados, indiceHorario, bloquesUsuario} : {horariosGenerados: Horario[], indiceHorario: number, bloquesUsuario: {[titulo: string]: BloqueTiempo[]}}) {
+function PanelHorario({horariosGenerados, indiceHorario, bloquesUsuario, verNombreCurso} : {horariosGenerados: Horario[], indiceHorario: number, bloquesUsuario: {[titulo: string]: BloqueTiempo[]}, verNombreCurso?: boolean}) {
   return (
     <main className="w-full flex flex-col justify-between">
       <div>
-        <CalendarioConBloques horario={horariosGenerados[indiceHorario]} bloquesUsuario={bloquesUsuario} />
+        <CalendarioConBloques horario={horariosGenerados[indiceHorario]} bloquesUsuario={bloquesUsuario} verNombreCurso={verNombreCurso ?? false}/>
         {horariosGenerados.length === 0 && <p className="text-center text-md">Total creditos: 0</p>}
         {horariosGenerados.length > 0 && <p className="text-center text-md">Total creditos: {horariosGenerados[indiceHorario].secciones.reduce((acc, seccion) => acc + Number(seccion.curso.creditos), 0)}</p>}
         <BotonGuardarPlan horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} />
@@ -107,11 +108,12 @@ function BotonGuardarPlan({horariosGenerados, indiceHorario} : {horariosGenerado
 /*
   Componente que muestra los cursos agrupados por atributo
 */
-function CursosPorAtributo({horario}: {horario: Horario}) {
+function CursosPorAtributo({horario, verNombreCurso, setVerNombreCurso}: {horario: Horario, verNombreCurso?: boolean, setVerNombreCurso?: (verNombreCurso: boolean) => void}) {
   const [seccionesEncontradas, setSeccionesEncontradas] = useState<Seccion[]>([]);
   const [atributoSeleccionado, setAtributoSeleccionado] = useState<string>("");
   const [programaSeleccionado, setProgramaSeleccionado] = useState<string>("");
   const [cargando, setCargando] = useState(false);
+
   useEffect(() => {
     setSeccionesEncontradas([]);
     async function buscarCursosEspeciales() {
@@ -131,6 +133,15 @@ function CursosPorAtributo({horario}: {horario: Horario}) {
     <div>
       <div>
         <h1 className="text-md font-semibold text-center mb-2">Busca cursos especiales que se ajusten al horario</h1>
+        <h2>Ver horario con:</h2>
+        <div>
+          <input type="radio" id="Nombre del Curso" name="preview" checked={!verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(!verNombreCurso)}/>
+          <label htmlFor="Nombre del Curso">Nombre del Curso</label>
+        </div>
+        <div>
+          <input type="radio" id="Nombre del Profesor" name="preview" checked={verNombreCurso}  onChange={() => setVerNombreCurso && setVerNombreCurso(!verNombreCurso)}/>
+          <label htmlFor="Nombre del Profesor">Nombre del Profesor</label>
+        </div>
         <h2>Selecciona un atributo</h2>
         <InputsAtributo atributoSeleccionado={atributoSeleccionado} setAtributoSeleccionado={setAtributoSeleccionado}/>
         <h2>Selecciona un programa especial</h2>

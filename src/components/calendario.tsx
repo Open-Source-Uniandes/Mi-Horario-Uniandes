@@ -3,6 +3,20 @@ import { tiempoAPixeles, tiempoNumeroATexto } from '@/services/formateadorTiempo
 import Horario from '@/models/Horario';
 import Seccion from '@/models/Seccion';
 import BloqueTiempo from '@/models/BloqueTiempo';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { useState } from 'react';
 
 
 /*
@@ -32,7 +46,7 @@ export function Calendario({horario}: {horario: Horario}) {
 
   @param horario El horario a mostrar
 */
-export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horario, bloquesUsuario: {[titulo: string]: BloqueTiempo[]}}) {
+export function CalendarioConBloques({horario, bloquesUsuario, verNombreCurso}: {horario: Horario, bloquesUsuario: {[titulo: string]: BloqueTiempo[]}, verNombreCurso: boolean}) {
   const seccionesPorDia: {[dia: string]: [Seccion, BloqueTiempo][]} = ObtenerSeccionesPorDia(horario);
   const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = ObtenerBloquesPorDia(Object.values(bloquesUsuario).flat());
 
@@ -40,12 +54,12 @@ export function CalendarioConBloques({horario, bloquesUsuario}: {horario: Horari
     <div className='flex justify-center items-center w-full pt-4'>
       <HorasCalendario/>
       <div className='grid grid-cols-1 lg:grid-cols-6 w-full sm:w-11/12'>
-        <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} bloques={bloquesPorDia["l"]} className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} bloques={bloquesPorDia["m"]} className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} bloques={bloquesPorDia["i"]} className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Jueves" secciones={seccionesPorDia["j"]} bloques={bloquesPorDia["j"]} className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Viernes" secciones={seccionesPorDia["v"]} bloques={bloquesPorDia["v"]} className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Sábado" secciones={seccionesPorDia["s"]}  bloques={bloquesPorDia["s"]} className="border border-gray-400"/>
+        <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} bloques={bloquesPorDia["l"]} verNombreCurso={verNombreCurso} className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} bloques={bloquesPorDia["m"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} bloques={bloquesPorDia["i"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Jueves" secciones={seccionesPorDia["j"]} bloques={bloquesPorDia["j"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Viernes" secciones={seccionesPorDia["v"]} bloques={bloquesPorDia["v"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Sábado" secciones={seccionesPorDia["s"]}  bloques={bloquesPorDia["s"]} verNombreCurso={verNombreCurso}  className="border border-gray-400"/>
       </div>
     </div>
   );
@@ -114,7 +128,7 @@ function ObtenerBloquesPorDia(bloques: BloqueTiempo[]) {
   @param secciones Las secciones a mostrar
   @param className La clase css adicional
 */
-function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, className: string, secciones: [Seccion, BloqueTiempo][], bloques?: BloqueTiempo[] }) {
+function ColumnaDia({ dia, className, secciones, bloques, verNombreCurso } : { dia: string, className: string, secciones: [Seccion, BloqueTiempo][], bloques?: BloqueTiempo[], verNombreCurso?: boolean }) {
   const horas = ObtenerRangoHoras();
   return (
     <div className={`flex flex-col relative ${className} h-[750px]`}>
@@ -122,7 +136,7 @@ function ColumnaDia({ dia, className, secciones, bloques } : { dia: string, clas
       <div className="relative h-full">
         {horas.map(hora => (<hr className="border-gray-300 absolute border-1 w-full" style={{ top: `${tiempoAPixeles(hora)}px` }} key={hora}></hr>))}
         <div className='relative h-full flex flex-col justify-center items-center'>
-          {secciones?.map(([seccion, bloque],idx) => <BloqueSeccion seccion={seccion} bloque={bloque} key={idx}/>)}
+          {secciones?.map(([seccion, bloque],idx) => <BloqueSeccion seccion={seccion} bloque={bloque} key={idx} verNombreCurso={verNombreCurso ?? false}/>)}
           {bloques?.map((bloque,idx) => <Bloque bloque={bloque} key={idx}/>)}
         </div>
       </div>
@@ -203,24 +217,70 @@ function obtenerColorBordeSeccion(seccion: Seccion) {
   @param seccion La sección a mostrar
   @param bloque El bloque de tiempo a mostrar
 */
-function BloqueSeccion({seccion, bloque} : {seccion: Seccion, bloque: BloqueTiempo}) {
+function BloqueSeccion({seccion, bloque, verNombreCurso} : {seccion: Seccion, bloque: BloqueTiempo, verNombreCurso: boolean}) {
   const tiempoInicialAPixeles = tiempoAPixeles(bloque.horaInicio);
   const tiempoFinalAPixeles = tiempoAPixeles(bloque.horaFin);
   const alturaBloqueEnPixeles = tiempoFinalAPixeles - tiempoInicialAPixeles;
   const anchobloqueEnPorcentaje = obtenerAnchoSeccionPorcentaje(seccion);
   const distanciaBordeDerecho =  obtenerDistanciaBordeDerecho(seccion)
   const distanciaBordeIzquierdo = obtenerDistanciaBordeIzquierdo(seccion)
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
+  function openPopover() {
+    setPopoverOpen(!popoverOpen);
+  }
 
   return (
-    <div className='absolute rounded border-2 flex items-center justify-center' 
+
+    <div className='absolute rounded border-2 flex items-center justify-center cursor-pointer'
+      onClick={openPopover} onMouseEnter={() => setPopoverOpen(true)} onMouseLeave={() => setPopoverOpen(false)}
       style={{height: `${alturaBloqueEnPixeles}px`, width: `${anchobloqueEnPorcentaje}%` , 
         backgroundColor: `${obtenerColorFondoSeccion(seccion)}`, borderColor: `${obtenerColorBordeSeccion(seccion)}`,
         top: `${(tiempoInicialAPixeles)}px` ,  left: `${distanciaBordeIzquierdo}`, right: `${distanciaBordeDerecho}`}}>
       <div className="text-center truncate text-[10px] md:text-xs dark:text-black">
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{`${seccion.curso.programa} ${seccion.curso.curso} ${seccion.seccion}`}</p>
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis md:hidden">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
-        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{seccion.profesores[0]?.nombre}</p>
+        <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{verNombreCurso ? seccion.titulo : seccion.profesores[0]?.nombre}</p>
+        <Popover open={popoverOpen}>
+          <PopoverTrigger></PopoverTrigger>
+          <PopoverContent side='top'>
+            <Card>
+              <CardHeader>
+                <CardTitle>{seccion.titulo}</CardTitle>
+                <CardDescription>
+                  <p>{`${seccion.curso.programa} ${seccion.curso.curso} Sección ${seccion.seccion}`}</p>
+                  <p>NRC: {seccion.nrc}</p>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Profesores:</p>
+                <ul>
+                  {seccion.profesores.map((profesor, idx) => <li key={idx}>{profesor.nombre}</li>)}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                {
+                  seccion.cuposMaximos === seccion.cuposTomados ?
+                  <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                    </svg>
+                    <span className='w-1'></span>
+                    Sin Cupos
+                  </span>
+                  :
+                  <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                    </svg>
+                    <span className='w-1'></span>
+                    {`${seccion.cuposMaximos-seccion.cuposTomados}/${seccion.cuposMaximos} Cupos`}
+                  </span>
+                }
+              </CardFooter>
+            </Card>
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );
