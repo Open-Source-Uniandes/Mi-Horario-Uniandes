@@ -52,7 +52,7 @@ function FormularioBloque() {
       return;
     }
     if (bloqueEnCreacion.horaInicio < 600) bloqueEnCreacion.horaInicio = 600;
-    if (bloqueEnCreacion.horaFin > 2000) bloqueEnCreacion.horaFin = 2000;
+    if (bloqueEnCreacion.horaFin > 2100) bloqueEnCreacion.horaFin = 2100;
 
     guardarBloque(bloqueEnCreacion);
     setBloquesGuardados(obtenerBloquesGuardados());
