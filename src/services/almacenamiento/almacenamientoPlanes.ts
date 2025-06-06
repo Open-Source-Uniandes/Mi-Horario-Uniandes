@@ -59,16 +59,21 @@ function covertirSeccionesAPlan(secciones: Seccion[]) {
 /*
   Guarda un plan en el localStorage
 */
-export function guardarPlan({ secciones }: { secciones: Seccion[] }) {
-  if (typeof window !== "undefined") {
-    if (!localStorage.getItem("planes")) {
-      localStorage.setItem("planes", JSON.stringify({}));
+export function guardarPlan({ secciones }: { secciones: Seccion[] | { [codigo: string]: string } }) {
+    if (typeof window !== "undefined") {
+        if (!localStorage.getItem("planes")) {
+            localStorage.setItem("planes", JSON.stringify({}));
+        }
+        const planesGuardados = JSON.parse(localStorage.getItem("planes") || "{}");
+        const planId = Object.keys(planesGuardados).length + 1;
+        let plan;
+        if (Array.isArray(secciones)) {
+            plan = covertirSeccionesAPlan(secciones);
+        } else {
+            plan = secciones;
+        }
+        planesGuardados[planId] = plan;
+        localStorage.setItem("planes", JSON.stringify(planesGuardados));
     }
-    const planesGuardados = JSON.parse(localStorage.getItem("planes") || "{}");
-    const planId = Object.keys(planesGuardados).length + 1;
-    const plan = covertirSeccionesAPlan(secciones);
-    planesGuardados[planId] = plan;
-    localStorage.setItem("planes", JSON.stringify(planesGuardados));
-  }
 }
 

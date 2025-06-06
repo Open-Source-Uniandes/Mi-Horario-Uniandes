@@ -230,23 +230,31 @@ function BotonEliminarTodas({ curso }: { curso: Curso }) {
 
   @param seccion sección del curso
 */
+
+
 function SeccionCursoSeleccionado({ seccion }: { seccion: Seccion }) {
   const { setCursosGuardados } = useContext(CursoContext);
   const handleAñadir = () => {
     guardarSeccionDeCurso(seccion.curso.programa + seccion.curso.curso, seccion.seccion);
     setCursosGuardados(obtenerCursosGuardados());
   }
+  const descripcionPorPeriodo = new Map<string, string>([
+      ["16", "16 semanas"],
+      ["8A", "Primer ciclo"],
+      ["8B", "Segundo ciclo"],
+  ]);
   return (
     <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black  my-3">
       <div className='mx-auto flex flex-col justify-center'>
         <h3 className="text-lg font-semibold">{seccion.titulo}</h3>
         <p>NRC: {seccion.nrc} SECCIÓN: {seccion.seccion}</p>
+        <p>Periodo: {descripcionPorPeriodo.get(seccion.periodo.toUpperCase()) || ""}</p>
         <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
         <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-3">
           {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados,seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}
         </div>
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
-        <p>{seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo}/>)}</p>
+        <p>{seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo + bloque.horaInicio + bloque.horaFin + bloque.dias.join('')}/>)}</p>
       </div>
       <button className='bg-yellow-400 flex items-center justify-center w-8 min-w-8 text-2xl font-semibold dark:text-black' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.seccion) ? "-" : "+"}</button>
     </div>

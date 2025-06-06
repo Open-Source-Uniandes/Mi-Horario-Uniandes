@@ -1,5 +1,6 @@
 "use client";
-import { obtenerPlanesGuardados, eliminarPlanGuardado } from "@/services/almacenamiento/almacenamientoPlanes";
+import { obtenerPlanesGuardados, eliminarPlanGuardado, esPosibleCrearPlan, guardarPlan } from "@/services/almacenamiento/almacenamientoPlanes";
+import { cargarComoTxt } from "@/services/descargadorDeHorarios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -7,7 +8,7 @@ import { useEffect, useState } from "react";
   Página que muestra los planes que el usuario ha guardado
 */
 export default function Planes() {
-  const [planes, setPlanes] = useState<{[planId: string]: {[codigoCurso: string]: number}}>({});
+  const [planes, setPlanes] = useState<{ [planId: string]: { [codigoCurso: string]: number } }>({});
   useEffect(() => {
     setPlanes(obtenerPlanesGuardados());
   }, []);
@@ -21,6 +22,7 @@ export default function Planes() {
           <Plan key={planId} planId={Number(planId)} cursos={cursos} setPlanes={setPlanes} />
         ))
       }
+      <BotonImportarTxt />
     </div>
   )
 }
@@ -32,7 +34,7 @@ export default function Planes() {
   @param cursos cursos del plan
   @param setPlanes función para actualizar los planes
 */
-function Plan({planId, cursos, setPlanes}: {planId : number, cursos: {[codigoCurso: string]: number}, setPlanes: (planes: {[planId: string]: {[codigoCurso: string]: number}}) => void }) {
+function Plan({ planId, cursos, setPlanes }: { planId: number, cursos: { [codigoCurso: string]: number }, setPlanes: (planes: { [planId: string]: { [codigoCurso: string]: number } }) => void }) {
   const handleEliminar = () => {
     eliminarPlanGuardado(planId);
     setPlanes(obtenerPlanesGuardados());
@@ -40,13 +42,13 @@ function Plan({planId, cursos, setPlanes}: {planId : number, cursos: {[codigoCur
   return (
     <div className="bg-gray-200 dark:bg-neutral-600 border-2 border-black my-4">
       <p className="text-2xl font-semibold bg-yellow-200 dark:bg-yellow-300 border-b-2 border-black text-center dark:text-black">Plan {planId}</p>
-        <div className="flex flex-col sm:flex-row">
-          <CursosDelPlan cursos={cursos} />
-          <div className="p-2 space-y-2">
-            <BotonVerPlan planId={planId} />
-            <BotonEliminarPlan planId={planId} funcionEliminar={handleEliminar} />
-          </div>
+      <div className="flex flex-col sm:flex-row">
+        <CursosDelPlan cursos={cursos} />
+        <div className="p-2 space-y-2">
+          <BotonVerPlan planId={planId} />
+          <BotonEliminarPlan planId={planId} funcionEliminar={handleEliminar} />
         </div>
+      </div>
     </div>
   )
 }
@@ -56,7 +58,7 @@ function Plan({planId, cursos, setPlanes}: {planId : number, cursos: {[codigoCur
 
   @param planId id del plan
 */
-function BotonVerPlan({planId}: {planId: number}) {
+function BotonVerPlan({ planId }: { planId: number }) {
   return (
     <Link href={`/editar/${planId}`} className="w-40 h-12 mx-auto bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out flex items-center justify-center dark:text-black">
       Ver
@@ -70,7 +72,7 @@ function BotonVerPlan({planId}: {planId: number}) {
   @param planId id del plan
   @param funcionEliminar función para eliminar el plan
 */
-function BotonEliminarPlan({planId, funcionEliminar}: {planId: number, funcionEliminar: (planId: number) => void}) {
+function BotonEliminarPlan({ planId, funcionEliminar }: { planId: number, funcionEliminar: (planId: number) => void }) {
   return (
     <button className="w-40 h-12 mx-auto block bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out dark:text-black" onClick={() => funcionEliminar(planId)}>
       Eliminar
@@ -83,7 +85,7 @@ function BotonEliminarPlan({planId, funcionEliminar}: {planId: number, funcionEl
 
   @param cursos cursos del plan
 */
-function CursosDelPlan({cursos}: {cursos: {[codigoCurso: string]: number}}) {
+function CursosDelPlan({ cursos }: { cursos: { [codigoCurso: string]: number } }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 w-full p-2">
       {
@@ -101,11 +103,45 @@ function CursosDelPlan({cursos}: {cursos: {[codigoCurso: string]: number}}) {
   @param codigoCurso código del curso
   @param nrc nrc del curso
 */
-function CursoDePlan({codigoCurso, nrc}: {codigoCurso: string, nrc: number}) {
+function CursoDePlan({ codigoCurso, nrc }: { codigoCurso: string, nrc: number }) {
   return (
     <div className="border border-yellow-900 dark:border-orange-400 h-16 mx-auto min-w-24 bg-yellow-50 dark:bg-neutral-700">
       <p className="text-lg font-semibold text-center text-yellow-900 dark:text-orange-400" >{codigoCurso}</p>
       <p className="text-lg text-center" >{nrc}</p>
     </div>
+  )
+}
+
+/*
+  Boton que permite cargar un plan en txt
+*/
+function BotonImportarTxt() {
+  const handleCargar = () => {
+    const importarArchivo = async () => {
+      try {
+        const contenido = await cargarComoTxt();
+        const secciones: { [curso: string]: string } = {};
+        for (const linea of contenido.split('\n')) {
+          const [curso, nrc] = linea.split(":");
+          secciones[curso.trim()] = nrc.trim();
+        }
+        if (esPosibleCrearPlan()) {
+          guardarPlan({ secciones: secciones });
+          alert("Plan importado exitosamente");
+          window.location.reload();
+        } else {
+          alert("Ya tienes 5 planes guardados, elimina uno para poder guardar otro");
+        }
+      } catch (error) {
+        console.error("Error al importar archivo:", error);
+        alert("Ocurrió un error al importar el archivo.");
+      }
+    }
+    importarArchivo();
+  }
+  return (
+    <button onClick={handleCargar} className="w-40 h-12 mx-auto block bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out dark:text-black">
+      Importar .txt
+    </button>
   )
 }

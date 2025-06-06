@@ -22,7 +22,7 @@ export default function Editar({ params }: { params: { planId: string } }) {
     obtenerPlan();
   }, [params.planId]);
   const handleDescargar = () => {
-    const infoSecciones = horario.secciones.map(seccion => seccion.titulo + " : " + seccion.nrc).join("\n");
+    const infoSecciones = horario.secciones.map(seccion => seccion.curso.programa + seccion.curso.curso + " : " + seccion.nrc).join("\n");
     descargarComoTxt(infoSecciones, "horario.txt");
   };
   return (

@@ -11,6 +11,14 @@ const API = 'https://ofertadecursos.uniandes.edu.co/api/courses';
 const API_POR_CURSO = (codigoCurso: string) => API + '?term=&ptrm=&prefix=&attr=&nameInput=' + codigoCurso.toUpperCase();
 const API_POR_ATRIBUTO = (atributo: string) => API + '?term=&ptrm=&prefix=&attr=&nameInput=&campus=&attrs=' + atributo.toUpperCase() + '&timeStart=&offset=0&limit=25';
 const API_POR_ATRIBUTO_Y_PROGRAMA = (atributo: string, programa: string) => API + '?term=&ptrm=&prefix=' + programa.toUpperCase() + '&attr=&nameInput=&campus=&attrs=' + atributo.toUpperCase() + '&timeStart=&offset=0&limit=25';
+
+
+function listaDeBloquesEsIdentica(a: string[], b: string[]) {
+  const sortedA = [...a].sort();
+  const sortedB = [...b].sort();
+  return sortedA.every((valor, index) => valor === sortedB[index]);
+}
+
 /*
   Función que carga los horarios de una sección
 
@@ -19,14 +27,21 @@ const API_POR_ATRIBUTO_Y_PROGRAMA = (atributo: string, programa: string) => API 
 */
 function cargarHorariosSeccion(seccion: Seccion, horarios: HorarioAPI[]) {
   for (let horario of horarios) {
-    let diasDondeAplica: string[] = [];
-    for (let dia of "lmijvs") {
-      if (horario[dia as keyof HorarioAPI]) {
-        diasDondeAplica.push(dia);
+      let diasDondeAplica: string[] = [];
+      for (let dia of "lmijvs") {
+          if (horario[dia as keyof HorarioAPI]) {
+              diasDondeAplica.push(dia);
+          }
       }
-    }
-    let bloqueTiempo = new BloqueTiempo(0, horario.classroom, seccion.titulo, diasDondeAplica, horario.time_ini, horario.time_fin);
-    seccion.horarios.push(bloqueTiempo);
+      const nuevoBloque = new BloqueTiempo(0, horario.classroom, seccion.titulo, diasDondeAplica, horario.time_ini, horario.time_fin);
+      const existe = seccion.horarios.some(bloque => 
+          bloque.horaInicio === nuevoBloque.horaInicio &&
+          bloque.horaFin === nuevoBloque.horaFin &&
+          listaDeBloquesEsIdentica(bloque.dias, nuevoBloque.dias)
+      );
+      if (!existe) {
+          seccion.horarios.push(nuevoBloque);
+      }
   }
 }
 
