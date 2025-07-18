@@ -37,11 +37,6 @@ El software lo construimos entre todos 💛
 
 ## Contacto
 
-Para cualquier consulta o sugerencia, puedes contactarnos en [opensource@uniandes.edu.co](mailto:opensource@uniandes.edu.co) o directamente con los líderes del proyecto:
-
-- [Daniel Diaz](https://github.com/ddi4z) - d.diazm@uniandes.edu.co
-- [Álvaro Bacca](https://github.com/c4ts0up) - a.baccap@uniandes.edu.co
-
-Este proyecto es creado y mantenido por [Juan Sebastián Urrea](https://github.com/jsurrea) - js.urrea@uniandes.edu.co.
+Para cualquier consulta o sugerencia, puedes contactarnos al correo [d.diazm@uniandes.edu.co](mailto:d.diazm@uniandes.edu.co)
 
 Descubre más sobre el proyecto Open Source Uniandes [aquí](https://github.com/Open-Source-Uniandes) 👈

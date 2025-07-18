@@ -6,20 +6,94 @@ import OrdenamientoHorarios from "@/models/algoritmosOrdenamiento/OrdenamientoHo
 import { obtenerAlgoritmoOrdenamiento } from "./almacenamiento/almacenamientoCriterio";
 import { obtenerBloquesGuardados } from "./almacenamiento/almacenamientoBloques";
 import Seccion from "@/models/Seccion";
+import AlgoritmoCreacionHorarios from "@/models/algoritmosCreacion/AlgoritmoCreacionHorarios";
 
 /*
-  Función que verifica si un horario es válido
+  Función que verifica si un horario es válido con base en los bloques de tiempo y secciones con letras
 
   @param horario El horario a verificar
 */
-export function horarioEsValido(horario: Horario) {
+export function horarioEsValido(horario: Horario): boolean {
   const bloquesPorDiaTotal: {[dia:string]: BloqueTiempo[]}= obtenerBloquesTotales(horario);
   for (const dia in bloquesPorDiaTotal) {
     for (let i = 1; i < bloquesPorDiaTotal[dia].length; i++) {
       if ( Number(bloquesPorDiaTotal[dia][i - 1].horaFin) > Number(bloquesPorDiaTotal[dia][i].horaInicio)) return false;
     }
   }
+  return complementariasSonValidas(horario);
+}
+
+/*
+  Función que verifica si las secciones complementarias de un horario son válidas
+
+  @param horario El horario a verificar
+*/
+function complementariasSonValidas(horario: Horario): boolean {
+  const seccionPorCodigo = new Map<string, Seccion>();
+  const letraRegex = /[a-zA-Z]/;
+
+  horario.secciones.forEach(seccion => {
+    const codigo = seccion.curso.programa + seccion.curso.curso;
+    seccionPorCodigo.set(codigo, seccion);
+  });
+
+  for (const seccion of horario.secciones) {
+    const esMagistral = seccion.curso.curso.length === 4;
+    const comienzaConLetra = letraRegex.exec(seccion.seccion[0] ?? '');
+
+    if (comienzaConLetra) {
+      if (esMagistral && !cursoTieneComplementaria(seccion, seccionPorCodigo)) {
+        return false;
+      } 
+      if (!esMagistral && !complementariaTieneMagistral(seccion, seccionPorCodigo)) {
+        return false;
+      }
+    }
+  }
   return true;
+}
+
+/*
+  Función que obtiene los sufijos válidos para las secciones complementarias
+
+  @returns Un array con los sufijos válidos
+*/
+function obtenerSufijosValidos() {
+  return ['C', 'L', 'P', 'T'];
+}
+
+
+/*
+  Función que verifica si un curso tiene una sección complementaria asociada
+
+  @param seccion La sección a verificar
+  @param secciones El mapa de secciones para buscar la complementaria
+*/
+function cursoTieneComplementaria(seccion: Seccion, secciones: Map<string, Seccion>): boolean {
+  
+  const baseCodigo = seccion.curso.programa + seccion.curso.curso;
+
+  for (const sufijo of obtenerSufijosValidos()) {
+    const codigoComplementaria = baseCodigo + sufijo;
+    if (secciones.has(codigoComplementaria)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/*
+  Función que verifica si una sección complementaria tiene una sección magistral asociada
+
+  @param seccion La sección complementaria a verificar
+  @param secciones El mapa de secciones para buscar la sección magistral
+*/
+function complementariaTieneMagistral(seccion: Seccion, secciones: Map<string, Seccion>): boolean {
+  const codigoBase = (seccion.curso.programa + seccion.curso.curso).slice(0, 8);
+  const principal = secciones.get(codigoBase);
+
+  // si la seccion principal es un numero, tambien es valida
+  return !!principal && seccion.seccion.startsWith(principal.seccion);
 }
 
 /*
@@ -133,10 +207,40 @@ function obtenerBloquesPorDiaUsuario(bloquesGuardados: {[titulo: string]: Bloque
 }
 
 /*
+  Función que elimina una sección complementaria, laboratorio, trabajo asistido,etc si no es necesaria
+
+  @param horario El horario a verificar
+*/
+export function eliminarComplementariaSiNoSonNecesarias(secciones: Seccion[]) {
+  
+  const seccionPorCodigo = new Map<string, Seccion>();
+  const nrcsAEliminar = new Set<number>();
+
+  secciones.forEach(seccion => {
+    const codigo = seccion.curso.programa + seccion.curso.curso;
+    seccionPorCodigo.set(codigo, seccion);
+  });
+
+  for (const seccion of secciones) {
+    const esMagistral = seccion.curso.curso.length === 4;
+    const esNumerica = /^\d+$/.test(seccion.seccion);
+    if (esMagistral && esNumerica) {
+      for (const sufijo of obtenerSufijosValidos()) {
+        const codigoComplementaria = seccion.curso.programa + seccion.curso.curso + sufijo;
+        if (seccionPorCodigo.has(codigoComplementaria)) {
+          nrcsAEliminar.add(seccionPorCodigo.get(codigoComplementaria)!.nrc);
+        }
+      }
+    }
+  }
+  return secciones.filter(seccion => !nrcsAEliminar.has(seccion.nrc));
+}
+
+/*
   Función que genera horarios a partir de los cursos guardados
 */
 export async function generarHorarios(){
-  const algoritmoCreacion = new AlgoritmoProductoCartesiano();
+  const algoritmoCreacion: AlgoritmoCreacionHorarios = new AlgoritmoProductoCartesiano();
   const cursos = await obtenerDatosCursosGuardados();
   const horarios = algoritmoCreacion.crearHorarios(cursos);
   const algoritmoOrdenamiento: OrdenamientoHorarios = obtenerAlgoritmoOrdenamiento();
