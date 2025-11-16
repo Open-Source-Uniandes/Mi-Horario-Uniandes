@@ -26,8 +26,8 @@ const CursoContext = createContext<EstadosCursos>({
 
 /*  Página de planear cursos  Incluye la sección de planeación de cursos y la sección de cursos planeados*/
 export default function Cursos() {
-  const [cursosGuardados, setCursosGuardados] = useState<{ [codigo: string]: number[] }>({})
-  const [cursoABuscar, setCursoABuscar] = useState("")
+  const [cursosGuardados, setCursosGuardados] = useState<{ [codigo: string]: string[] }>({});
+  const [cursoABuscar, setCursoABuscar] = useState("");
 
   useEffect(() => {
     setCursosGuardados(obtenerCursosGuardados())
@@ -197,7 +197,7 @@ function BotonSeleccionarTodas({ curso }: Readonly<{ curso: Curso }>) {
   const handleClic = () => {
     añadirVariasSeccionesDeCurso(
       curso.programa + curso.curso,
-      curso.secciones.map((seccion) => seccion.seccion),
+      curso.secciones.map((seccion) => seccion.idUnico),
     )
     setCursosGuardados(obtenerCursosGuardados())
   }
@@ -219,7 +219,7 @@ function BotonSeleccionarValidas({ curso }: Readonly<{ curso: Curso }>) {
       curso.programa + curso.curso,
       curso.secciones
         .filter((seccion) => seccion.cuposTomados < seccion.cuposMaximos)
-        .map((seccion) => seccion.seccion),
+        .map((seccion) => seccion.idUnico),
     )
     setCursosGuardados(obtenerCursosGuardados())
   }
@@ -260,7 +260,7 @@ function BotonEliminarTodas({ curso }: Readonly<{ curso: Curso }>) {
 function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
   const { setCursosGuardados } = useContext(CursoContext);
   const handleAñadir = () => {
-    guardarSeccionDeCurso(seccion.curso.programa + seccion.curso.curso, seccion.seccion);
+    guardarSeccionDeCurso(seccion.curso.programa + seccion.curso.curso, seccion.idUnico);
     setCursosGuardados(obtenerCursosGuardados());
   }
   const descripcionPorPeriodo = new Map<string, string>([
@@ -273,7 +273,8 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
       <div className='mx-auto flex flex-col justify-center'>
         <h3 className="text-lg font-semibold">{seccion.titulo}</h3>
         <p>NRC: {seccion.nrc} SECCIÓN: {seccion.seccion}</p>
-        <p>Periodo: {descripcionPorPeriodo.get(seccion.periodo.toUpperCase()) || ""}</p>
+        <p>Período: {seccion.periodo}</p>
+        <p>Duración: {descripcionPorPeriodo.get(seccion.duracion.toUpperCase()) || ""}</p>
         <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
         <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-3">
           {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados, seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}
@@ -281,7 +282,7 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
         <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
         <p>{seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo + bloque.horaInicio + bloque.horaFin + bloque.dias.join('')} />)}</p>
       </div>
-      <button className='bg-yellow-400 flex items-center justify-center w-8 min-w-8 text-2xl font-semibold dark:text-black' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.seccion) ? "-" : "+"}</button>
+      <button className='bg-yellow-400 flex items-center justify-center w-8 min-w-8 text-2xl font-semibold dark:text-black' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "-" : "+"}</button>
     </div>
   )
 }
@@ -302,7 +303,7 @@ function CursosPlaneados() {
 }
 
 /*  Curso planificado por el usuario*/
-function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; secciones: number[] }>) {
+function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; secciones: string[] }>) {
   const { setCursosGuardados, setCursoABuscar } = useContext(CursoContext)
 
   const handleBusqueda = () => {
@@ -313,6 +314,10 @@ function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; seccion
     eliminarCursoGuardado(codigo)
     setCursosGuardados(obtenerCursosGuardados())
   }
+
+  const seccionesMostradas = secciones.map(idUnico => {
+      return idUnico.split('_')[2] || idUnico;
+  }).join(", ");
 
   return (
     <div className="bg-gray-100 dark:bg-neutral-600 text-center flex flex-col border border-3 border-black min-h-24 my-3">
@@ -337,7 +342,7 @@ function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; seccion
         />
       </div>
       <h3 className="text-lg font-semibold">{codigo}</h3>
-      <p className="text-muted-foreground dark:text-neutral-300">Secciones: {secciones.join(", ")}</p>
+      <p className="text-muted-foreground dark:text-neutral-300">Secciones: {seccionesMostradas}</p>
     </div>
   )
 }

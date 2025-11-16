@@ -14,10 +14,12 @@ export default  class Seccion {
   curso: Curso;
   profesores: Profesor[] = [];
   horarios: BloqueTiempo[] = [];
-  // Aun no en modelo
   periodo: string;
+  duracion: string;
+  // Identificador para poder diferenciar secciones con el mismo NRC pero en diferentes períodos
+  idUnico: string; 
 
-  constructor(nrc: number, seccion: string, titulo: string, cuposMaximos: number, cuposTomados: number, modalidad: string, fechaInicio: Date, fechaFin: Date, curso: Curso, periodo: string, profesores: Profesor[] = [], horarios: BloqueTiempo[] = []) {
+  constructor(nrc: number, seccion: string, titulo: string, cuposMaximos: number, cuposTomados: number, modalidad: string, fechaInicio: Date, fechaFin: Date, curso: Curso, duracion:string, periodo: string, profesores: Profesor[] = [], horarios: BloqueTiempo[] = []) {
     this.nrc = nrc;
     this.seccion = seccion;
     this.titulo = titulo;
@@ -29,6 +31,8 @@ export default  class Seccion {
     this.curso = curso;
     this.profesores = profesores;
     this.horarios = horarios;
+    this.duracion = duracion;
     this.periodo = periodo;
+    this.idUnico = `${nrc}_${periodo}_${seccion}`;
   }
 }

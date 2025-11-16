@@ -26,13 +26,13 @@ export function eliminarCursoGuardado(curso: string) {
   Añade varias secciones de un curso al localStorage
 
   @param curso El curso al que pertenecen las secciones
-  @param secciones Las secciones a añadir
+  @param seccionIds Los ids de las secciones a añadir
 */
-export function añadirVariasSeccionesDeCurso(curso: string, secciones: string[]) {
+export function añadirVariasSeccionesDeCurso(curso: string, seccionIds: string[]) {
   if (typeof window !== "undefined") {
     crearCursoSiNoExiste(curso);
     const cursosGuardados = JSON.parse(localStorage.getItem("cursos") || "{}");
-    cursosGuardados[curso] = secciones;
+    cursosGuardados[curso] = seccionIds;
     localStorage.setItem("cursos", JSON.stringify(cursosGuardados));
   }
 }
@@ -41,12 +41,12 @@ export function añadirVariasSeccionesDeCurso(curso: string, secciones: string[]
   Verifica si una sección de un curso está guardada en el localStorage
 
   @param curso El curso al que pertenece la sección
-  @param seccion La sección a verificar
+  @param seccionId El id de la sección a verificar
 */
-export function cursoTieneSeccionGuardada(curso: string, seccion: string) {
+export function cursoTieneSeccionGuardada(curso: string, seccionId: string) {
   if (typeof window !== "undefined") {
     const cursosGuardados = JSON.parse(localStorage.getItem("cursos") || "{}");
-    return cursosGuardados[curso] && cursosGuardados[curso].includes(seccion);
+    return cursosGuardados[curso] && cursosGuardados[curso].includes(seccionId);
   }
   return false;
 }
@@ -59,15 +59,15 @@ export function cursoTieneSeccionGuardada(curso: string, seccion: string) {
   Si la sección no está guardada, la agrega
 
   @param curso El curso al que pertenece la sección
-  @param seccion La sección a cambiar
+  @param seccionId El id de la sección a cambiar
 */
-function cambiarPresenciaDeSeccion(curso: string, seccion: string) {
+function cambiarPresenciaDeSeccion(curso: string, seccionId: string) {
   const cursosGuardados = JSON.parse(localStorage.getItem("cursos") || "{}");
-  if (!cursosGuardados[curso].includes(seccion)) {
-    cursosGuardados[curso].push(seccion);
+  if (!cursosGuardados[curso].includes(seccionId)) {
+    cursosGuardados[curso].push(seccionId);
     cursosGuardados[curso].sort( (a: string, b: string) => a.localeCompare(b));
   } else {
-    cursosGuardados[curso] = cursosGuardados[curso].filter((seccionGuardada: string) => seccionGuardada !== seccion);
+    cursosGuardados[curso] = cursosGuardados[curso].filter((seccionGuardada: string) => seccionGuardada !== seccionId);
     if (cursosGuardados[curso].length === 0) {
       delete cursosGuardados[curso];
     }
@@ -97,12 +97,12 @@ function crearCursoSiNoExiste(curso: string) {
   Guarda una sección de un curso en el localStorage
 
   @param curso El curso al que pertenece la sección
-  @param seccion La sección a guardar
+  @param seccionId El id de la sección a guardar
 */
-export function guardarSeccionDeCurso(curso: string, seccion: string) {
+export function guardarSeccionDeCurso(curso: string, seccionId: string) {
   if (typeof window !== "undefined") {
     crearCursoSiNoExiste(curso);
-    cambiarPresenciaDeSeccion(curso, seccion);
+    cambiarPresenciaDeSeccion(curso, seccionId);
   }
 }
 

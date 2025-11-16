@@ -22,8 +22,8 @@ export interface CursosPorAtributos {
   o que se quiera guardar una sección de un curso consultado en la sección de cursos planeados
 */
 export interface EstadosCursos {
-  cursosGuardados: { [codigo: string]: number[] },
-  setCursosGuardados: (cursos: { [codigo: string]: number[] }) => void,
+  cursosGuardados: { [codigo: string]: string[] },
+  setCursosGuardados: (cursos: { [codigo: string]: string[] }) => void,
   cursoABuscar: string,
   setCursoABuscar: (curso: string) => void
 }

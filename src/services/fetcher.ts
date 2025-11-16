@@ -11,7 +11,7 @@ const API = 'https://ofertadecursos.uniandes.edu.co/api/courses';
 const API_POR_CURSO = (codigoCurso: string) => API + '?term=&ptrm=&prefix=&attr=&nameInput=' + codigoCurso.toUpperCase();
 const API_POR_ATRIBUTO = (atributo: string) => API + '?term=&ptrm=&prefix=&attr=&nameInput=&campus=&attrs=' + atributo.toUpperCase() + '&timeStart=&offset=0&limit=25';
 const API_POR_ATRIBUTO_Y_PROGRAMA = (atributo: string, programa: string) => API + '?term=&ptrm=&prefix=' + programa.toUpperCase() + '&attr=&nameInput=&campus=&attrs=' + atributo.toUpperCase() + '&timeStart=&offset=0&limit=25';
-
+const API_POR_CURSO_Y_PERIODO = (codigoCurso: string, periodo: string = '') =>  API + `?term=${periodo}&ptrm=&prefix=&attr=&nameInput=${codigoCurso.toUpperCase()}`;
 
 function listaDeBloquesEsIdentica(a: string[], b: string[]) {
   const sortedA = [...a].sort();
@@ -81,7 +81,7 @@ function obtenerPeriodoSeccion(seccion: SeccionAPI) {
   @param informacionSeccion La información de la sección
 */
 function crearSeccionDeCurso(curso: Curso, informacionSeccion: SeccionAPI) {
-  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0]?.date_ini), new Date(informacionSeccion.schedules[0]?.date_fin), curso, obtenerPeriodoSeccion(informacionSeccion));
+  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0]?.date_ini), new Date(informacionSeccion.schedules[0]?.date_fin), curso, obtenerPeriodoSeccion(informacionSeccion) ,informacionSeccion.term);
   cargarProfesoresSeccion(seccion, informacionSeccion.instructors);
   cargarHorariosSeccion(seccion, informacionSeccion.schedules);
   return seccion;
@@ -112,9 +112,10 @@ export async function crearCursosAPartirDePeticion(ruta: string){
   Función que busca un curso en la API de la universidad
 
   @param nombreCursoABuscar El nombre del curso a buscar
+  @param periodo El período del curso a buscar
 */
-export async function buscarCurso(nombreCursoABuscar: string) {
-  return await crearCursosAPartirDePeticion(API_POR_CURSO(nombreCursoABuscar));
+export async function buscarCurso(nombreCursoABuscar: string, periodo: string = '') {
+  return await crearCursosAPartirDePeticion(API_POR_CURSO_Y_PERIODO(nombreCursoABuscar, periodo));
 }
 
 export const atributosEspeciales: string[] = ["EPSI", "INGL", "ECUR", "BLEND", "SEMP", "VIRT"];
@@ -151,7 +152,11 @@ async function obtenerCursosAPartirDeSecciones(cursosGuardados: { [codigoCurso: 
   });
   const cursos = Object.values(cursosPorNombre);
   cursos.forEach(curso => {
-    curso.secciones = curso.secciones.filter(seccion => cursosGuardados[curso.programa + curso.curso].includes(seccion.seccion));
+    const cursoId = curso.programa + curso.curso;
+    const idsGuardados = cursosGuardados[cursoId] || [];
+    curso.secciones = curso.secciones.filter(seccion => {
+      return idsGuardados.includes(seccion.idUnico);
+    });
   });
   return cursos;
 }

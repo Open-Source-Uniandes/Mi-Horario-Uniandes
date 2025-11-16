@@ -44,4 +44,5 @@ export interface SeccionAPI {
   credits: number;
   attr: {[code : string]: string}[]
   ptrm: string;
+  term: string; 
 }
