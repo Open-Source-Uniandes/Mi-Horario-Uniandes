@@ -23,7 +23,7 @@ export default function Ver() {
   const [indiceHorario, setIndiceHorario] = useState(0);
   const [bloquesUsuario, setBloquesUsuario] = useState<{ [titulo: string]: BloqueTiempo[] }>({});
   const [cargando, setCargando] = useState(false);
-  const [verNombreCurso, setVerNombreCurso] = useState(false);
+  const [verNombreCurso, setVerNombreCurso] = useState(true);
   useEffect(() => {
     async function obtenerHorarios() {
       setCargando(true);
@@ -124,7 +124,7 @@ function BotonGuardarPlan({ horariosGenerados, indiceHorario }: { horariosGenera
 /*
   Componente que muestra los cursos agrupados por atributo
 */
-function CursosPorAtributo({ horario, verNombreCurso, setVerNombreCurso }: { horario: Horario, verNombreCurso?: boolean, setVerNombreCurso?: (verNombreCurso: boolean) => void }) {
+function CursosPorAtributo({ horario, verNombreCurso = false, setVerNombreCurso }: { horario: Horario, verNombreCurso?: boolean, setVerNombreCurso?: (verNombreCurso: boolean) => void }) {
   const [seccionesEncontradas, setSeccionesEncontradas] = useState<Seccion[]>([]);
   const [atributoSeleccionado, setAtributoSeleccionado] = useState<string>("");
   const [programaSeleccionado, setProgramaSeleccionado] = useState<string>("");
@@ -151,11 +151,11 @@ function CursosPorAtributo({ horario, verNombreCurso, setVerNombreCurso }: { hor
         <h1 className="text-md font-semibold text-center mb-2">Busca cursos especiales que se ajusten al horario</h1>
         <h2>Ver horario con:</h2>
         <div>
-          <input type="radio" id="Nombre del Curso" name="preview" checked={!verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(!verNombreCurso)} />
+          <input type="radio" id="Nombre del Curso" name="preview" checked={verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(true)} />
           <label htmlFor="Nombre del Curso">Nombre del Curso</label>
         </div>
         <div>
-          <input type="radio" id="Nombre del Profesor" name="preview" checked={verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(!verNombreCurso)} />
+          <input type="radio" id="Nombre del Profesor" name="preview" checked={!verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(false)} />
           <label htmlFor="Nombre del Profesor">Nombre del Profesor</label>
         </div>
         <h2>Selecciona un atributo</h2>
