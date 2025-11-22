@@ -160,9 +160,9 @@ function obtenerBloquesPorDiaHorario(horario: Horario) {
   horario.secciones.forEach(seccion => {
     seccion.horarios.forEach(bloque => {
       bloque.dias.forEach(dia => {
-        if (seccion.periodo === "8A" || seccion.periodo === "16")
+        if (seccion.duracion === "8A" || seccion.duracion === "16")
           bloquesPorDia[dia + "1"].push(bloque);
-        if (seccion.periodo === "8B" || seccion.periodo === "16")
+        if (seccion.duracion === "8B" || seccion.duracion === "16")
           bloquesPorDia[dia + "2"].push(bloque);
       });
     });
@@ -179,9 +179,9 @@ function obtenerBloquesPorSeccion(seccion : Seccion){
   const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = crearObjetoBloquesPorDia();
   seccion.horarios.forEach(bloque => {
     bloque.dias.forEach(dia => {
-      if (seccion.periodo === "8A" || seccion.periodo === "16")
+      if (seccion.duracion === "8A" || seccion.duracion === "16")
         bloquesPorDia[dia + "1"].push(bloque);
-      if (seccion.periodo === "8B" || seccion.periodo === "16")
+      if (seccion.duracion === "8B" || seccion.duracion === "16")
         bloquesPorDia[dia + "2"].push(bloque);
     });
   });

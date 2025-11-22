@@ -263,7 +263,7 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
     guardarSeccionDeCurso(seccion.curso.programa + seccion.curso.curso, seccion.idUnico);
     setCursosGuardados(obtenerCursosGuardados());
   }
-  const descripcionPorPeriodo = new Map<string, string>([
+  const descripcionPorDuracion = new Map<string, string>([
     ["16", "16 semanas"],
     ["8A", "Primer ciclo"],
     ["8B", "Segundo ciclo"],
@@ -274,7 +274,7 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
         <h3 className="text-lg font-semibold">{seccion.titulo}</h3>
         <p>NRC: {seccion.nrc} SECCIÓN: {seccion.seccion}</p>
         <p>Período: {seccion.periodo}</p>
-        <p>Duración: {descripcionPorPeriodo.get(seccion.duracion.toUpperCase()) || ""}</p>
+        <p>Duración: {descripcionPorDuracion.get(seccion.duracion.toUpperCase()) || ""}</p>
         <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
         <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-3">
           {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados, seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}

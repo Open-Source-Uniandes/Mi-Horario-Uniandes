@@ -150,7 +150,7 @@ function ColumnaDia({ dia, className, secciones, bloques, verNombreCurso } : { d
   @param seccion La sección a mostrar
 */
 function obtenerAnchoSeccionPorcentaje(seccion: Seccion) {
-  if (seccion.periodo === "16") {
+  if (seccion.duracion === "16") {
     return 95;
   }
   return 45;
@@ -163,7 +163,7 @@ function obtenerAnchoSeccionPorcentaje(seccion: Seccion) {
   @param bloque El bloque de tiempo a mostrar
 */
 function obtenerDistanciaBordeIzquierdo(seccion: Seccion) {
-  if (seccion.periodo === "8A") {
+  if (seccion.duracion === "8A") {
     return "2.5%";
   }
   return "auto";
@@ -176,7 +176,7 @@ function obtenerDistanciaBordeIzquierdo(seccion: Seccion) {
   @param bloque El bloque de tiempo a mostrar
 */
 function obtenerDistanciaBordeDerecho(seccion: Seccion) {
-  if (seccion.periodo === "8B") {
+  if (seccion.duracion === "8B") {
     return "2.5%";
   }
   return "auto";

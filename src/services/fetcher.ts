@@ -62,16 +62,16 @@ function cargarProfesoresSeccion(seccion: Seccion, profesores: ProfesorAPI[]) {
 }
 
 /*
-  Función que obtiene el periodo de una sección (8A, 8B, Completo, etc)
+  Función que obtiene la duración de una sección (8A, 8B, Completo, etc)
 
-  @param seccion La sección de la que se obtendrá el periodo
+  @param seccion La sección de la que se obtendrá la duración
 */
-function obtenerPeriodoSeccion(seccion: SeccionAPI) {
-  let periodo: string = "16";
+function obtenerDuracionSeccion(seccion: SeccionAPI) {
+  let duracion: string = "16";
   if (seccion.ptrm === "8A" || seccion.ptrm === "8B") {
-    periodo = seccion.ptrm;
+    duracion = seccion.ptrm;
   }
-  return periodo;
+  return duracion;
 }
 
 /*
@@ -81,7 +81,7 @@ function obtenerPeriodoSeccion(seccion: SeccionAPI) {
   @param informacionSeccion La información de la sección
 */
 function crearSeccionDeCurso(curso: Curso, informacionSeccion: SeccionAPI) {
-  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0]?.date_ini), new Date(informacionSeccion.schedules[0]?.date_fin), curso, obtenerPeriodoSeccion(informacionSeccion) ,informacionSeccion.term);
+  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0]?.date_ini), new Date(informacionSeccion.schedules[0]?.date_fin), curso, obtenerDuracionSeccion(informacionSeccion) ,informacionSeccion.term);
   cargarProfesoresSeccion(seccion, informacionSeccion.instructors);
   cargarHorariosSeccion(seccion, informacionSeccion.schedules);
   return seccion;
