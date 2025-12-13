@@ -35,6 +35,7 @@ El software lo construimos entre todos 💛
 - [Alejandro Pulido](https://github.com/alejandroPulido03)
 - [Juan Espitia](https://github.com/jmpizza)
 - [Carlos Andrés Peña](https://github.com/carandp) 
+- [Carlos Díaz Vargas](https://github.com/CarlosDv1010) 
 
 ## Contacto
 
