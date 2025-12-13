@@ -188,12 +188,21 @@ function obtenerDistanciaBordeDerecho(seccion: Seccion) {
   @param seccion La sección a mostrar
 */
 function obtenerColorFondoSeccion(seccion: Seccion) {
+  const esVirtual = seccion.modalidad.toString() === "VIRTUAL";
   const disponibilidad = 1 - (Math.min(seccion.cuposTomados,seccion.cuposMaximos) / Math.max(seccion.cuposMaximos,1));
-  if (disponibilidad >= 0.8) return "#86efac";
-  if (disponibilidad >= 0.6) return "#bef264";
-  if (disponibilidad >= 0.4) return "#fde047";
-  if (disponibilidad >= 0.2) return "#fdba74";
-  if (disponibilidad > 0.0) return "#fca5a5";
+  if (esVirtual) {
+    if (disponibilidad >= 0.8) return "#96a7f4ff";
+    if (disponibilidad >= 0.6) return "#86ccefff";
+    if (disponibilidad >= 0.4) return "#fde047";
+    if (disponibilidad >= 0.2) return "#fdba74";
+    if (disponibilidad > 0.0) return "#fca5a5";
+  } else {
+    if (disponibilidad >= 0.8) return "#86efac"; 
+    if (disponibilidad >= 0.6) return "#bef264";
+    if (disponibilidad >= 0.4) return "#fde047";
+    if (disponibilidad >= 0.2) return "#fdba74";
+    if (disponibilidad > 0.0) return "#fca5a5";
+  }
   return "#cbd5e1";
 }
 
@@ -203,12 +212,21 @@ function obtenerColorFondoSeccion(seccion: Seccion) {
   @param seccion La sección a mostrar
 */
 function obtenerColorBordeSeccion(seccion: Seccion) {
+  const esVirtual = seccion.modalidad.toString() === "VIRTUAL";
   const disponibilidad = 1 - (Math.min(seccion.cuposTomados,seccion.cuposMaximos) / Math.max(seccion.cuposMaximos,1));
-  if (disponibilidad >= 0.8) return "#22c55e";
-  if (disponibilidad >= 0.6) return "#84cc16";
-  if (disponibilidad >= 0.4) return "#eab308";
-  if (disponibilidad >= 0.2) return "#f97316";
-  if (disponibilidad > 0.0) return "#ef4444";
+  if (esVirtual) {
+    if (disponibilidad >= 0.8) return "#3b82f6";
+    if (disponibilidad >= 0.6) return "#2563eb";
+    if (disponibilidad >= 0.4) return "#eab308";
+    if (disponibilidad >= 0.2) return "#f97316";
+    if (disponibilidad > 0.0) return "#ef4444";
+  } else {
+    if (disponibilidad >= 0.8) return "#22c55e";
+    if (disponibilidad >= 0.6) return "#84cc16";
+    if (disponibilidad >= 0.4) return "#eab308";
+    if (disponibilidad >= 0.2) return "#f97316";
+    if (disponibilidad > 0.0) return "#ef4444";
+  }
   return "#6b7280";
 }
 /*
@@ -258,7 +276,7 @@ function BloqueSeccion({seccion, bloque, verNombreCurso} : {seccion: Seccion, bl
                   {seccion.profesores.map((profesor, idx) => <li key={idx}>{profesor.nombre}</li>)}
                 </ul>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex space-x-2">
                 {
                   seccion.cuposMaximos === seccion.cuposTomados ?
                   <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
@@ -275,6 +293,25 @@ function BloqueSeccion({seccion, bloque, verNombreCurso} : {seccion: Seccion, bl
                     </svg>
                     <span className='w-1'></span>
                     {`${seccion.cuposMaximos-seccion.cuposTomados}/${seccion.cuposMaximos} Cupos`}
+                  </span>
+                }
+                {
+                  seccion.modalidad.toString() === "VIRTUAL" ?
+                  <span className="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-600/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" className="size-6">
+                      <path d="M13.5 3a.5.5 0 0 1 .5.5V11H2V3.5a.5.5 0 0 1 .5-.5zm-11-1A1.5 1.5 0 0 0 1 3.5V12h14V3.5A1.5 1.5 0 0 0 13.5 2zM0 12.5h16a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5"/>
+                    </svg>
+                    <span className='w-1'></span>
+                    {seccion.modalidad.toString()}
+                  </span>
+                  :
+                  <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" className="size-6">
+                      <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
+                      <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
+                    </svg>
+                    <span className='w-1'></span>
+                    {seccion.modalidad.toString()}
                   </span>
                 }
               </CardFooter>

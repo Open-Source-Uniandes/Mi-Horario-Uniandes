@@ -34,6 +34,7 @@ El software lo construimos entre todos 💛
 - [Wilmer Arévalo](https://github.com/wareval0) - w.arevalo@uniandes.edu.co  
 - [Alejandro Pulido](https://github.com/alejandroPulido03)
 - [Juan Espitia](https://github.com/jmpizza)
+- [Carlos Andrés Peña](https://github.com/carandp) 
 
 ## Contacto
 
