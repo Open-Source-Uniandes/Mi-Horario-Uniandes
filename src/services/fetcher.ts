@@ -120,7 +120,7 @@ export async function buscarCurso(nombreCursoABuscar: string, periodo: string = 
 
 export const atributosEspeciales: string[] = ["EPSI", "INGL", "ECUR", "BLEND", "SEMP", "VIRT"];
 
-export const programasEspeciales: string[] = ["CBCA", "CBCO", "CBPC", "CBCC", "DEPO"]
+export const programasEspeciales: string[] = ["CBCC", "CBUH", "CBUT", "DEPO"]
 
 
 /*
