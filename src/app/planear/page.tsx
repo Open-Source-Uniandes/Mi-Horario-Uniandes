@@ -11,8 +11,6 @@ export default function Planear() {
         <p className="sm:text-lge">Aquí podrás seleccionar las secciones que te gusten de los cursos que piensas tomar.</p>
         <h2 className="text-2xl font-semibold">🕗 Bloques</h2>
         <p className="sm:text-lg">¿No quieres madrugar a las 6:30? ¿Quieres almorzar con tus amigos a las 12:30? ¡Agrega esos momentos en los cuales, por ningún motivo, quieres que se te cruce una clase!</p>
-        <h2 className="text-2xl font-semibold">🧺 Grupos</h2>
-        <p className="sm:text-lg">¿Tienes varias opciones de cursos para cumplir una electiva, pero no quieres revisar opción por opción? Agrega todas las opciones y nos encargaremos de mostrártelas :)</p>
         <h2 className="text-2xl font-semibold">🗒️ Planes</h2>
         <p className="sm:text-lg">Aquí encontrarás todos los planes que hayas creado.</p>
         <h2 className="text-2xl font-semibold">⚙️ Criterios</h2>

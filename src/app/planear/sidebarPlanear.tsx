@@ -15,7 +15,6 @@ export default function SidebarPlanear() {
     <div className="flex flex-col justify-between items-center bg-zinc-200 pb-24 py-6 border-r w-24 fixed h-screen dark:bg-neutral-900">
       <BotonCursos />
       <BotonBloques />
-      <BotonGrupos />
       <BotonPlanes />
       <BotonCriterios />
       <BotonVerHorarios />
@@ -67,17 +66,6 @@ function BotonBloques() {
       <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/reloj.svg" alt="Bloques" width={24} height={24}/>
     </BotonLateral>
   )
-}
-
-/*
-  Botón que redirige a la opción de ver y crear grupos
-*/
-function BotonGrupos() {
-    return (
-      <BotonLateral ruta={"/planear/grupos"}>
-        <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/canasta.svg" alt="Grupos" width={24} height={24}/>
-      </BotonLateral>
-    )
 }
 
 /*

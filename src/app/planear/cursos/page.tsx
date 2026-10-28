@@ -10,6 +10,12 @@ import {
   guardarSeccionDeCurso,
   añadirVariasSeccionesDeCurso,
 } from "@/services/almacenamiento/almacenamientoCursos"
+import {
+  guardarGrupos,
+  obtenerGruposGuardados,
+  type GrupoCurso,
+} from "@/services/almacenamiento/almacenamientoGrupos"
+import { limpiarGruposSinCursos } from "@/services/operacionesGrupos"
 import type { EstadosCursos } from "@/types/contexto"
 import type Curso from "@/models/Curso"
 import type Seccion from "@/models/Seccion"
@@ -28,19 +34,68 @@ const CursoContext = createContext<EstadosCursos>({
 export default function Cursos() {
   const [cursosGuardados, setCursosGuardados] = useState<{ [codigo: string]: string[] }>({});
   const [cursoABuscar, setCursoABuscar] = useState("");
+  const [grupos, setGrupos] = useState<GrupoCurso[]>([]);
+  const [cursosParaNuevoGrupo, setCursosParaNuevoGrupo] = useState<string[]>([]);
+  const [datosCargados, setDatosCargados] = useState(false);
 
   useEffect(() => {
-    setCursosGuardados(obtenerCursosGuardados())
+    setCursosGuardados(obtenerCursosGuardados());
+    setGrupos(obtenerGruposGuardados());
+    setDatosCargados(true);
   }, [])
+
+  useEffect(() => {
+    if (!datosCargados) return;
+    const cursosPlaneados = new Set(Object.keys(cursosGuardados));
+    setCursosParaNuevoGrupo((seleccionados) => {
+      const actualizados = seleccionados.filter((codigo) => cursosPlaneados.has(codigo));
+      return actualizados.length === seleccionados.length ? seleccionados : actualizados;
+    });
+    const gruposActualizados = limpiarGruposSinCursos(grupos, cursosPlaneados);
+    if (JSON.stringify(gruposActualizados) !== JSON.stringify(grupos)) {
+      setGrupos(gruposActualizados);
+      guardarGrupos(gruposActualizados);
+    }
+  }, [cursosGuardados, cursosParaNuevoGrupo, datosCargados, grupos]);
+
+  const actualizarGrupos = (nuevosGrupos: GrupoCurso[]) => {
+    setGrupos(nuevosGrupos);
+    guardarGrupos(nuevosGrupos);
+  };
+
+  const crearGrupo = () => {
+    if (cursosParaNuevoGrupo.length < 1) return;
+    const baseNombre = `Grupo ${grupos.length + 1}`;
+    const nombre = obtenerNombreUnico(baseNombre, grupos);
+    actualizarGrupos([...grupos, { nombre, cursos: cursosParaNuevoGrupo }]);
+    setCursosParaNuevoGrupo([]);
+  };
 
   return (
     <CursoContext.Provider value={{ cursosGuardados, setCursosGuardados, cursoABuscar, setCursoABuscar }}>
       <div className="grid grid-cols-1 md:grid-cols-2">
         <Planeacion />
-        <CursosPlaneados />
+        <CursosPlaneados
+          grupos={grupos}
+          actualizarGrupos={actualizarGrupos}
+          cursosParaNuevoGrupo={cursosParaNuevoGrupo}
+          setCursosParaNuevoGrupo={setCursosParaNuevoGrupo}
+          crearGrupo={crearGrupo}
+        />
       </div>
     </CursoContext.Provider>
   )
+}
+
+function obtenerNombreUnico(nombreBase: string, grupos: GrupoCurso[]): string {
+  const nombres = new Set(grupos.map((grupo) => grupo.nombre.trim().toLocaleLowerCase()));
+  let nombre = nombreBase;
+  let sufijo = 2;
+  while (nombres.has(nombre.toLocaleLowerCase())) {
+    nombre = `${nombreBase} (${sufijo})`;
+    sufijo++;
+  }
+  return nombre;
 }
 
 /*  Sección de planeación de cursos  Incluye la búsqueda de cursos y la visualización de los cursos encontrados y seleccionados*/
@@ -287,23 +342,374 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
   )
 }
 
-/*  Cursos planificados por el usuario*/
-function CursosPlaneados() {
-  const { cursosGuardados } = useContext(CursoContext)
+type PropiedadesCursosPlaneados = {
+  grupos: GrupoCurso[];
+  actualizarGrupos: (grupos: GrupoCurso[]) => void;
+  cursosParaNuevoGrupo: string[];
+  setCursosParaNuevoGrupo: (cursos: string[]) => void;
+  crearGrupo: () => void;
+};
+
+/**
+ * Muestra los cursos elegidos y permite administrarlos en grupos.
+ * @param propiedades Datos y acciones para administrar cursos y grupos.
+ * @returns La sección de cursos planeados y sus grupos.
+ */
+function CursosPlaneados({
+  grupos,
+  actualizarGrupos,
+  cursosParaNuevoGrupo,
+  setCursosParaNuevoGrupo,
+  crearGrupo,
+}: PropiedadesCursosPlaneados) {
+  const { cursosGuardados } = useContext(CursoContext);
+  const cursos = Object.keys(cursosGuardados).sort();
 
   return (
     <div className="mx-auto w-[80%] min-w-44 pt-8">
       <h2 className="text-2xl font-semibold">Tus cursos planeados</h2>
       <p className="text-lg my-2">Aquí puedes ver los cursos que has elegido</p>
-      {Object.keys(cursosGuardados).map((codigo) => (
-        <CursoPlaneado codigo={codigo} secciones={cursosGuardados[codigo]} key={codigo} />
+      {cursos.map((codigo) => (
+        <CursoPlaneado
+          codigo={codigo}
+          secciones={cursosGuardados[codigo]}
+          grupos={grupos}
+          cursosSeleccionados={cursosParaNuevoGrupo}
+          setCursosSeleccionados={setCursosParaNuevoGrupo}
+          key={codigo}
+        />
       ))}
+      <SeccionCrearGrupo
+        cantidadCursos={cursos.length}
+        cantidadSeleccionados={cursosParaNuevoGrupo.length}
+        crearGrupo={crearGrupo}
+      />
+      <ListaGrupos
+        grupos={grupos}
+        cursos={cursos}
+        actualizarGrupos={actualizarGrupos}
+      />
     </div>
-  )
+  );
+}
+
+/**
+ * Ofrece la acción para crear un grupo con los cursos seleccionados.
+ * @param cantidadCursos Cantidad de cursos disponibles para agrupar.
+ * @param cantidadSeleccionados Cantidad de cursos elegidos para el grupo.
+ * @param crearGrupo Función que crea el grupo.
+ * @returns La sección para iniciar la creación de un grupo.
+ */
+function SeccionCrearGrupo({
+  cantidadCursos,
+  cantidadSeleccionados,
+  crearGrupo,
+}: {
+  cantidadCursos: number;
+  cantidadSeleccionados: number;
+  crearGrupo: () => void;
+}) {
+  return (
+    <section className="my-6 rounded border border-gray-400 p-4">
+      <h3 className="text-xl font-semibold">Crear un grupo</h3>
+      <p className="my-2">
+        Selecciona uno o más cursos. De cada grupo se incluirá como máximo un
+        curso en cada horario (útil para electivas).
+      </p>
+      {cantidadCursos === 0 && <p>Planea cursos para poder agruparlos.</p>}
+      <button
+        type="button"
+        disabled={cantidadSeleccionados < 1}
+        onClick={crearGrupo}
+        className="mt-2 rounded border-2 border-black bg-yellow-300 px-4 py-2 text-black transition-colors hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Crear grupo con seleccionados ({cantidadSeleccionados})
+      </button>
+    </section>
+  );
+}
+
+/**
+ * Lista los grupos existentes y distribuye sus acciones de actualización.
+ * @param grupos Grupos guardados.
+ * @param cursos Cursos disponibles para agregar a un grupo.
+ * @param actualizarGrupos Función que persiste los grupos modificados.
+ * @returns La sección con las tarjetas de grupo.
+ */
+function ListaGrupos({
+  grupos,
+  cursos,
+  actualizarGrupos,
+}: {
+  grupos: GrupoCurso[];
+  cursos: string[];
+  actualizarGrupos: (grupos: GrupoCurso[]) => void;
+}) {
+  const actualizarGrupo = (indiceGrupo: number, grupoActualizado: GrupoCurso) => {
+    actualizarGrupos(
+      grupos.map((grupo, indice) =>
+        indice === indiceGrupo ? grupoActualizado : grupo,
+      ),
+    );
+  };
+
+  const eliminarGrupo = (indiceGrupo: number) => {
+    actualizarGrupos(grupos.filter((_, indice) => indice !== indiceGrupo));
+  };
+
+  return (
+    <section className="my-6">
+      <h3 className="text-xl font-semibold">Grupos</h3>
+      {grupos.length === 0 && <p className="my-2">Aún no has creado grupos.</p>}
+      {grupos.map((grupo, indiceGrupo) => (
+        <TarjetaGrupo
+          key={indiceGrupo}
+          grupo={grupo}
+          indice={indiceGrupo}
+          grupos={grupos}
+          cursosDisponibles={cursos}
+          actualizarGrupo={(grupoActualizado) =>
+            actualizarGrupo(indiceGrupo, grupoActualizado)
+          }
+          eliminarGrupo={() => eliminarGrupo(indiceGrupo)}
+        />
+      ))}
+    </section>
+  );
+}
+
+/**
+ * Administra el nombre, los cursos y el estado de edición de un grupo.
+ * @param propiedades Datos del grupo y funciones para actualizarlo o borrarlo.
+ * @returns La tarjeta de un grupo con su resumen o editor.
+ */
+function TarjetaGrupo({
+  grupo,
+  indice,
+  grupos,
+  cursosDisponibles,
+  actualizarGrupo,
+  eliminarGrupo,
+}: {
+  grupo: GrupoCurso;
+  indice: number;
+  grupos: GrupoCurso[];
+  cursosDisponibles: string[];
+  actualizarGrupo: (grupo: GrupoCurso) => void;
+  eliminarGrupo: () => void;
+}) {
+  const [editando, setEditando] = useState(false);
+  const [nombreInvalido, setNombreInvalido] = useState(false);
+
+  const actualizarNombre = (nombre: string) => {
+    const nombreNormalizado = nombre.trim().toLocaleLowerCase();
+    const duplicado = grupos.some(
+      (otroGrupo, indiceOtro) =>
+        indiceOtro !== indice &&
+        otroGrupo.nombre.trim().toLocaleLowerCase() === nombreNormalizado,
+    );
+    if (!nombreNormalizado || duplicado) {
+      setNombreInvalido(true);
+      return;
+    }
+    setNombreInvalido(false);
+    actualizarGrupo({ ...grupo, nombre });
+  };
+
+  const actualizarCursos = (cursos: string[]) => {
+    actualizarGrupo({ ...grupo, cursos });
+  };
+
+  return (
+    <div className="my-3 rounded border border-gray-400 p-4">
+      <CabeceraGrupo
+        grupo={grupo}
+        indice={indice}
+        editando={editando}
+        nombreInvalido={nombreInvalido}
+        actualizarNombre={actualizarNombre}
+        cambiarEdicion={() => setEditando(!editando)}
+        eliminarGrupo={eliminarGrupo}
+      />
+      {editando ? (
+        <EditorCursosGrupo
+          grupo={grupo}
+          cursosDisponibles={cursosDisponibles}
+          actualizarCursos={actualizarCursos}
+        />
+      ) : (
+        <ResumenCursosGrupo grupo={grupo} />
+      )}
+    </div>
+  );
+}
+
+/**
+ * Presenta el nombre del grupo y sus acciones principales.
+ * @param propiedades Nombre, estado de edición y acciones del grupo.
+ * @returns La cabecera editable con los botones del grupo.
+ */
+function CabeceraGrupo({
+  grupo,
+  indice,
+  editando,
+  nombreInvalido,
+  actualizarNombre,
+  cambiarEdicion,
+  eliminarGrupo,
+}: {
+  grupo: GrupoCurso;
+  indice: number;
+  editando: boolean;
+  nombreInvalido: boolean;
+  actualizarNombre: (nombre: string) => void;
+  cambiarEdicion: () => void;
+  eliminarGrupo: () => void;
+}) {
+  return (
+    <div className="mb-3 flex items-center justify-between gap-2">
+      <div className="min-w-0 flex-1">
+        <label className="sr-only" htmlFor={`nombre-grupo-${indice}`}>
+          Nombre del grupo {indice + 1}
+        </label>
+        <input
+          id={`nombre-grupo-${indice}`}
+          value={grupo.nombre}
+          onChange={(evento) => actualizarNombre(evento.target.value)}
+          className="w-full rounded border border-gray-400 bg-transparent px-2 py-1 font-semibold"
+          aria-invalid={nombreInvalido}
+        />
+        {nombreInvalido && (
+          <span className="text-sm text-red-600" role="alert">
+            Escribe un nombre no vacío y distinto al de los demás grupos.
+          </span>
+        )}
+      </div>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={cambiarEdicion}
+          className="rounded border border-black bg-yellow-300 px-3 py-1 text-black hover:bg-yellow-400"
+          aria-expanded={editando}
+        >
+          {editando ? "Listo" : "Editar"}
+        </button>
+        <button
+          type="button"
+          onClick={eliminarGrupo}
+          className="rounded border border-black bg-yellow-300 px-3 py-1 text-black hover:bg-yellow-400"
+          aria-label={`Eliminar grupo ${indice + 1}`}
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Permite agregar cursos al grupo o quitar los que ya contiene.
+ * @param grupo Grupo cuyos cursos se modifican.
+ * @param cursosDisponibles Cursos planeados disponibles para agregar.
+ * @param actualizarCursos Función que guarda la lista nueva de cursos.
+ * @returns Los controles para editar los cursos del grupo.
+ */
+function EditorCursosGrupo({
+  grupo,
+  cursosDisponibles,
+  actualizarCursos,
+}: {
+  grupo: GrupoCurso;
+  cursosDisponibles: string[];
+  actualizarCursos: (cursos: string[]) => void;
+}) {
+  const quitarCurso = (cursoAQuitar: string) => {
+    actualizarCursos(grupo.cursos.filter((curso) => curso !== cursoAQuitar));
+  };
+
+  const agregarCurso = (cursoAAgregar: string) => {
+    if (!cursoAAgregar) return;
+    actualizarCursos([...grupo.cursos, cursoAAgregar]);
+  };
+
+  return (
+    <div>
+      <p className="mb-2 text-sm">Cursos del grupo:</p>
+      <div className="flex flex-wrap gap-2">
+        {grupo.cursos
+          .slice()
+          .sort((cursoA, cursoB) => cursoA.localeCompare(cursoB))
+          .map((curso) => (
+            <span
+              key={curso}
+              className="inline-flex items-center gap-2 rounded bg-gray-200 px-2 py-1 text-black dark:bg-neutral-600 dark:text-white"
+            >
+              {curso}
+              <button
+                type="button"
+                onClick={() => quitarCurso(curso)}
+                aria-label={`Quitar ${curso} de ${grupo.nombre}`}
+                className="font-bold"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+      </div>
+      <label className="mt-3 flex flex-col gap-1">
+        Agregar curso
+        <select
+          className="rounded border border-gray-500 bg-white p-2 text-black"
+          value=""
+          onChange={(evento) => agregarCurso(evento.target.value)}
+        >
+          <option value="">Selecciona un curso...</option>
+          {cursosDisponibles
+            .filter((curso) => !grupo.cursos.includes(curso))
+            .map((curso) => (
+              <option key={curso} value={curso}>
+                {curso}
+              </option>
+            ))}
+        </select>
+      </label>
+    </div>
+  );
+}
+
+/**
+ * Resume los cursos asociados a un grupo cuando no se está editando.
+ * @param grupo Grupo que se presenta.
+ * @returns El listado compacto de cursos del grupo.
+ */
+function ResumenCursosGrupo({ grupo }: { grupo: GrupoCurso }) {
+  const cursosOrdenados = grupo.cursos
+    .slice()
+    .sort((cursoA, cursoB) => cursoA.localeCompare(cursoB));
+
+  return (
+    <p>
+      {cursosOrdenados.length > 0
+        ? cursosOrdenados.join(" · ")
+        : "Sin cursos"}
+    </p>
+  );
 }
 
 /*  Curso planificado por el usuario*/
-function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; secciones: string[] }>) {
+function CursoPlaneado({
+  codigo,
+  secciones,
+  grupos,
+  cursosSeleccionados,
+  setCursosSeleccionados,
+}: Readonly<{
+  codigo: string;
+  secciones: string[];
+  grupos: GrupoCurso[];
+  cursosSeleccionados: string[];
+  setCursosSeleccionados: (cursos: string[]) => void;
+}>) {
   const { setCursosGuardados, setCursoABuscar } = useContext(CursoContext)
 
   const handleBusqueda = () => {
@@ -343,6 +749,30 @@ function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; seccion
       </div>
       <h3 className="text-lg font-semibold">{codigo}</h3>
       <p className="text-muted-foreground dark:text-neutral-300">Secciones: {seccionesMostradas}</p>
+      <div className="flex flex-wrap justify-center gap-1">
+      {grupos.map((grupo, indice) =>
+        grupo.cursos.includes(codigo) ? (
+          <span key={indice} className="rounded bg-yellow-200 px-2 py-1 text-sm text-black">
+            {grupo.nombre}
+          </span>
+        ) : null,
+      )}
+      </div>
+      <label className="mx-auto mt-2 flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={cursosSeleccionados.includes(codigo)}
+          onChange={() =>
+            setCursosSeleccionados(
+              cursosSeleccionados.includes(codigo)
+                ? cursosSeleccionados.filter((curso) => curso !== codigo)
+                : [...cursosSeleccionados, codigo],
+            )
+          }
+          aria-label={`Seleccionar ${codigo} para crear un grupo`}
+        />
+        Seleccionar para agrupar
+      </label>
     </div>
   )
 }

@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "strict": true,
+    "skipLibCheck": true,
+    "types": [],
+    "rootDir": "src/services",
+    "outDir": ".test-dist"
+  },
+  "include": ["src/services/operacionesGrupos.ts"]
+}

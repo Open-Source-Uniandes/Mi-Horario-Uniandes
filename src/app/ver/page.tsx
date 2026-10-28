@@ -14,6 +14,10 @@ import { filtrarSeccionesQueColisionan } from "@/services/operacionesSobreHorari
 import Spinner from "@/components/spinner";
 import Image from "next/image";
 import CasillasDias from "@/components/casillasDias";
+import {
+  obtenerGruposGuardados,
+  type GrupoCurso,
+} from "@/services/almacenamiento/almacenamientoGrupos";
 
 /*
   Página que muestra los horarios generados así como la opción de guardar un horario y ver cursos especiales que se ajustan
@@ -24,10 +28,12 @@ export default function Ver() {
   const [bloquesUsuario, setBloquesUsuario] = useState<{ [titulo: string]: BloqueTiempo[] }>({});
   const [cargando, setCargando] = useState(false);
   const [verNombreCurso, setVerNombreCurso] = useState(true);
+  const [grupos, setGrupos] = useState<GrupoCurso[]>([]);
   useEffect(() => {
     async function obtenerHorarios() {
       setCargando(true);
       setBloquesUsuario(obtenerBloquesGuardados());
+      setGrupos(obtenerGruposGuardados());
       setHorariosGenerados(await generarHorarios());
       setCargando(false);
     }
@@ -44,7 +50,7 @@ export default function Ver() {
           <SidebarCursosConAtributos>
             <CursosPorAtributo horario={horariosGenerados[indiceHorario]} verNombreCurso={verNombreCurso} setVerNombreCurso={setVerNombreCurso} />
           </SidebarCursosConAtributos>
-          <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario} verNombreCurso={verNombreCurso} />
+          <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario} grupos={grupos} verNombreCurso={verNombreCurso} />
         </div>
       }
       {!cargando && horariosGenerados.length === 0 && <NoHayHorarios />}
@@ -85,13 +91,13 @@ function NoHayHorarios() {
   @param indiceHorario índice del horario a mostrar
   @param bloquesUsuario bloques de tiempo guardados por el usuario
 */
-function PanelHorario({ horariosGenerados, indiceHorario, bloquesUsuario, verNombreCurso }: { horariosGenerados: Horario[], indiceHorario: number, bloquesUsuario: { [titulo: string]: BloqueTiempo[] }, verNombreCurso?: boolean }) {
+function PanelHorario({ horariosGenerados, indiceHorario, bloquesUsuario, grupos, verNombreCurso }: { horariosGenerados: Horario[], indiceHorario: number, bloquesUsuario: { [titulo: string]: BloqueTiempo[] }, grupos: GrupoCurso[], verNombreCurso?: boolean }) {
   return (
     <main className="w-full flex flex-col justify-between">
       <div>
-        <CalendarioConBloques horario={horariosGenerados[indiceHorario]} bloquesUsuario={bloquesUsuario} verNombreCurso={verNombreCurso ?? false} />
+        <CalendarioConBloques horario={horariosGenerados[indiceHorario]} bloquesUsuario={bloquesUsuario} grupos={grupos} verNombreCurso={verNombreCurso ?? false} />
         {horariosGenerados.length === 0 && <p className="text-center text-md">Total creditos: 0</p>}
-        {horariosGenerados.length > 0 && <p className="text-center text-md">Total creditos: {horariosGenerados[indiceHorario].secciones.reduce((acc, seccion) => acc + Number(seccion.curso.creditos), 0)}</p>}
+        {horariosGenerados.length > 0 && <p className="text-center text-md">Total créditos: {horariosGenerados[indiceHorario].creditosTotales}</p>}
         <BotonGuardarPlan horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} />
         <p className="text-center text-md font-semibold"> Mostrando el horario {horariosGenerados.length > 0 ? indiceHorario + 1 : 0} de {horariosGenerados.length} </p>
       </div>

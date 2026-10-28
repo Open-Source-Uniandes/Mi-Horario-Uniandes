@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useState } from 'react';
+import type { GrupoCurso } from "@/services/almacenamiento/almacenamientoGrupos";
 
 
 /*
@@ -46,7 +47,7 @@ export function Calendario({horario}: {horario: Horario}) {
 
   @param horario El horario a mostrar
 */
-export function CalendarioConBloques({horario, bloquesUsuario, verNombreCurso}: {horario: Horario, bloquesUsuario: {[titulo: string]: BloqueTiempo[]}, verNombreCurso: boolean}) {
+export function CalendarioConBloques({horario, bloquesUsuario, grupos, verNombreCurso}: {horario: Horario, bloquesUsuario: {[titulo: string]: BloqueTiempo[]}, grupos: GrupoCurso[], verNombreCurso: boolean}) {
   const seccionesPorDia: {[dia: string]: [Seccion, BloqueTiempo][]} = ObtenerSeccionesPorDia(horario);
   const bloquesPorDia: {[dia: string]: BloqueTiempo[]} = ObtenerBloquesPorDia(Object.values(bloquesUsuario).flat());
 
@@ -54,12 +55,12 @@ export function CalendarioConBloques({horario, bloquesUsuario, verNombreCurso}: 
     <div className='flex justify-center items-center w-full pt-4'>
       <HorasCalendario/>
       <div className='grid grid-cols-1 lg:grid-cols-6 w-full sm:w-11/12'>
-        <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} bloques={bloquesPorDia["l"]} verNombreCurso={verNombreCurso} className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} bloques={bloquesPorDia["m"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} bloques={bloquesPorDia["i"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Jueves" secciones={seccionesPorDia["j"]} bloques={bloquesPorDia["j"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Viernes" secciones={seccionesPorDia["v"]} bloques={bloquesPorDia["v"]} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
-        <ColumnaDia dia="Sábado" secciones={seccionesPorDia["s"]}  bloques={bloquesPorDia["s"]} verNombreCurso={verNombreCurso}  className="border border-gray-400"/>
+        <ColumnaDia dia="Lunes" secciones={seccionesPorDia["l"]} bloques={bloquesPorDia["l"]} grupos={grupos} verNombreCurso={verNombreCurso} className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Martes" secciones={seccionesPorDia["m"]} bloques={bloquesPorDia["m"]} grupos={grupos} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Miércoles" secciones={seccionesPorDia["i"]} bloques={bloquesPorDia["i"]} grupos={grupos} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Jueves" secciones={seccionesPorDia["j"]} bloques={bloquesPorDia["j"]} grupos={grupos} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Viernes" secciones={seccionesPorDia["v"]} bloques={bloquesPorDia["v"]} grupos={grupos} verNombreCurso={verNombreCurso}  className="border-l border-t border-b border-gray-400"/>
+        <ColumnaDia dia="Sábado" secciones={seccionesPorDia["s"]}  bloques={bloquesPorDia["s"]} grupos={grupos} verNombreCurso={verNombreCurso}  className="border border-gray-400"/>
       </div>
     </div>
   );
@@ -128,7 +129,7 @@ function ObtenerBloquesPorDia(bloques: BloqueTiempo[]) {
   @param secciones Las secciones a mostrar
   @param className La clase css adicional
 */
-function ColumnaDia({ dia, className, secciones, bloques, verNombreCurso } : { dia: string, className: string, secciones: [Seccion, BloqueTiempo][], bloques?: BloqueTiempo[], verNombreCurso?: boolean }) {
+function ColumnaDia({ dia, className, secciones, bloques, grupos = [], verNombreCurso } : { dia: string, className: string, secciones: [Seccion, BloqueTiempo][], bloques?: BloqueTiempo[], grupos?: GrupoCurso[], verNombreCurso?: boolean }) {
   const horas = ObtenerRangoHoras();
   return (
     <div className={`flex flex-col relative ${className} h-[750px]`}>
@@ -136,7 +137,7 @@ function ColumnaDia({ dia, className, secciones, bloques, verNombreCurso } : { d
       <div className="relative h-full">
         {horas.map(hora => (<hr className="border-gray-300 absolute border-1 w-full" style={{ top: `${tiempoAPixeles(hora)}px` }} key={hora}></hr>))}
         <div className='relative h-full flex flex-col justify-center items-center'>
-          {secciones?.map(([seccion, bloque],idx) => <BloqueSeccion seccion={seccion} bloque={bloque} key={idx} verNombreCurso={verNombreCurso ?? false}/>)}
+          {secciones?.map(([seccion, bloque],idx) => <BloqueSeccion seccion={seccion} bloque={bloque} grupos={grupos} key={idx} verNombreCurso={verNombreCurso ?? false}/>)}
           {bloques?.map((bloque,idx) => <Bloque bloque={bloque} key={idx}/>)}
         </div>
       </div>
@@ -235,7 +236,7 @@ function obtenerColorBordeSeccion(seccion: Seccion) {
   @param seccion La sección a mostrar
   @param bloque El bloque de tiempo a mostrar
 */
-function BloqueSeccion({seccion, bloque, verNombreCurso} : {seccion: Seccion, bloque: BloqueTiempo, verNombreCurso: boolean}) {
+function BloqueSeccion({seccion, bloque, grupos, verNombreCurso} : {seccion: Seccion, bloque: BloqueTiempo, grupos: GrupoCurso[], verNombreCurso: boolean}) {
   const tiempoInicialAPixeles = tiempoAPixeles(bloque.horaInicio);
   const tiempoFinalAPixeles = tiempoAPixeles(bloque.horaFin);
   const alturaBloqueEnPixeles = tiempoFinalAPixeles - tiempoInicialAPixeles;
@@ -243,6 +244,8 @@ function BloqueSeccion({seccion, bloque, verNombreCurso} : {seccion: Seccion, bl
   const distanciaBordeDerecho =  obtenerDistanciaBordeDerecho(seccion)
   const distanciaBordeIzquierdo = obtenerDistanciaBordeIzquierdo(seccion)
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const codigoCurso = seccion.curso.programa + seccion.curso.curso;
+  const gruposDeSeccion = grupos.filter((grupo) => grupo.cursos.includes(codigoCurso));
 
   function openPopover() {
     setPopoverOpen(!popoverOpen);
@@ -259,6 +262,14 @@ function BloqueSeccion({seccion, bloque, verNombreCurso} : {seccion: Seccion, bl
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{`${seccion.curso.programa} ${seccion.curso.curso} ${seccion.seccion}`}</p>
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis md:hidden">{tiempoNumeroATexto(bloque.horaInicio)} - {tiempoNumeroATexto(bloque.horaFin)}</p>
         <p className="whitespace-nowrap  overflow-hidden text-ellipsis">{verNombreCurso ? seccion.titulo : seccion.profesores[0]?.nombre}</p>
+        {gruposDeSeccion.length > 0 && (
+          <p
+            className="mx-auto max-w-[90%] truncate rounded bg-white/70 px-1 text-[9px] leading-tight"
+            title={gruposDeSeccion.map((grupo) => grupo.nombre).join(", ")}
+          >
+            {gruposDeSeccion.map((grupo) => grupo.nombre).join(", ")}
+          </p>
+        )}
         <Popover open={popoverOpen}>
           <PopoverTrigger></PopoverTrigger>
           <PopoverContent side='top'>
@@ -268,6 +279,9 @@ function BloqueSeccion({seccion, bloque, verNombreCurso} : {seccion: Seccion, bl
                 <CardDescription>
                   <p>{`${seccion.curso.programa} ${seccion.curso.curso} Sección ${seccion.seccion}`}</p>
                   <p>NRC: {seccion.nrc}</p>
+                  {gruposDeSeccion.length > 0 && (
+                    <p>Grupo{gruposDeSeccion.length > 1 ? "s" : ""}: {gruposDeSeccion.map((grupo) => grupo.nombre).join(", ")}</p>
+                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent>
