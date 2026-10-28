@@ -334,9 +334,15 @@ export default function PaginaPrincipal() {
             >
               Empezar a planear <ArrowRight size={18} />
             </Link>
-            <p className="mt-5 max-w-2xl text-sm leading-6 text-slate-700">
-              Recuerda: Mi Horario Uniandes te ayuda a planear, pero la
-              inscripción de tus cursos debes hacerla a través de Banner.
+            <p className="mt-6 flex max-w-2xl items-start gap-3 rounded-2xl border border-slate-950/15 bg-white/45 px-4 py-3 text-left text-sm font-medium leading-6 text-slate-900 shadow-sm sm:text-base">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-bold text-amber-300">
+                !
+              </span>
+              <span>
+                <strong className="font-bold">Importante:</strong> Mi Horario
+                Uniandes te ayuda a planear, pero la inscripción de tus cursos
+                debes hacerla a través de Banner.
+              </span>
             </p>
           </div>
         </section>
