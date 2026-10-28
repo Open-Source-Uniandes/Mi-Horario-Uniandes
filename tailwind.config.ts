@@ -19,7 +19,8 @@ const config = {
   	},
   	extend: {
   		colors: {
-  			'custom-dark': '#020817',
+			page: 'rgb(var(--color-page) / <alpha-value>)',
+			'page-dark': 'rgb(var(--color-page-dark) / <alpha-value>)',
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',

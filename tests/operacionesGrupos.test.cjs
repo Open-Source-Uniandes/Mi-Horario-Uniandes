@@ -5,6 +5,10 @@ const {
   generarCombinacionesDeCursos,
   limpiarGruposSinCursos,
 } = require("../.test-dist/operacionesGrupos.js");
+const {
+  normalizarCriteriosOrdenamiento,
+  sonCriteriosIncompatibles,
+} = require("../.test-dist/criteriosOrdenamiento.js");
 
 function curso(codigo, creditos = 3) {
   return {
@@ -60,7 +64,7 @@ describe("generarCombinacionesDeCursos", () => {
     }
   });
 
-  it("no repite un curso que pertenece a varios grupos", () => {
+  it("no permite que un mismo curso satisfaga varios grupos", () => {
     const cursos = [curso("BIOL1101"), curso("QUIM1200"), curso("MATE1100")];
     const combinaciones = generarCombinacionesDeCursos(cursos, [
       ["BIOL1101", "QUIM1200"],
@@ -70,7 +74,6 @@ describe("generarCombinacionesDeCursos", () => {
     assert.deepEqual(
       combinaciones.map(codigos).sort((a, b) => a.join().localeCompare(b.join())),
       [
-        ["BIOL1101"],
         ["BIOL1101", "MATE1100"],
         ["BIOL1101", "QUIM1200"],
         ["MATE1100", "QUIM1200"],
@@ -79,6 +82,18 @@ describe("generarCombinacionesDeCursos", () => {
     for (const combinacion of combinaciones) {
       assert.equal(new Set(codigos(combinacion)).size, combinacion.length);
     }
+  });
+
+  it("descarta horarios si la única alternativa de varios grupos es el mismo curso", () => {
+    const cursos = [curso("BIOL1101")];
+
+    assert.deepEqual(
+      generarCombinacionesDeCursos(cursos, [
+        ["BIOL1101"],
+        ["BIOL1101"],
+      ]),
+      [],
+    );
   });
 
   it("ignora grupos vacíos, cursos no planeados y cursos duplicados dentro de un grupo", () => {
@@ -151,5 +166,24 @@ describe("calcularCreditosTotales", () => {
 
   it("devuelve cero cuando el horario no tiene secciones", () => {
     assert.equal(calcularCreditosTotales([]), 0);
+  });
+});
+
+describe("criterios de ordenamiento incompatibles", () => {
+  it("reconoce más y menos créditos como criterios incompatibles", () => {
+    assert.equal(sonCriteriosIncompatibles("más créditos", "menos créditos"), true);
+    assert.equal(sonCriteriosIncompatibles("sin huecos", "más créditos"), false);
+  });
+
+  it("normaliza duplicados y conserva el primer criterio de pares incompatibles", () => {
+    assert.deepEqual(
+      normalizarCriteriosOrdenamiento([
+        "más créditos",
+        "sin huecos",
+        "menos créditos",
+        "sin huecos",
+      ]),
+      ["más créditos", "sin huecos"],
+    );
   });
 });

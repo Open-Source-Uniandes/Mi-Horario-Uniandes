@@ -8,5 +8,8 @@
     "rootDir": "src/services",
     "outDir": ".test-dist"
   },
-  "include": ["src/services/operacionesGrupos.ts"]
+  "include": [
+    "src/services/operacionesGrupos.ts",
+    "src/services/criteriosOrdenamiento.ts"
+  ]
 }

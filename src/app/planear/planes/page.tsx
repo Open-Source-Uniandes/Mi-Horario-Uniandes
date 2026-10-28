@@ -3,6 +3,7 @@ import { obtenerPlanesGuardados, eliminarPlanGuardado, esPosibleCrearPlan, guard
 import { cargarComoTxt } from "@/services/descargadorDeHorarios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowUpRight, FileUp, FolderOpen, Trash2 } from "lucide-react";
 
 /*
   Página que muestra los planes que el usuario ha guardado
@@ -14,15 +15,43 @@ export default function Planes() {
   }, []);
 
   return (
-    <div className="mx-auto w-[80%] min-w-44 pt-8">
-      <h1 className="text-2xl font-semibold">Planes</h1>
-      <p className="text-xl mt-3 mb-9">Aquí se muestran los planes que has guardado</p>
-      {
-        Object.entries(planes).map(([planId, cursos]) => (
-          <Plan key={planId} planId={Number(planId)} cursos={cursos} setPlanes={setPlanes} />
-        ))
-      }
-      <BotonImportarTxt />
+    <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
+      <header className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
+            Tus horarios guardados
+          </p>
+          <h1 className="mt-2 text-3xl font-bold tracking-[-0.04em] sm:text-4xl">
+            Planes
+          </h1>
+          <p className="mt-2 text-slate-600 dark:text-slate-300">
+            Consulta y organiza las opciones que guardaste.
+          </p>
+        </div>
+        <BotonImportarTxt />
+      </header>
+      {Object.keys(planes).length === 0 ? (
+        <div className="rounded-[28px] border border-dashed border-slate-300 bg-white/60 px-6 py-14 text-center dark:border-white/15 dark:bg-white/[0.03]">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-800 dark:bg-amber-300/15 dark:text-amber-200">
+            <FolderOpen size={25} />
+          </span>
+          <h2 className="mt-5 text-lg font-bold">Todavía no tienes planes</h2>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Guarda un horario que te guste o importa uno desde un archivo .txt.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4 xl:grid-cols-2">
+          {Object.entries(planes).map(([planId, cursos]) => (
+            <Plan
+              key={planId}
+              planId={Number(planId)}
+              cursos={cursos}
+              setPlanes={setPlanes}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -40,16 +69,22 @@ function Plan({ planId, cursos, setPlanes }: { planId: number, cursos: { [codigo
     setPlanes(obtenerPlanesGuardados());
   }
   return (
-    <div className="bg-gray-200 dark:bg-neutral-600 border-2 border-black my-4">
-      <p className="text-2xl font-semibold bg-yellow-200 dark:bg-yellow-300 border-b-2 border-black text-center dark:text-black">Plan {planId}</p>
-      <div className="flex flex-col sm:flex-row">
+    <article className="overflow-hidden rounded-[26px] border border-slate-200/80 bg-white/80 shadow-sm dark:border-white/10 dark:bg-neutral-900">
+      <header className="flex items-center justify-between border-b border-slate-200/80 bg-amber-100/70 px-5 py-4 dark:border-white/10 dark:bg-amber-300/10">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-amber-800 dark:text-amber-200">Horario guardado</p>
+          <h2 className="mt-1 text-xl font-bold">Plan {planId}</h2>
+        </div>
+        <FolderOpen className="text-amber-800 dark:text-amber-200" size={21} />
+      </header>
+      <div className="flex flex-col gap-3 p-4 sm:flex-row">
         <CursosDelPlan cursos={cursos} />
-        <div className="p-2 space-y-2">
+        <div className="flex shrink-0 flex-row gap-2 sm:flex-col">
           <BotonVerPlan planId={planId} />
           <BotonEliminarPlan planId={planId} funcionEliminar={handleEliminar} />
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 
@@ -60,8 +95,8 @@ function Plan({ planId, cursos, setPlanes }: { planId: number, cursos: { [codigo
 */
 function BotonVerPlan({ planId }: { planId: number }) {
   return (
-    <Link href={`/editar/${planId}`} className="w-40 h-12 mx-auto bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out flex items-center justify-center dark:text-black">
-      Ver
+    <Link href={`/editar/${planId}`} className="primary-action flex-1 px-4 sm:flex-none">
+      Ver plan <ArrowUpRight size={15} />
     </Link>
   )
 }
@@ -74,8 +109,8 @@ function BotonVerPlan({ planId }: { planId: number }) {
 */
 function BotonEliminarPlan({ planId, funcionEliminar }: { planId: number, funcionEliminar: (planId: number) => void }) {
   return (
-    <button className="w-40 h-12 mx-auto block bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out dark:text-black" onClick={() => funcionEliminar(planId)}>
-      Eliminar
+    <button className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-slate-300 px-4 text-sm font-semibold transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700 dark:border-white/15 dark:hover:border-rose-400/40 dark:hover:bg-rose-400/10 dark:hover:text-rose-200 sm:flex-none" onClick={() => funcionEliminar(planId)}>
+      <Trash2 size={15} /> Eliminar
     </button>
   )
 }
@@ -87,7 +122,7 @@ function BotonEliminarPlan({ planId, funcionEliminar }: { planId: number, funcio
 */
 function CursosDelPlan({ cursos }: { cursos: { [codigoCurso: string]: number } }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 w-full p-2">
+    <div className="grid w-full flex-1 grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
       {
         Object.entries(cursos).map(([codigoCurso, nrc]) => (
           <CursoDePlan key={codigoCurso} codigoCurso={codigoCurso} nrc={nrc} />
@@ -105,9 +140,9 @@ function CursosDelPlan({ cursos }: { cursos: { [codigoCurso: string]: number } }
 */
 function CursoDePlan({ codigoCurso, nrc }: { codigoCurso: string, nrc: number }) {
   return (
-    <div className="border border-yellow-900 dark:border-orange-400 h-16 mx-auto min-w-24 bg-yellow-50 dark:bg-neutral-700">
-      <p className="text-lg font-semibold text-center text-yellow-900 dark:text-orange-400" >{codigoCurso}</p>
-      <p className="text-lg text-center" >{nrc}</p>
+    <div className="min-w-0 rounded-xl border border-slate-200 bg-page px-3 py-2 dark:border-white/10 dark:bg-neutral-800">
+      <p className="truncate text-sm font-bold text-slate-800 dark:text-amber-200">{codigoCurso}</p>
+      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">NRC {nrc}</p>
     </div>
   )
 }
@@ -140,8 +175,8 @@ function BotonImportarTxt() {
     importarArchivo();
   }
   return (
-    <button onClick={handleCargar} className="w-40 h-12 mx-auto block bg-yellow-300 dark:bg-yellow-400 border-2 border-black hover:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300 ease-in-out dark:text-black">
-      Importar .txt
+    <button onClick={handleCargar} className="inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full border border-slate-300 bg-white/80 px-5 text-sm font-semibold transition hover:border-amber-400 hover:bg-amber-50 dark:border-white/15 dark:bg-white/5 dark:hover:bg-white/10">
+      <FileUp size={17} /> Importar .txt
     </button>
   )
 }

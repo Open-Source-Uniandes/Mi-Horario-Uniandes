@@ -1,8 +1,11 @@
 'use client'
 import { CalendarioConBloques } from "@/components/calendario";
-import { ChangeEvent, useEffect, useState } from "react";
+import BotonPrimario from "@/components/BotonPrimario";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { ArrowRight, BookmarkPlus, BookOpen, CalendarDays, ChevronLeft, ChevronRight, Clock3, Info } from "lucide-react";
 import Horario from "@/models/Horario";
-import { NavbarVer } from "@/components/navbars";
+import { NavbarHorario } from "@/components/navbars";
 import { esPosibleCrearPlan, guardarPlan } from "@/services/almacenamiento/almacenamientoPlanes";
 import { SidebarCursosConAtributos } from "@/components/sideBarCursosConAtributos";
 import { generarHorarios } from "@/services/operacionesSobreHorario";
@@ -30,27 +33,65 @@ export default function Ver() {
   const [verNombreCurso, setVerNombreCurso] = useState(true);
   const [grupos, setGrupos] = useState<GrupoCurso[]>([]);
   useEffect(() => {
+    let efectoActivo = true;
+
     async function obtenerHorarios() {
       setCargando(true);
+      const horarios = await generarHorarios();
+      if (!efectoActivo) return;
       setBloquesUsuario(obtenerBloquesGuardados());
       setGrupos(obtenerGruposGuardados());
-      setHorariosGenerados(await generarHorarios());
+      setHorariosGenerados(horarios);
       setCargando(false);
     }
-    obtenerHorarios();
+
+    void obtenerHorarios();
+    return () => {
+      efectoActivo = false;
+    };
   }, []);
+  useEffect(() => {
+    const manejarFlechas = (evento: KeyboardEvent) => {
+      if (horariosGenerados.length < 2 || evento.altKey || evento.ctrlKey || evento.metaKey) {
+        return;
+      }
+
+      const elementoActivo = evento.target;
+      if (
+        elementoActivo instanceof HTMLElement &&
+        (elementoActivo.isContentEditable ||
+          elementoActivo.closest("input, textarea, select, [contenteditable='true']"))
+      ) {
+        return;
+      }
+
+      if (evento.key === "ArrowRight") {
+        evento.preventDefault();
+        setIndiceHorario((indiceActual) => (indiceActual + 1) % horariosGenerados.length);
+      } else if (evento.key === "ArrowLeft") {
+        evento.preventDefault();
+        setIndiceHorario(
+          (indiceActual) =>
+            (indiceActual - 1 + horariosGenerados.length) % horariosGenerados.length,
+        );
+      }
+    };
+
+    window.addEventListener("keydown", manejarFlechas);
+    return () => window.removeEventListener("keydown", manejarFlechas);
+  }, [horariosGenerados.length]);
   const siguienteHorario = () => setIndiceHorario((indiceHorario + 1) % horariosGenerados.length);
   const anteriorHorario = () => setIndiceHorario((indiceHorario - 1 + horariosGenerados.length) % horariosGenerados.length);
   return (
-    <div className="min-h-screen flex flex-col dark:text-white dark:bg-custom-dark">
-      <NavbarVer funcionHorarioSiguiente={siguienteHorario} funcionHorarioAnterior={anteriorHorario} />
+    <div className="min-h-screen flex flex-col dark:text-white dark:bg-page-dark">
+      <NavbarHorario />
       {cargando && <Spinner mensajeDeCarga="Generando horarios..." mensajeAuxiliar="Intenta seleccionar menos secciones para obtener horarios más rápido" />}
       {!cargando && horariosGenerados.length > 0 &&
         <div className="pt-16 flex flex-1">
           <SidebarCursosConAtributos>
             <CursosPorAtributo horario={horariosGenerados[indiceHorario]} verNombreCurso={verNombreCurso} setVerNombreCurso={setVerNombreCurso} />
           </SidebarCursosConAtributos>
-          <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario} grupos={grupos} verNombreCurso={verNombreCurso} />
+          <PanelHorario horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} bloquesUsuario={bloquesUsuario} grupos={grupos} verNombreCurso={verNombreCurso} anteriorHorario={anteriorHorario} siguienteHorario={siguienteHorario} />
         </div>
       }
       {!cargando && horariosGenerados.length === 0 && <NoHayHorarios />}
@@ -60,26 +101,73 @@ export default function Ver() {
 
 function NoHayHorarios() {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center my-auto">
-      <Image src="/Mi-Horario-Uniandes/static/senecaSorprendida.svg" alt="Error" width={200} height={200} />
-      <p className="text-xl font-semibold">No se encontraron horarios</p>
-      <p className="text-lg">Intenta eliminar bloques o secciones para obtener horarios</p>
+    <div className="flex flex-1 items-center justify-center px-4 pb-8 pt-20 sm:px-8">
+      <section className="w-full max-w-3xl p-2 text-center sm:p-4">
+        <Image
+          src="/Mi-Horario-Uniandes/static/senecaSorprendida.svg"
+          alt=""
+          width={132}
+          height={132}
+          className="mx-auto"
+        />
+        <p className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
+          Ajusta tu planeación
+        </p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+          No encontramos horarios posibles
+        </h1>
+        <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+          Prueba quitando algunos bloques de tiempo o secciones para encontrar
+          una combinación compatible.
+        </p>
 
-      <p className="text-gray-600 max-w-4xl mt-2">
-        Recuerda que si agregas una sección complementaria cuyo identificador comienza con una letra (como <strong>A1</strong>),
-        también debes incluir su sección magistral correspondiente (por ejemplo, <strong>A</strong>).
-        De igual manera, si una sección magistral comienza con una letra, es obligatorio añadir al menos una de sus secciones complementarias.
-        Puedes consultar más detalles en la guía oficial.
-      </p>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <Link
+            href="/planear/cursos"
+            className="primary-action min-h-12 justify-between rounded-2xl px-4 py-3 text-left"
+          >
+            <span className="flex items-center gap-3">
+              <BookOpen size={19} />
+              Revisar secciones
+            </span>
+            <ArrowRight size={17} />
+          </Link>
+          <Link
+            href="/planear/bloques"
+            className="primary-action min-h-12 justify-between rounded-2xl px-4 py-3 text-left"
+          >
+            <span className="flex items-center gap-3">
+              <Clock3 size={19} />
+              Revisar bloques
+            </span>
+            <ArrowRight size={17} />
+          </Link>
+        </div>
 
-      <a
-        href="https://registro.uniandes.edu.co/index.php/elaboracion-de-horario/informacion-para-el-registro-de-cursos-con-complementarias"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 hover:underline"
-      >
-        Ver guía sobre secciones complementarias
-      </a>
+        <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-left dark:bg-amber-300/10">
+          <div className="flex items-start gap-3">
+            <Info className="mt-0.5 shrink-0 text-amber-700 dark:text-amber-300" size={18} />
+            <div className="text-sm leading-6 text-slate-700 dark:text-slate-200">
+              <p className="font-semibold">Revisa las secciones complementarias</p>
+              <p className="mt-1">
+                Si agregas una sección complementaria cuyo identificador comienza
+                con una letra (como <strong>A1</strong>), también debes incluir su
+                sección magistral correspondiente (por ejemplo, <strong>A</strong>).
+                Si una sección magistral comienza con una letra, debes añadir al
+                menos una de sus secciones complementarias.
+              </p>
+              <a
+                href="https://registro.uniandes.edu.co/index.php/elaboracion-de-horario/informacion-para-el-registro-de-cursos-con-complementarias"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1 font-semibold text-amber-800 underline-offset-4 hover:underline dark:text-amber-200"
+              >
+                Consultar la guía oficial <ArrowRight size={14} />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -91,15 +179,37 @@ function NoHayHorarios() {
   @param indiceHorario índice del horario a mostrar
   @param bloquesUsuario bloques de tiempo guardados por el usuario
 */
-function PanelHorario({ horariosGenerados, indiceHorario, bloquesUsuario, grupos, verNombreCurso }: { horariosGenerados: Horario[], indiceHorario: number, bloquesUsuario: { [titulo: string]: BloqueTiempo[] }, grupos: GrupoCurso[], verNombreCurso?: boolean }) {
+function PanelHorario({ horariosGenerados, indiceHorario, bloquesUsuario, grupos, verNombreCurso, anteriorHorario, siguienteHorario }: { horariosGenerados: Horario[], indiceHorario: number, bloquesUsuario: { [titulo: string]: BloqueTiempo[] }, grupos: GrupoCurso[], verNombreCurso?: boolean, anteriorHorario: () => void, siguienteHorario: () => void }) {
+  const creditosTotales = horariosGenerados[indiceHorario]?.creditosTotales ?? 0;
+
   return (
-    <main className="w-full flex flex-col justify-between">
+    <main className="flex min-h-[calc(100vh-4rem)] w-full flex-col">
       <div>
         <CalendarioConBloques horario={horariosGenerados[indiceHorario]} bloquesUsuario={bloquesUsuario} grupos={grupos} verNombreCurso={verNombreCurso ?? false} />
-        {horariosGenerados.length === 0 && <p className="text-center text-md">Total creditos: 0</p>}
-        {horariosGenerados.length > 0 && <p className="text-center text-md">Total créditos: {horariosGenerados[indiceHorario].creditosTotales}</p>}
-        <BotonGuardarPlan horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} />
-        <p className="text-center text-md font-semibold"> Mostrando el horario {horariosGenerados.length > 0 ? indiceHorario + 1 : 0} de {horariosGenerados.length} </p>
+      </div>
+      <div className="mx-2 mb-2 mt-auto flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900 sm:mx-4 sm:flex-row sm:items-center">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-900 dark:bg-amber-300/10 dark:text-amber-200">
+              <BookOpen size={19} aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Total créditos</p>
+              <p className="text-lg font-bold leading-tight text-slate-900 dark:text-white">{creditosTotales}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 rounded-xl bg-slate-50 p-1 dark:bg-neutral-800">
+            <button type="button" onClick={anteriorHorario} aria-label="Horario anterior" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-600 transition hover:bg-white hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:ring-amber-300">
+              <ChevronLeft size={19} aria-hidden="true" />
+            </button>
+            <div className="flex items-center gap-2 px-1 text-sm text-slate-600 dark:text-slate-300">
+              <CalendarDays size={17} className="shrink-0 text-amber-700 dark:text-amber-300" aria-hidden="true" />
+              <span className="whitespace-nowrap">Horario <span className="font-semibold text-slate-900 dark:text-white">{indiceHorario + 1} de {horariosGenerados.length}</span></span>
+            </div>
+            <button type="button" onClick={siguienteHorario} aria-label="Siguiente horario" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-600 transition hover:bg-white hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:ring-amber-300">
+              <ChevronRight size={19} aria-hidden="true" />
+            </button>
+          </div>
+          <BotonGuardarPlan horariosGenerados={horariosGenerados} indiceHorario={indiceHorario} />
       </div>
     </main>
   )
@@ -121,9 +231,10 @@ function BotonGuardarPlan({ horariosGenerados, indiceHorario }: { horariosGenera
     }
   };
   return (
-    <button onClick={handleClic} className=" w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black">
+    <BotonPrimario onClick={handleClic} className="w-full shrink-0 sm:w-auto">
+      <BookmarkPlus size={18} aria-hidden="true" />
       Guardar como plan
-    </button>
+    </BotonPrimario>
   )
 }
 
@@ -152,26 +263,47 @@ function CursosPorAtributo({ horario, verNombreCurso = false, setVerNombreCurso 
     buscarCursosEspeciales();
   }, [atributoSeleccionado, programaSeleccionado, horario]);
   return (
-    <div>
-      <div>
-        <h1 className="text-md font-semibold text-center mb-2">Busca cursos especiales que se ajusten al horario</h1>
-        <h2>Ver horario con:</h2>
-        <div>
-          <input type="radio" id="Nombre del Curso" name="preview" checked={verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(true)} />
-          <label htmlFor="Nombre del Curso">Nombre del Curso</label>
+    <div className="space-y-5">
+      <header>
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-700 dark:text-amber-300">
+          Personaliza la vista
+        </p>
+        <h1 className="mt-1 text-lg font-bold tracking-tight">Ajustes del horario</h1>
+      </header>
+      <fieldset>
+        <legend className="mb-2 text-sm font-semibold">Mostrar en el calendario</legend>
+        <div className="grid gap-1">
+          <label className="flex cursor-pointer items-center gap-2 rounded-xl px-2.5 py-2 text-sm transition hover:bg-white dark:hover:bg-white/5">
+            <input className="accent-amber-500" type="radio" id="Nombre del Curso" name="preview" checked={verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(true)} />
+            Nombre del curso
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 rounded-xl px-2.5 py-2 text-sm transition hover:bg-white dark:hover:bg-white/5">
+            <input className="accent-amber-500" type="radio" id="Nombre del Profesor" name="preview" checked={!verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(false)} />
+            Nombre del profesor
+          </label>
         </div>
-        <div>
-          <input type="radio" id="Nombre del Profesor" name="preview" checked={!verNombreCurso} onChange={() => setVerNombreCurso && setVerNombreCurso(false)} />
-          <label htmlFor="Nombre del Profesor">Nombre del Profesor</label>
-        </div>
-        <h2>Selecciona un atributo</h2>
+      </fieldset>
+      <fieldset>
+        <legend className="mb-2 text-sm font-semibold">Filtrar por atributo</legend>
         <InputsAtributo atributoSeleccionado={atributoSeleccionado} setAtributoSeleccionado={setAtributoSeleccionado} />
-        <h2>Selecciona un programa especial</h2>
+      </fieldset>
+      <fieldset>
+        <legend className="mb-2 text-sm font-semibold">Filtrar por programa</legend>
         <InputsProgramaEspecial programaSeleccionado={programaSeleccionado} setProgramaSeleccionado={setProgramaSeleccionado} />
-        <BotonQuitarFiltros setAtributoSeleccionado={setAtributoSeleccionado} setProgramaSeleccionado={setProgramaSeleccionado} />
-        {cargando ? <p className="text-center font-semibold text-md">Buscando cursos ...</p> : <SeccionesEspeciales secciones={seccionesEncontradas} />}
-        {seccionesEncontradas.length === 0 && !cargando && <p className="text-center font-semibold text-md">No se encontraron cursos</p>}
-      </div>
+      </fieldset>
+      <BotonQuitarFiltros setAtributoSeleccionado={setAtributoSeleccionado} setProgramaSeleccionado={setProgramaSeleccionado} />
+      {cargando ? (
+        <p className="rounded-xl bg-amber-50 p-3 text-center text-sm font-semibold dark:bg-amber-300/10">
+          Buscando cursos...
+        </p>
+      ) : (
+        <SeccionesEspeciales secciones={seccionesEncontradas} />
+      )}
+      {seccionesEncontradas.length === 0 && !cargando && (
+        <p className="rounded-xl bg-slate-100 p-3 text-center text-sm text-slate-600 dark:bg-white/5 dark:text-slate-300">
+          Selecciona un atributo o programa para buscar cursos compatibles.
+        </p>
+      )}
     </div>
   )
 }
@@ -181,12 +313,12 @@ function CursosPorAtributo({ horario, verNombreCurso = false, setVerNombreCurso 
 */
 function BotonQuitarFiltros({ setAtributoSeleccionado, setProgramaSeleccionado }: { setAtributoSeleccionado: (atributo: string) => void, setProgramaSeleccionado: (programa: string) => void }) {
   return (
-    <button className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black"
+    <button className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-amber-300 hover:bg-white dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
       onClick={() => {
         setAtributoSeleccionado("");
         setProgramaSeleccionado("");
       }}>
-      Quitar Filtros
+      Limpiar filtros
     </button>
   )
 }
@@ -195,56 +327,48 @@ function BotonQuitarFiltros({ setAtributoSeleccionado, setProgramaSeleccionado }
   Componente que muestra los inputs de los programas especiales
 */
 function InputsProgramaEspecial({ programaSeleccionado, setProgramaSeleccionado }: { programaSeleccionado: string, setProgramaSeleccionado: (programa: string) => void }) {
-  const handleSeleccionPrograma = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setProgramaSeleccionado(value);
-  }
-  return (
-    <div>
-      {programasEspeciales.map((programa) => (
-        <InputProgramaEspecial key={programa} programa={programa} handleClick={handleSeleccionPrograma} seleccionado={programaSeleccionado === programa} />
-      ))}
-    </div>
-  )
-}
-
-/*
-  Componente que muestra un input de programa especial
-*/
-function InputProgramaEspecial({ programa, handleClick, seleccionado }: { programa: string, handleClick: (event: ChangeEvent<HTMLInputElement>) => void, seleccionado: boolean }) {
-  return (
-    <div>
-      <input type="radio" id={programa} name="programa" value={programa} onChange={handleClick} checked={seleccionado} />
-      <label htmlFor={programa}>{programa}</label>
-    </div>
-  )
+  return <OpcionesFiltro nombre="programa" opciones={programasEspeciales} seleccionado={programaSeleccionado} onChange={setProgramaSeleccionado} />;
 }
 
 /*
   Componente que muestra los inputs de los atributos
 */
 function InputsAtributo({ atributoSeleccionado, setAtributoSeleccionado }: { atributoSeleccionado: string, setAtributoSeleccionado: (atributo: string) => void }) {
-  const handleSeleccionAtributo = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setAtributoSeleccionado(value);
-  }
-  return (
-    <div>
-      {atributosEspeciales.map((atributo) => (
-        <InputAtributo key={atributo} atributo={atributo} handleClick={handleSeleccionAtributo} seleccionado={atributoSeleccionado === atributo} />
-      ))}
-    </div>
-  )
+  return <OpcionesFiltro nombre="atributo" opciones={atributosEspeciales} seleccionado={atributoSeleccionado} onChange={setAtributoSeleccionado} />;
 }
 
 /*
-  Componente que muestra un input de atributo
+  Renderiza opciones de selección única para un filtro.
 */
-function InputAtributo({ atributo, handleClick, seleccionado }: { atributo: string, handleClick: (event: ChangeEvent<HTMLInputElement>) => void, seleccionado: boolean }) {
+function OpcionesFiltro({ nombre, opciones, seleccionado, onChange }: { nombre: string, opciones: string[], seleccionado: string, onChange: (valor: string) => void }) {
   return (
-    <div>
-      <input type="radio" id={atributo} name="atributo" value={atributo} onChange={handleClick} checked={seleccionado} />
-      <label htmlFor={atributo}>{atributo}</label>
+    <div className="space-y-1">
+      {opciones.map((opcion) => {
+        const estaSeleccionada = seleccionado === opcion;
+        const id = `${nombre}-${opcion}`;
+        return (
+          <label
+            key={opcion}
+            htmlFor={id}
+            className={`flex cursor-pointer items-start gap-2 rounded-xl px-2.5 py-2 text-xs transition ${
+              estaSeleccionada
+                ? "bg-amber-100 font-semibold text-amber-950 dark:bg-amber-300/15 dark:text-amber-200"
+                : "hover:bg-white dark:hover:bg-white/5"
+            }`}
+          >
+            <input
+              className="mt-0.5 accent-amber-500"
+              type="radio"
+              id={id}
+              name={nombre}
+              value={opcion}
+              onChange={(evento) => onChange(evento.target.value)}
+              checked={estaSeleccionada}
+            />
+            <span>{opcion}</span>
+          </label>
+        );
+      })}
     </div>
   )
 }
@@ -255,7 +379,11 @@ function InputAtributo({ atributo, handleClick, seleccionado }: { atributo: stri
 function SeccionesEspeciales({ secciones }: { secciones: Seccion[] }) {
   return (
     <div>
-      {secciones.length > 0 && <h2 className="text-center font-semibold">Secciones Encontradas</h2>}
+      {secciones.length > 0 && (
+        <h2 className="mb-2 text-sm font-semibold">
+          Secciones compatibles <span className="text-slate-500">({secciones.length})</span>
+        </h2>
+      )}
       {secciones.map(seccion => (
         <SeccionEspecial key={seccion.nrc} seccion={seccion} />
       ))}
@@ -268,18 +396,29 @@ function SeccionesEspeciales({ secciones }: { secciones: Seccion[] }) {
 */
 function SeccionEspecial({ seccion }: { seccion: Seccion }) {
   return (
-    <div className="bg-gray-100 dark:bg-neutral-600 text-center  flex  border border-3 border-black">
-      <div className='flex flex-col justify-center'>
-        <h3 className="text-md font-semibold">{seccion.titulo}</h3>
-        <p>nrc: {seccion.nrc} sección: {seccion.seccion}</p>
-        <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
-        <p>{seccion.curso.programa + seccion.curso.curso}</p>
-        <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
-        <p>{seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo} />)}</p>
+    <article className="mb-2 rounded-xl border border-slate-200 bg-white p-3 text-left dark:border-white/10 dark:bg-neutral-900">
+      <h3 className="text-sm font-bold leading-5">{seccion.titulo}</h3>
+      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+        {seccion.curso.programa + seccion.curso.curso} · NRC {seccion.nrc} · Sección {seccion.seccion}
+      </p>
+      <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+        {seccion.cuposTomados}/{seccion.cuposMaximos} cupos ocupados
+      </p>
+      {seccion.profesores.length > 0 && (
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          {seccion.profesores.map((profesor) => profesor.nombre).join(", ")}
+        </p>
+      )}
+      <div className="mt-2 flex flex-wrap gap-1">
         {seccion.curso.atributos.map((atributo) => (
-          <p key={atributo}>{atributo}</p>
+          <span key={atributo} className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-950 dark:bg-amber-300/15 dark:text-amber-200">
+            {atributo}
+          </span>
         ))}
       </div>
-    </div>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo + bloque.horaInicio + bloque.horaFin} />)}
+      </div>
+    </article>
   )
 }

@@ -99,7 +99,7 @@ function EnlacesBienvenida() {
     <div className="mt-9 flex flex-col gap-3 sm:flex-row">
       <Link
         href="/planear"
-        className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-slate-950 px-7 text-base font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:-translate-y-0.5 hover:bg-slate-700 dark:bg-amber-300 dark:text-slate-950 dark:hover:bg-amber-200"
+        className="primary-action min-h-14 gap-3 px-7 text-base shadow-lg shadow-slate-900/10 hover:-translate-y-0.5"
       >
         Arma tu horario <ArrowRight size={18} />
       </Link>

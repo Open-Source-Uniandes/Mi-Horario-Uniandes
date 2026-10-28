@@ -1,30 +1,45 @@
-import { ChevronLast, ChevronFirst } from "lucide-react"; // Son iconos de flechas hacia la izquierda y derecha
-import { createContext, useState} from "react";
-
-interface SidebarContextProps {
-  estaExpandido: boolean;
-}
-const SidebarContext = createContext<SidebarContextProps | undefined>(undefined);
+import { ChevronFirst, ChevronLast, SlidersHorizontal } from "lucide-react";
+import { useState } from "react";
 
 export function SidebarCursosConAtributos({children}: {children: React.ReactNode}) {
   const [expandido, setExpandido] = useState<boolean>(false);
   return (
-    <SidebarContext.Provider value={{ estaExpandido: expandido }}>
-      <aside>
-        <nav className="h-full  flex flex-col bg-gray-300 dark:bg-neutral-900 border-r shadow-sm">
-          <div className="p-4 pb-2 flex justify-between items-center">
-            <button onClick={() => setExpandido((estadoActual) => !estadoActual)} className="p-1.5 rounded-lg bg-yellow-200 dark:bg-yellow-300 hover:bg-yellow-300 dark:hover:bg-yellow-400 transition-colors duration-300">
-              {expandido ? <ChevronFirst /> : <ChevronLast />}
+      <aside
+        className={`sticky top-16 z-20 h-[calc(100vh-4rem)] shrink-0 self-start transition-[width] duration-300 ${
+          expandido ? "w-72 max-w-[85vw]" : "w-12"
+        }`}
+      >
+        <nav
+          aria-label="Filtros de horario"
+          className="flex h-full flex-col overflow-hidden border-r border-slate-200/80 bg-page shadow-sm dark:border-white/10 dark:bg-page-dark"
+        >
+          <div className={`flex h-14 shrink-0 items-center ${expandido ? "justify-between px-4" : "justify-center"}`}>
+            {expandido && (
+              <span className="flex items-center gap-2 text-sm font-bold">
+                <SlidersHorizontal size={17} className="text-amber-700 dark:text-amber-300" />
+                Herramientas del horario
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => setExpandido((estadoActual) => !estadoActual)}
+              className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-200/80 text-slate-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 dark:bg-amber-300/15 dark:text-amber-200 dark:hover:bg-amber-300/25"
+              aria-label={expandido ? "Contraer barra lateral" : "Expandir barra lateral"}
+              aria-expanded={expandido}
+              aria-controls="contenido-barra-lateral-horario"
+            >
+              {expandido ? <ChevronFirst size={19} /> : <ChevronLast size={19} />}
             </button>
           </div>
-          <div className="border-t flex p-3">
-            <div className={` flex justify-between items-center overflow-hidden transition-all ${expandido ? "w-52 ml-3" : "w-0"} `}>
-              {children}
-            </div>
+          <div
+            id="contenido-barra-lateral-horario"
+            className={`min-h-0 flex-1 overflow-y-auto border-t border-slate-200/80 p-4 dark:border-white/10 ${
+              expandido ? "block" : "hidden"
+            }`}
+          >
+            {expandido ? children : null}
           </div>
         </nav>
       </aside>
-    </SidebarContext.Provider>
   );
 }
-

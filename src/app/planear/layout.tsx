@@ -10,12 +10,12 @@ import { NavbarSimple } from "@/components/navbars";
 */
 export default function LayoutPlan({children}: {children: React.ReactNode}) {
   return (
-    <div>
+    <div className="min-h-screen bg-page text-slate-900 dark:bg-page-dark dark:text-white">
       <NavbarSimple />
-      <div className="pt-16 flex  min-h-screen dark:text-white">
-        <SidebarPlanear/>
-        <main className="pl-24 w-full dark:bg-neutral-800">
-            {children}
+      <div className="flex min-h-screen pt-16">
+        <SidebarPlanear />
+        <main className="w-full pb-24 lg:pb-8 lg:pl-24">
+          {children}
         </main>
       </div>
     </div>

@@ -1,86 +1,111 @@
-import Link  from "next/link";
-import Image from "next/image";
+"use client";
 
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, GraduationCap } from "lucide-react";
+import { BotonTematico } from "@/app/darkMode";
 
-/*
-  Navbar utilizado en la planeación general de horario
-  Solo contiene el titulo de la aplicación como link
-*/
+/**
+ * Muestra la barra de navegación del área de planeación.
+ * @returns La marca del sitio y el control del tema.
+ */
 export function NavbarSimple() {
   return (
-    <header className="flex items-center h-16 px-4 bg-yellow-300  md:px-6 fixed w-screen z-10">
-      <Link className="text-lg font-medium mx-auto hover:font-bold hover:delay-75 dark:text-black" href={"/"} >Mi horario Uniandes</Link>
+    <header className="fixed inset-x-0 top-0 z-30 border-b border-slate-200/70 bg-page/90 backdrop-blur-xl dark:border-white/10 dark:bg-page-dark/90">
+      <nav
+        aria-label="Navegación principal"
+        className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 sm:px-8"
+      >
+        <MarcaMiHorario className="gap-3" />
+        <BotonTematico />
+      </nav>
     </header>
-  )
-}
-
-/*
-  Nabvar utilizado en la revisión de horarios generados
-  Contiene un boton para regresar, el titulo de la aplicación como link y dos botones para cambiar de horario
-*/
-export function NavbarVer({funcionHorarioAnterior, funcionHorarioSiguiente}: {funcionHorarioAnterior: () => void, funcionHorarioSiguiente: () => void}) {
-  return (
-    <header className="flex items-center justify-between h-16 px-4 bg-yellow-300 md:px-6 fixed z-10 w-full dark:text-black">
-      <div className="flex items-center gap-4">
-        <BotonRegresar/>
-      </div>
-      <Link className="text-lg font-medium mx-auto hover:font-bold hover:delay-75" href={"/"} >Mi horario Uniandes</Link>
-      <div className="flex items-center gap-2">
-        <BotonHorarioAnterior funcionClic={funcionHorarioAnterior}/>
-        <BotonSiguienteHorario funcionClic={funcionHorarioSiguiente}/>
-      </div>
-    </header>
-  )
-}
-
-/*
-  Navbar utilizado en la edición de un plan
-  Contiene un boton para regresar y el titulo de la aplicación como link
-*/
-export function NavbarEditar() {
-  return (
-    <header className="flex items-center h-16 px-4 bg-yellow-300  md:px-6 w-full fixed z-10 ">
-      <div className="flex items-center gap-4">
-        <BotonRegresar/>
-      </div>
-      <Link className="text-lg font-medium mx-auto hover:font-bold hover:delay-75" href={"/"} >Mi horario Uniandes</Link>
-    </header>
-  )
-}
-
-/*
-  Boton que permite cambiar el horario actual al anterior
-*/
-function BotonHorarioAnterior({funcionClic}: {funcionClic: () => void}) {
-  return (
-    <button className="rounded-full" onClick={funcionClic}>
-      <Image src="/Mi-Horario-Uniandes/static/flechaIzquierda.svg" alt="Horario anterior" width={24} height={24}/>
-      <span className="sr-only">Anterior horario</span>
-    </button>
   );
 }
 
-/*
-  Boton que permite cambiar el horario actual al siguiente
-*/
-function BotonSiguienteHorario({funcionClic}: {funcionClic: () => void}) {
+function MarcaMiHorario({
+  className,
+  compacto = false,
+}: {
+  className: string;
+  compacto?: boolean;
+}) {
   return (
-    <button className="rounded-full" onClick={funcionClic}>
-      <Image src="/Mi-Horario-Uniandes/static/flechaDerecha.svg" alt="Horario siguiente" width={24} height={24}/>
-      <span className="sr-only">Siguiente horario</span>
-    </button>
-  )
-}
-
-/*
-  Boton que permite regresar al menu de planeación
-*/
-function BotonRegresar() {
-  return (
-    <Link href="/planear" className="rounded-full">
-      <Image src="/Mi-Horario-Uniandes/static/salida.svg" alt="Seguir planeando" width={24} height={24}/>
-      <span className="sr-only">Regresar</span>
+    <Link
+      href="/"
+      className={`flex items-center font-bold tracking-tight text-slate-900 dark:text-white ${className}`}
+    >
+      <span className={`flex items-center justify-center rounded-xl bg-amber-300 text-slate-950 ${compacto ? "h-8 w-8" : "h-9 w-9"}`}>
+        <GraduationCap size={compacto ? 19 : 21} />
+      </span>
+      <span className={compacto ? "hidden sm:inline" : ""}>
+        Mi Horario
+        <span className="ml-1 font-medium text-slate-500 dark:text-slate-400">
+          Uniandes
+        </span>
+      </span>
     </Link>
-  )
+  );
 }
 
+/**
+ * Muestra la navegación de las vistas para ver y editar horarios.
+ */
+export function NavbarHorario() {
+  return <BarraHorario />;
+}
+
+/**
+ * Presenta la marca, el enlace de regreso y controles opcionales de horario.
+ * @param anterior Acción opcional para mostrar el horario previo.
+ * @param siguiente Acción opcional para mostrar el siguiente horario.
+ * @returns La barra superior de las vistas de calendario.
+ */
+function BarraHorario({
+  anterior,
+  siguiente,
+}: {
+  anterior?: () => void;
+  siguiente?: () => void;
+}) {
+  return (
+    <header className="fixed inset-x-0 top-0 z-30 border-b border-slate-200/70 bg-page/90 backdrop-blur-xl dark:border-white/10 dark:bg-page-dark/90">
+      <nav
+        aria-label="Navegación de horario"
+        className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 sm:px-8"
+      >
+        <Link
+          href="/planear"
+          className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-amber-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+        >
+          <ArrowLeft size={17} />
+          <span className="hidden sm:inline">Seguir planeando</span>
+          <span className="sm:hidden">Volver</span>
+        </Link>
+        <MarcaMiHorario className="absolute left-1/2 -translate-x-1/2 gap-2" compacto />
+        <div className="flex items-center gap-2">
+          {anterior && (
+            <button
+              type="button"
+              onClick={anterior}
+              aria-label="Horario anterior"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white transition hover:border-amber-400 hover:bg-amber-50 dark:border-white/15 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <ArrowLeft size={17} />
+            </button>
+          )}
+          {siguiente && (
+            <button
+              type="button"
+              onClick={siguiente}
+              aria-label="Siguiente horario"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white transition hover:border-amber-400 hover:bg-amber-50 dark:border-white/15 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <ArrowRight size={17} />
+            </button>
+          )}
+          <BotonTematico />
+        </div>
+      </nav>
+    </header>
+  );
+}
