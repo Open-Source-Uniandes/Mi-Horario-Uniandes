@@ -21,6 +21,7 @@ import type Curso from "@/models/Curso"
 import type Seccion from "@/models/Seccion"
 import Tooltip from "@/components/tooltip"
 import CasillasDias from "@/components/casillasDias"
+import BotonPrimario from "@/components/BotonPrimario"
 
 /*  Contexto que comparte los estados y funciones que se comparten entre los componentes de la página de cursos*/
 const CursoContext = createContext<EstadosCursos>({
@@ -73,7 +74,7 @@ export default function Cursos() {
 
   return (
     <CursoContext.Provider value={{ cursosGuardados, setCursosGuardados, cursoABuscar, setCursoABuscar }}>
-      <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="mx-auto grid max-w-screen-2xl grid-cols-1 gap-4 px-4 py-6 sm:px-6 sm:py-8 xl:grid-cols-2">
         <Planeacion />
         <CursosPlaneados
           grupos={grupos}
@@ -123,41 +124,43 @@ function Planeacion() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="mx-auto w-[80%] min-w-44 pt-8">
-      <h2 className="text-2xl font-semibold">Busca cursos</h2>
+    <section className="min-w-0 rounded-3xl border border-slate-200/80 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900 sm:p-5">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
+        Explora la oferta
+      </p>
+      <h1 className="mt-1 text-xl font-bold tracking-tight">Busca cursos</h1>
       <div className="my-4">
-        <label className="w-full text-lg" htmlFor="searchCourses">
+        <label className="w-full text-sm leading-5 text-slate-600 dark:text-slate-300" htmlFor="searchCourses">
           Empieza por ingresar uno de tus cursos. Luego, haz click sobre las secciones que te interesa tener en tu
           horario ideal.
         </label>
         <br />
         <input
           ref={inputRef}
-          className="w-full text-lg bg-gray-100 dark:bg-neutral-600 focus:outline-none border border-1 border-gray-300 focus:border-gray-400 text-center"
+          className="field-theme mt-2 h-11 w-full rounded-xl px-4 text-sm"
           id="searchCourses"
           type="search"
           placeholder="DECA1101, NRC o nombre"
           onKeyDown={handleEnter}
         />
-        <div className="flex items-center mt-2 mb-4">
-          <button
-            className="my-4 w-40 h-12 mx-auto block bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out dark:text-black"
+        <div className="mt-2 flex justify-center">
+          <BotonPrimario
             onClick={() => {
               if (inputRef.current) setCursoABuscar(inputRef.current.value)
             }}
           >
             Buscar
-          </button>
+          </BotonPrimario>
         </div>
       </div>
 
-      {cargando && <p className="text-lg font-semibold">Buscando cursos...</p>}
+      {cargando && <p className="rounded-xl bg-amber-50 p-4 text-sm font-semibold dark:bg-amber-300/10">Buscando cursos...</p>}
       {cursoABuscar && !cargando && Object.keys(cursosEncontrados).length === 0 && (
-        <p className="text-lg font-semibold">No se encontraron cursos</p>
+        <p className="rounded-xl bg-slate-100 p-4 text-sm font-semibold text-slate-600 dark:bg-white/5 dark:text-slate-300">No se encontraron cursos</p>
       )}
 
       <DetallesCursosEncontrados cursos={Object.values(cursosEncontrados)} />
-    </div>
+    </section>
   )
 }
 
@@ -171,13 +174,13 @@ function DetallesCursosEncontrados({ cursos }: { readonly cursos: Curso[] }) {
 
   return (
     <div>
-      {cursos.length > 0 && <p className="text-lg font-semibold">Cursos encontrados:</p>}
+      {cursos.length > 0 && <p className="mb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Cursos encontrados</p>}
       {cursos.map((curso) => {
         const codigoCurso = curso.programa + curso.curso
         const estaExpandido = cursoExpandido === codigoCurso
 
         return (
-          <div key={codigoCurso} className="my-3">
+          <div key={codigoCurso} className="my-3 overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10">
             <DetalleCurso
               curso={curso}
               estaExpandido={estaExpandido}
@@ -200,16 +203,14 @@ function DetallesCursosEncontrados({ cursos }: { readonly cursos: Curso[] }) {
 */
 function DetalleCurso({ curso, estaExpandido, toggleCurso }: Readonly<{ curso: Curso, estaExpandido: boolean, toggleCurso: (codigoCurso: string) => void }>) {
   return (
-    <div className="bg-gray-100 dark:bg-neutral-600 text-center border border-3 border-black flex">
+    <div className="flex items-stretch bg-page text-center dark:bg-neutral-800">
       <div className='mx-auto py-3 w-full'>
-        <h3 className="text-lg font-semibold">{curso.descripcion}</h3>
-        <p>{curso.programa}</p>
-        <p>{curso.curso}</p>
-        <p>{curso.creditos}</p>
+        <h3 className="text-base font-bold">{curso.descripcion}</h3>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{curso.programa} {curso.curso} · {curso.creditos} créditos</p>
       </div>
 
       <button
-        className="bg-yellow-400 flex items-center justify-center w-12 min-w-12 text-2xl font-bold text-black hover:bg-yellow-500 transition-colors"
+        className="accent-control flex w-12 min-w-12 items-center justify-center text-2xl font-semibold"
         onClick={() => toggleCurso(curso.programa + curso.curso)}
         title={estaExpandido ? "Ocultar secciones" : "Ver secciones"}
       >
@@ -237,7 +238,7 @@ function SeccionesDeCurso({ curso }: Readonly<{ curso: Curso }>) {
 /*  Botones para seleccionar todas las secciones, seleccionar solo las secciones con cupo y eliminar todas las secciones*/
 function BotonesSeleccion({ curso }: Readonly<{ curso: Curso }>) {
   return (
-    <div className="flex place-content-center bg-gray-200 dark:bg-neutral-700 border-l border-r border-b border-black">
+    <div className="flex flex-wrap items-center justify-center gap-1 border-t border-slate-200 bg-white px-3 py-1 dark:border-white/10 dark:bg-neutral-900">
       <BotonSeleccionarTodas curso={curso} />
       <BotonSeleccionarValidas curso={curso} />
       <BotonEliminarTodas curso={curso} />
@@ -259,8 +260,8 @@ function BotonSeleccionarTodas({ curso }: Readonly<{ curso: Curso }>) {
 
   return (
     <Tooltip mensaje="Seleccionar todas">
-      <button className="icon-svg p-2" onClick={handleClic}>
-        <Image src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={35} height={35} />
+      <button className="rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-white/10" onClick={handleClic}>
+        <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={24} height={24} />
       </button>
     </Tooltip>
   )
@@ -281,12 +282,13 @@ function BotonSeleccionarValidas({ curso }: Readonly<{ curso: Curso }>) {
 
   return (
     <Tooltip mensaje="Seleccionar con cupo">
-      <button className="icon-svg p-2" onClick={handleClic}>
+      <button className="rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-white/10" onClick={handleClic}>
         <Image
+          className="icon-svg"
           src="/Mi-Horario-Uniandes/static/seleccionarValidas.svg"
           alt="Seleccionar validas"
-          width={35}
-          height={35}
+          width={24}
+          height={24}
         />
       </button>
     </Tooltip>
@@ -304,8 +306,8 @@ function BotonEliminarTodas({ curso }: Readonly<{ curso: Curso }>) {
 
   return (
     <Tooltip mensaje="Eliminar todas">
-      <button className="icon-svg p-2" onClick={handleClic}>
-        <Image src="/Mi-Horario-Uniandes/static/eliminarTodas.svg" alt="Eliminar todas" width={35} height={35} />
+      <button className="rounded-lg p-1.5 transition hover:bg-rose-50 dark:hover:bg-rose-400/10" onClick={handleClic}>
+        <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/eliminarTodas.svg" alt="Eliminar todas" width={24} height={24} />
       </button>
     </Tooltip>
   )
@@ -324,20 +326,51 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
     ["8B", "Segundo ciclo"],
   ]);
   return (
-    <div className="bg-gray-100 dark:bg-neutral-600 text-center border-black flex border-l border-r border-b">
-      <div className='mx-auto flex flex-col justify-center'>
-        <h3 className="text-lg font-semibold">{seccion.titulo}</h3>
-        <p>NRC: {seccion.nrc} SECCIÓN: {seccion.seccion}</p>
-        <p>Período: {seccion.periodo}</p>
-        <p>Duración: {descripcionPorDuracion.get(seccion.duracion.toUpperCase()) || ""}</p>
-        <p>Se han inscrito {seccion.cuposTomados} de {seccion.cuposMaximos} estudiantes</p>
-        <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-3">
-          {seccion.cuposMaximos > 0 && <div className="bg-yellow-400 h-3 rounded-full" style={{ width: `${(Math.min(seccion.cuposTomados, seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}></div>}
+    <div className="flex items-center gap-3 border-t border-slate-200 bg-white px-3 py-2.5 text-left dark:border-white/10 dark:bg-neutral-900 sm:px-4">
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <h3 className="text-sm font-bold">{seccion.titulo}</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">NRC {seccion.nrc} · Sección {seccion.seccion}</p>
         </div>
-        <p>{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</p>
-        <p>{seccion.horarios.map((bloque) => <CasillasDias bloque={bloque} key={bloque.titulo + bloque.horaInicio + bloque.horaFin + bloque.dias.join('')} />)}</p>
+        <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-slate-500 dark:text-slate-400">
+          <span>{seccion.periodo}</span>
+          <span>{descripcionPorDuracion.get(seccion.duracion.toUpperCase()) || "Duración no especificada"}</span>
+          {seccion.profesores.length > 0 && (
+            <span className="max-w-full truncate">{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</span>
+          )}
+        </div>
+        <div className="mt-1.5">
+          <div className="mb-1 flex justify-between text-[11px] text-slate-500 dark:text-slate-400">
+            <span>Cupos ocupados</span>
+            <span>{seccion.cuposTomados}/{seccion.cuposMaximos}</span>
+          </div>
+          <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-neutral-700">
+            {seccion.cuposMaximos > 0 && (
+              <div
+                className="h-full rounded-full bg-amber-700 dark:bg-amber-300"
+                style={{ width: `${(Math.min(seccion.cuposTomados, seccion.cuposMaximos) / seccion.cuposMaximos) * 100}%` }}
+              />
+            )}
+          </div>
+          <div className="mt-1 flex flex-wrap gap-x-2">
+            {seccion.horarios.map((bloque) => (
+              <CasillasDias
+                bloque={bloque}
+                key={bloque.titulo + bloque.horaInicio + bloque.horaFin + bloque.dias.join("")}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-      <button className='bg-yellow-400 flex items-center justify-center w-8 min-w-8 text-2xl font-semibold dark:text-black' onClick={handleAñadir} title='Añadir o quitar sección'>{cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "-" : "+"}</button>
+      <button
+        type="button"
+        className="accent-control flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold"
+        onClick={handleAñadir}
+        aria-label={cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "Quitar sección" : "Añadir sección"}
+        title={cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "Quitar sección" : "Añadir sección"}
+      >
+        {cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "−" : "+"}
+      </button>
     </div>
   )
 }
@@ -366,9 +399,17 @@ function CursosPlaneados({
   const cursos = Object.keys(cursosGuardados).sort();
 
   return (
-    <div className="mx-auto w-[80%] min-w-44 pt-8">
-      <h2 className="text-2xl font-semibold">Tus cursos planeados</h2>
-      <p className="text-lg my-2">Aquí puedes ver los cursos que has elegido</p>
+    <section className="min-w-0 rounded-3xl border border-slate-200/80 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900 sm:p-5">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
+        Tu semestre
+      </p>
+      <h2 className="mt-1 text-xl font-bold tracking-tight">Tus cursos planeados</h2>
+      <p className="my-2 text-sm leading-5 text-slate-600 dark:text-slate-300">Aquí puedes revisar y organizar los cursos que has elegido.</p>
+      {cursos.length === 0 && (
+        <p className="my-5 rounded-xl bg-slate-100 p-4 text-sm text-slate-600 dark:bg-white/5 dark:text-slate-300">
+          Aún no has agregado cursos a tu horario.
+        </p>
+      )}
       {cursos.map((codigo) => (
         <CursoPlaneado
           codigo={codigo}
@@ -389,7 +430,7 @@ function CursosPlaneados({
         cursos={cursos}
         actualizarGrupos={actualizarGrupos}
       />
-    </div>
+    </section>
   );
 }
 
@@ -410,21 +451,23 @@ function SeccionCrearGrupo({
   crearGrupo: () => void;
 }) {
   return (
-    <section className="my-6 rounded border border-gray-400 p-4">
-      <h3 className="text-xl font-semibold">Crear un grupo</h3>
-      <p className="my-2">
+    <section className="my-4 rounded-2xl border border-slate-200 bg-page p-3 dark:border-white/10 dark:bg-white/[0.03]">
+      <h3 className="text-base font-bold">Crear un grupo</h3>
+      <p className="my-1 text-sm leading-5 text-slate-600 dark:text-slate-300">
         Selecciona uno o más cursos. De cada grupo se incluirá como máximo un
         curso en cada horario (útil para electivas).
       </p>
-      {cantidadCursos === 0 && <p>Planea cursos para poder agruparlos.</p>}
-      <button
-        type="button"
-        disabled={cantidadSeleccionados < 1}
-        onClick={crearGrupo}
-        className="mt-2 rounded border-2 border-black bg-yellow-300 px-4 py-2 text-black transition-colors hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        Crear grupo con seleccionados ({cantidadSeleccionados})
-      </button>
+      {cantidadCursos === 0 && <p className="text-sm text-slate-500">Planea cursos para poder agruparlos.</p>}
+      <div className="flex justify-center">
+        <BotonPrimario
+          type="button"
+          disabled={cantidadSeleccionados < 1}
+          onClick={crearGrupo}
+          className="mt-2"
+        >
+          Crear grupo con seleccionados ({cantidadSeleccionados})
+        </BotonPrimario>
+      </div>
     </section>
   );
 }
@@ -459,8 +502,8 @@ function ListaGrupos({
 
   return (
     <section className="my-6">
-      <h3 className="text-xl font-semibold">Grupos</h3>
-      {grupos.length === 0 && <p className="my-2">Aún no has creado grupos.</p>}
+      <h3 className="text-lg font-bold">Grupos</h3>
+      {grupos.length === 0 && <p className="my-2 text-sm text-slate-500 dark:text-slate-400">Aún no has creado grupos.</p>}
       {grupos.map((grupo, indiceGrupo) => (
         <TarjetaGrupo
           key={indiceGrupo}
@@ -586,22 +629,22 @@ function CabeceraGrupo({
         )}
       </div>
       <div className="flex gap-2">
-        <button
+        <BotonPrimario
           type="button"
           onClick={cambiarEdicion}
-          className="rounded border border-black bg-yellow-300 px-3 py-1 text-black hover:bg-yellow-400"
+          className="min-h-9 px-3 text-xs"
           aria-expanded={editando}
         >
           {editando ? "Listo" : "Editar"}
-        </button>
-        <button
+        </BotonPrimario>
+        <BotonPrimario
           type="button"
           onClick={eliminarGrupo}
-          className="rounded border border-black bg-yellow-300 px-3 py-1 text-black hover:bg-yellow-400"
+          className="min-h-9 px-3 text-xs"
           aria-label={`Eliminar grupo ${indice + 1}`}
         >
           Eliminar
-        </button>
+        </BotonPrimario>
       </div>
     </div>
   );
@@ -659,7 +702,7 @@ function EditorCursosGrupo({
       <label className="mt-3 flex flex-col gap-1">
         Agregar curso
         <select
-          className="rounded border border-gray-500 bg-white p-2 text-black"
+          className="field-theme rounded-xl p-2 dark:[color-scheme:dark]"
           value=""
           onChange={(evento) => agregarCurso(evento.target.value)}
         >
@@ -726,14 +769,14 @@ function CursoPlaneado({
   }).join(", ");
 
   return (
-    <div className="bg-gray-100 dark:bg-neutral-600 text-center flex flex-col border border-3 border-black min-h-24 my-3">
-      <div className="bg-yellow-400 flex h-8 place-content-end">
+    <div className="my-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm dark:border-white/10 dark:bg-neutral-800">
+      <div className="col-start-2 row-span-2 row-start-1 flex items-center gap-2">
         <Image
           src="/Mi-Horario-Uniandes/static/lupa.svg"
           alt="Buscar curso"
           width="0"
           height="0"
-          className="cursor-pointer mr-3 w-6 h-auto"
+          className="icon-svg h-auto w-4 cursor-pointer opacity-70 transition hover:opacity-100"
           onClick={handleBusqueda}
           title="Buscar curso"
         />
@@ -742,23 +785,23 @@ function CursoPlaneado({
           alt="Eliminar curso"
           width="0"
           height="0"
-          className="cursor-pointer mr-3 w-6 h-auto"
+          className="icon-svg h-auto w-4 cursor-pointer opacity-70 transition hover:opacity-100"
           onClick={handleEliminacion}
           title="Eliminar curso"
         />
       </div>
-      <h3 className="text-lg font-semibold">{codigo}</h3>
-      <p className="text-muted-foreground dark:text-neutral-300">Secciones: {seccionesMostradas}</p>
-      <div className="flex flex-wrap justify-center gap-1">
+      <h3 className="col-start-1 row-start-1 text-sm font-bold">{codigo}</h3>
+      <p className="col-start-1 row-start-2 text-xs text-slate-500 dark:text-slate-400">Secciones: {seccionesMostradas}</p>
+      <div className="col-span-2 mt-1 flex flex-wrap gap-1">
       {grupos.map((grupo, indice) =>
         grupo.cursos.includes(codigo) ? (
-          <span key={indice} className="rounded bg-yellow-200 px-2 py-1 text-sm text-black">
+          <span key={indice} className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-950 dark:bg-amber-300/15 dark:text-amber-200">
             {grupo.nombre}
           </span>
         ) : null,
       )}
       </div>
-      <label className="mx-auto mt-2 flex items-center gap-2">
+      <label className="col-span-2 mt-1 flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
         <input
           type="checkbox"
           checked={cursosSeleccionados.includes(codigo)}

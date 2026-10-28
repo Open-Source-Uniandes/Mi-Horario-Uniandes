@@ -1,102 +1,84 @@
-/*
-  En este archivo contiene las barras laterales de navegación del proyecto
-*/
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { BotonTematico } from "@/app/darkMode";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-/*
-  Sidebar de la vista planear
-  Contiene las cinco opciones o funcionalidades basicas
-*/
+const opcionesNavegacion = [
+  {
+    ruta: "/planear/cursos",
+    nombre: "Cursos",
+    icono: "/Mi-Horario-Uniandes/static/universidad.svg",
+  },
+  {
+    ruta: "/planear/bloques",
+    nombre: "Bloques",
+    icono: "/Mi-Horario-Uniandes/static/reloj.svg",
+  },
+  {
+    ruta: "/planear/planes",
+    nombre: "Planes",
+    icono: "/Mi-Horario-Uniandes/static/lista.svg",
+  },
+  {
+    ruta: "/planear/criterios",
+    nombre: "Criterios",
+    icono: "/Mi-Horario-Uniandes/static/engranaje.svg",
+  },
+  {
+    ruta: "/ver",
+    nombre: "Horarios",
+    icono: "/Mi-Horario-Uniandes/static/calendario.svg",
+  },
+];
+
+/**
+ * Muestra las rutas de planeación con selección activa y diseño adaptable.
+ * @returns La navegación lateral para escritorio y compacta para móvil.
+ */
 export default function SidebarPlanear() {
+  const rutaActual = usePathname();
+
   return (
-    <div className="flex flex-col justify-between items-center bg-zinc-200 pb-24 py-6 border-r w-24 fixed h-screen dark:bg-neutral-900">
-      <BotonCursos />
-      <BotonBloques />
-      <BotonPlanes />
-      <BotonCriterios />
-      <BotonVerHorarios />
-      <BotonTematico />
-    </div>
+    <aside className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-page/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl dark:border-white/10 dark:bg-page-dark/95 lg:inset-y-16 lg:left-0 lg:right-auto lg:w-24 lg:border-r lg:border-t-0 lg:px-3 lg:py-5">
+      <nav
+        aria-label="Secciones de planeación"
+        className="flex items-center justify-around gap-1 py-2 lg:h-full lg:flex-col lg:justify-center lg:gap-3 lg:py-0"
+      >
+        {opcionesNavegacion.map((opcion) => {
+          const estaActiva = rutaActual === opcion.ruta;
+
+          return (
+            <Link
+              key={opcion.ruta}
+              href={opcion.ruta}
+              aria-current={estaActiva ? "page" : undefined}
+              className={`flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-1 py-1.5 text-[10px] font-semibold transition lg:w-full lg:flex-none lg:gap-1.5 lg:py-3 lg:text-xs ${
+                estaActiva
+                  ? "bg-amber-200/80 text-slate-950 dark:bg-amber-300/15 dark:text-amber-200"
+                  : "text-slate-500 hover:bg-white hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+              }`}
+            >
+              <span
+                className={`flex h-8 w-8 items-center justify-center rounded-xl transition lg:h-10 lg:w-10 ${
+                  estaActiva
+                    ? "bg-amber-300 text-slate-950"
+                    : "bg-white/80 dark:bg-white/[0.06]"
+                }`}
+              >
+                <Image
+                  className={estaActiva ? "" : "icon-svg"}
+                  src={opcion.icono}
+                  alt=""
+                  width={21}
+                  height={21}
+                />
+              </span>
+              <span className="truncate">{opcion.nombre}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </aside>
   );
-}
-/*
-  Define una estructura generica para cualquier botón
-  La estructura consiste en un Link que redirecciona a la opcion o funcionalidad en especifico
-  El Link interno contiene la imagen del botón y la ruta a la que se debe direccionar
-
-  @param children La imagen svg que tendra el botón
-  @param ruta La ruta a la que se debe redirigir
-*/
-function BotonLateral({ children, ruta }: { children: React.ReactNode, ruta: string }) {
-  const partesRuta = ruta.split("/")
-  const nombreOpcion = partesRuta[partesRuta.length - 1]
-  return (
-    <div className="flex-1">
-      <Link className="text-sm font-medium flex flex-col items-center" href={ ruta }>
-        <div className="flex items-center justify-center w-10 h-10 rounded-md border border-black dark:border-white">
-          {children}
-        </div>
-        <p>{nombreOpcion[0]?.toUpperCase() + nombreOpcion.slice(1)}</p>
-      </Link>
-    </div>
-
-  )
-}
-
-/*
-  Botón que redirige a la opción de ver y escoger cursos
-*/
-function BotonCursos() {
-    return (
-      <BotonLateral ruta={"/planear/cursos"}>
-        <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/universidad.svg" alt="Cursos" width={24} height={24}/>
-      </BotonLateral>
-    )
-}
-
-/*
-  Botón que redirige a la opción de ver y crear bloques
-*/
-function BotonBloques() {
-  return (
-    <BotonLateral ruta={"/planear/bloques"}>
-      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/reloj.svg" alt="Bloques" width={24} height={24}/>
-    </BotonLateral>
-  )
-}
-
-/*
-  Botón que redirige a la opción de ver y editar planes
-*/
-function BotonPlanes() {
-  return (
-    <BotonLateral ruta={"/planear/planes"}>
-      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/lista.svg" alt="Planes" width={24} height={24}/>
-    </BotonLateral>
-  )
-}
-
-/*
-  Botón que redirige a la opción de seleccionar criterio de ordenamiento
-*/
-function BotonCriterios() {
-  return (
-    <BotonLateral ruta={"/planear/criterios"}>
-      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/engranaje.svg" alt="Ordenamientos" width={24} height={24}/>
-    </BotonLateral>
-  )
-}
-
-/*
-  Botón que redirige a la opción de ver horarios
-*/
-function BotonVerHorarios() {
-  return (
-    <BotonLateral ruta={"/ver"}>
-      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/calendario.svg" alt="Ver Horarios" width={24} height={24}/>
-    </BotonLateral>
-  )
 }

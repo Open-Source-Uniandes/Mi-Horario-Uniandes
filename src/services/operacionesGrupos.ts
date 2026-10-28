@@ -34,13 +34,12 @@ export function generarCombinacionesDeCursos<T extends CursoAgrupable>(
       grupo.map((codigo) => {
         const curso = cursosPorCodigo.get(codigo);
         if (!curso) return combinacion;
-        return combinacion.some(
+        const yaFueElegido = combinacion.some(
           (cursoExistente) =>
             cursoExistente.programa + cursoExistente.curso === codigo,
-        )
-          ? combinacion
-          : [...combinacion, curso];
-      }),
+        );
+        return yaFueElegido ? null : [...combinacion, curso];
+      }).filter((combinacion): combinacion is T[] => combinacion !== null),
     );
     const unicas = new Map<string, T[]>();
     combinaciones.forEach((combinacion) => {

@@ -73,8 +73,20 @@ export function BotonTematico() {
   const { mode, cambiarTema } = useContext(DarkModeContext);
 
   return (
-    <button className="w-10 h-10 rounded-full flex flex-1" onClick={cambiarTema}>
-      <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/modoOscuro.svg" alt="Modo Oscuro" width={100} height={100}/>
+    <button
+      type="button"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition hover:bg-amber-100 dark:hover:bg-white/10"
+      onClick={cambiarTema}
+      aria-label={mode === state.lightMode ? "Activar modo oscuro" : "Activar modo claro"}
+      title={mode === state.lightMode ? "Activar modo oscuro" : "Activar modo claro"}
+    >
+      <Image
+        className="icon-svg h-6 w-6"
+        src="/Mi-Horario-Uniandes/static/modoOscuro.svg"
+        alt=""
+        width={24}
+        height={24}
+      />
     </button>
   );
 }

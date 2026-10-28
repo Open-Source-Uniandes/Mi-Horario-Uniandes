@@ -11,7 +11,7 @@ import SeccionFuncionalidades from "./SeccionFuncionalidades";
  */
 export default function PaginaPrincipal() {
   return (
-    <div className="min-h-screen overflow-hidden bg-[#faf9f6] text-slate-900 dark:bg-neutral-950 dark:text-white">
+    <div className="min-h-screen overflow-hidden bg-page text-slate-900 dark:bg-page-dark dark:text-white">
       <BarraNavegacion />
       <main>
         <Portada />

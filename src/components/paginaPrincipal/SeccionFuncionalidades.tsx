@@ -75,7 +75,7 @@ function TarjetaFuncionalidad({
   const Icono = funcionalidad.icono;
 
   return (
-    <article className="group rounded-[26px] border border-slate-200/80 bg-[#faf9f6] p-7 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/5 dark:border-white/10 dark:bg-neutral-900">
+    <article className="group rounded-[26px] border border-slate-200/80 bg-page p-7 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/5 dark:border-white/10 dark:bg-neutral-900">
       <span
         className={`flex h-12 w-12 items-center justify-center rounded-2xl ${funcionalidad.color}`}
       >

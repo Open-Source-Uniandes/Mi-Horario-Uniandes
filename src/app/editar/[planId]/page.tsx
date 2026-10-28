@@ -1,11 +1,13 @@
 'use client'
 import { Calendario } from "@/components/calendario";
-import { NavbarEditar } from "@/components/navbars";
+import { NavbarHorario } from "@/components/navbars";
 import Horario from "@/models/Horario";
 import { obtenerHorarioAPartirDePlan } from "@/services/fetcher";
 import { useEffect, useState } from "react";
 import { descargarComoTxt } from "@/services/descargadorDeHorarios";
 import Spinner from "@/components/spinner";
+import { Download } from "lucide-react";
+import BotonPrimario from "@/components/BotonPrimario";
 
 /*
   Este componente se encarga de mostrar el horario de un plan guardado y permitir al usuario descargarlo como txt
@@ -26,14 +28,19 @@ export default function Editar({ params }: { params: { planId: string } }) {
     descargarComoTxt(infoSecciones, "horario.txt");
   };
   return (
-    <div className="min-h-screen flex flex-col dark:bg-custom-dark">
-      <NavbarEditar />
+    <div className="min-h-screen flex flex-col dark:bg-page-dark">
+      <NavbarHorario />
       {cargando ? <Spinner mensajeDeCarga="Cargando horario" /> :
         <div className="pt-16 flex flex-1">
           <main className="w-full flex flex-col justify-between">
             <Calendario horario={horario} />
-            <div className="flex justify-center gap-4 p-4">
-              <button className="w-40 h-12 bg-yellow-300 rounded border-2 border-black hover:bg-yellow-400 transition-colors duration-300 ease-in-out" onClick={handleDescargar}>Descargar como txt</button>
+            <div className="flex justify-center p-4">
+              <BotonPrimario
+                onClick={handleDescargar}
+              >
+                <Download size={18} aria-hidden="true" />
+                Descargar como TXT
+              </BotonPrimario>
             </div>
           </main>
         </div>
@@ -41,4 +48,3 @@ export default function Editar({ params }: { params: { planId: string } }) {
     </div>
   )
 }
-

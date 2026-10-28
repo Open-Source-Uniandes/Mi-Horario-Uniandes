@@ -2,6 +2,12 @@ import OrdenamientoHorarios from '@/models/algoritmosOrdenamiento/OrdenamientoHo
 import Horario from '@/models/Horario';
 export default class OrdenamientoAleatorio implements OrdenamientoHorarios{
   ordernar(horarios: Horario[]) : void {
-    horarios.sort(() => Math.random() - 0.5);
+    for (let indice = horarios.length - 1; indice > 0; indice--) {
+      const indiceAleatorio = Math.floor(Math.random() * (indice + 1));
+      [horarios[indice], horarios[indiceAleatorio]] = [
+        horarios[indiceAleatorio],
+        horarios[indice],
+      ];
+    }
   }
 }

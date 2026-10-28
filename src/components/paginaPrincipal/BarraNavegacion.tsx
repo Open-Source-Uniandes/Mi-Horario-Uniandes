@@ -7,7 +7,7 @@ import { ArrowRight, ArrowUpRight, GraduationCap } from "lucide-react";
  */
 export default function BarraNavegacion() {
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-[#faf9f6]/90 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85">
+    <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-page/90 backdrop-blur-xl dark:border-white/10 dark:bg-page-dark/85">
       <nav
         aria-label="Navegación principal"
         className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8"
@@ -73,7 +73,7 @@ function AccesoPlaneacion() {
   return (
     <Link
       href="/planear"
-      className="hidden items-center gap-2 rounded-full bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-amber-300 dark:text-slate-950 dark:hover:bg-amber-200 sm:inline-flex"
+      className="primary-action hidden px-5 py-2.5 sm:inline-flex"
     >
       Crear horario <ArrowRight size={16} />
     </Link>

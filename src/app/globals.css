@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    --color-page: 250 249 246;
+    --color-page-dark: 10 10 10;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -73,5 +75,23 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .primary-action {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2 dark:bg-amber-300 dark:text-slate-950 dark:hover:bg-amber-200 dark:focus-visible:ring-amber-300 dark:focus-visible:ring-offset-neutral-900 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .field-theme {
+    @apply border border-slate-300 bg-page text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-amber-700 focus:ring-2 focus:ring-amber-700 dark:border-white/15 dark:bg-neutral-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:border-amber-300 dark:focus:ring-amber-300;
+  }
+
+  .accent-control {
+    @apply bg-amber-300 text-slate-950 transition hover:bg-amber-400;
+  }
+
+  .accent-mark {
+    @apply bg-slate-950 text-white dark:bg-amber-300 dark:text-slate-950;
   }
 }

@@ -5,10 +5,13 @@ import OrdenamientoSalidasTempranas from "@/models/algoritmosOrdenamiento/Ordena
 import OrdenamientoHuecosMinimos from "@/models/algoritmosOrdenamiento/OrdenamientoHuecosMinimos";
 import OrdenamientoCuposLibres from "@/models/algoritmosOrdenamiento/OrdenamientoCuposLibres";
 import OrdenamientoCreditos from "@/models/algoritmosOrdenamiento/OrdenamientoCreditos";
+import OrdenamientoMenosCreditos from "@/models/algoritmosOrdenamiento/OrdenamientoMenosCreditos";
 import OrdenamientoCompuesto from "@/models/algoritmosOrdenamiento/OrdenamientoCompuesto";
+import { normalizarCriteriosOrdenamiento } from "@/services/criteriosOrdenamiento";
 
 const algoritmosOrdenamiento: {[nombre:string] : OrdenamientoHorario} = {
   "más créditos": new OrdenamientoCreditos(),
+  "menos créditos": new OrdenamientoMenosCreditos(),
   "sin huecos": new OrdenamientoHuecosMinimos(),
   "salir temprano": new OrdenamientoSalidasTempranas(),
   "entrar tarde": new OrdenamientoEntradasTardias(),
@@ -24,7 +27,7 @@ export function obtenerCriteriosOrdenamientoGuardados(): string[] {
       (criterio): criterio is string =>
         typeof criterio === "string" && Object.hasOwn(algoritmosOrdenamiento, criterio),
     );
-    if (validos.length > 0) return Array.from(new Set(validos));
+    if (validos.length > 0) return normalizarCriteriosOrdenamiento(validos);
   }
   return ["sin huecos"];
 }
@@ -34,7 +37,7 @@ export function guardarCriteriosOrdenamiento(criterios: string[]) {
     const validos = criterios.filter((criterio) =>
       Object.hasOwn(algoritmosOrdenamiento, criterio),
     );
-    localStorage.setItem("criterio", JSON.stringify(Array.from(new Set(validos))));
+    localStorage.setItem("criterio", JSON.stringify(normalizarCriteriosOrdenamiento(validos)));
   }
 }
 
