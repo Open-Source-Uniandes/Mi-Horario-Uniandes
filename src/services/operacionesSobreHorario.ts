@@ -5,6 +5,7 @@ import { obtenerDatosCursosGuardados } from "./fetcher";
 import OrdenamientoHorarios from "@/models/algoritmosOrdenamiento/OrdenamientoHorarios";
 import { obtenerAlgoritmoOrdenamiento } from "./almacenamiento/almacenamientoCriterio";
 import { obtenerBloquesGuardados } from "./almacenamiento/almacenamientoBloques";
+import { obtenerGruposGuardados } from "./almacenamiento/almacenamientoGrupos";
 import Seccion from "@/models/Seccion";
 import AlgoritmoCreacionHorarios from "@/models/algoritmosCreacion/AlgoritmoCreacionHorarios";
 
@@ -242,7 +243,8 @@ export function eliminarComplementariaSiNoSonNecesarias(secciones: Seccion[]) {
 export async function generarHorarios(){
   const algoritmoCreacion: AlgoritmoCreacionHorarios = new AlgoritmoProductoCartesiano();
   const cursos = await obtenerDatosCursosGuardados();
-  const horarios = algoritmoCreacion.crearHorarios(cursos);
+  const grupos = obtenerGruposGuardados().map((grupo) => grupo.cursos);
+  const horarios = algoritmoCreacion.crearHorarios(cursos, grupos);
   const algoritmoOrdenamiento: OrdenamientoHorarios = obtenerAlgoritmoOrdenamiento();
   algoritmoOrdenamiento.ordernar(horarios);
   return horarios;

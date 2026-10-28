@@ -4,8 +4,11 @@ import OrdenamientoEntradasTardias from "@/models/algoritmosOrdenamiento/Ordenam
 import OrdenamientoSalidasTempranas from "@/models/algoritmosOrdenamiento/OrdenamientoSalidasTempranas";
 import OrdenamientoHuecosMinimos from "@/models/algoritmosOrdenamiento/OrdenamientoHuecosMinimos";
 import OrdenamientoCuposLibres from "@/models/algoritmosOrdenamiento/OrdenamientoCuposLibres";
+import OrdenamientoCreditos from "@/models/algoritmosOrdenamiento/OrdenamientoCreditos";
+import OrdenamientoCompuesto from "@/models/algoritmosOrdenamiento/OrdenamientoCompuesto";
 
 const algoritmosOrdenamiento: {[nombre:string] : OrdenamientoHorario} = {
+  "más créditos": new OrdenamientoCreditos(),
   "sin huecos": new OrdenamientoHuecosMinimos(),
   "salir temprano": new OrdenamientoSalidasTempranas(),
   "entrar tarde": new OrdenamientoEntradasTardias(),
@@ -13,22 +16,25 @@ const algoritmosOrdenamiento: {[nombre:string] : OrdenamientoHorario} = {
   "aleatorio": new OrdenamientoAleatorio()
 };
 
-export function obtenerAlgoritmoOrdenamiento() {
+export function obtenerCriteriosOrdenamientoGuardados(): string[] {
   if (typeof window !== "undefined") {
-    if (localStorage.getItem("criterio") === null) {
-      localStorage.setItem("criterio", JSON.stringify("sin huecos"));
-    }
-    const algoritmoGuardado = JSON.parse(localStorage.getItem("criterio") || "");
-    if (algoritmoGuardado) {
-      return algoritmosOrdenamiento[algoritmoGuardado];
-    }
+    const guardado: unknown = JSON.parse(localStorage.getItem("criterio") || '"sin huecos"');
+    const criterios = Array.isArray(guardado) ? guardado : [guardado];
+    const validos = criterios.filter(
+      (criterio): criterio is string =>
+        typeof criterio === "string" && Object.hasOwn(algoritmosOrdenamiento, criterio),
+    );
+    if (validos.length > 0) return Array.from(new Set(validos));
   }
-  return algoritmosOrdenamiento["sin huecos"];
+  return ["sin huecos"];
 }
 
-export function guardarAlgoritmoOrdenamiento(algoritmo: string) {
+export function guardarCriteriosOrdenamiento(criterios: string[]) {
   if (typeof window !== "undefined") {
-    localStorage.setItem("criterio", JSON.stringify(algoritmo));
+    const validos = criterios.filter((criterio) =>
+      Object.hasOwn(algoritmosOrdenamiento, criterio),
+    );
+    localStorage.setItem("criterio", JSON.stringify(Array.from(new Set(validos))));
   }
 }
 
@@ -36,3 +42,9 @@ export function obtenerOrdenamientosDisponibles() {
   return Object.keys(algoritmosOrdenamiento);
 }
 
+export function obtenerAlgoritmoOrdenamiento() {
+  const criterios = obtenerCriteriosOrdenamientoGuardados()
+    .map((criterio) => algoritmosOrdenamiento[criterio])
+    .filter((algoritmo): algoritmo is OrdenamientoHorario => Boolean(algoritmo));
+  return new OrdenamientoCompuesto(criterios);
+}

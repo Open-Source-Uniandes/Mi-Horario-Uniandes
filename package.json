@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "tsc --project tsconfig.test.json && node --test tests/*.test.cjs"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.4",

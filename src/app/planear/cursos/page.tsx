@@ -10,6 +10,12 @@ import {
   guardarSeccionDeCurso,
   añadirVariasSeccionesDeCurso,
 } from "@/services/almacenamiento/almacenamientoCursos"
+import {
+  guardarGrupos,
+  obtenerGruposGuardados,
+  type GrupoCurso,
+} from "@/services/almacenamiento/almacenamientoGrupos"
+import { limpiarGruposSinCursos } from "@/services/operacionesGrupos"
 import type { EstadosCursos } from "@/types/contexto"
 import type Curso from "@/models/Curso"
 import type Seccion from "@/models/Seccion"
@@ -28,19 +34,68 @@ const CursoContext = createContext<EstadosCursos>({
 export default function Cursos() {
   const [cursosGuardados, setCursosGuardados] = useState<{ [codigo: string]: string[] }>({});
   const [cursoABuscar, setCursoABuscar] = useState("");
+  const [grupos, setGrupos] = useState<GrupoCurso[]>([]);
+  const [cursosParaNuevoGrupo, setCursosParaNuevoGrupo] = useState<string[]>([]);
+  const [datosCargados, setDatosCargados] = useState(false);
 
   useEffect(() => {
-    setCursosGuardados(obtenerCursosGuardados())
+    setCursosGuardados(obtenerCursosGuardados());
+    setGrupos(obtenerGruposGuardados());
+    setDatosCargados(true);
   }, [])
+
+  useEffect(() => {
+    if (!datosCargados) return;
+    const cursosPlaneados = new Set(Object.keys(cursosGuardados));
+    setCursosParaNuevoGrupo((seleccionados) => {
+      const actualizados = seleccionados.filter((codigo) => cursosPlaneados.has(codigo));
+      return actualizados.length === seleccionados.length ? seleccionados : actualizados;
+    });
+    const gruposActualizados = limpiarGruposSinCursos(grupos, cursosPlaneados);
+    if (JSON.stringify(gruposActualizados) !== JSON.stringify(grupos)) {
+      setGrupos(gruposActualizados);
+      guardarGrupos(gruposActualizados);
+    }
+  }, [cursosGuardados, cursosParaNuevoGrupo, datosCargados, grupos]);
+
+  const actualizarGrupos = (nuevosGrupos: GrupoCurso[]) => {
+    setGrupos(nuevosGrupos);
+    guardarGrupos(nuevosGrupos);
+  };
+
+  const crearGrupo = () => {
+    if (cursosParaNuevoGrupo.length < 1) return;
+    const baseNombre = `Grupo ${grupos.length + 1}`;
+    const nombre = obtenerNombreUnico(baseNombre, grupos);
+    actualizarGrupos([...grupos, { nombre, cursos: cursosParaNuevoGrupo }]);
+    setCursosParaNuevoGrupo([]);
+  };
 
   return (
     <CursoContext.Provider value={{ cursosGuardados, setCursosGuardados, cursoABuscar, setCursoABuscar }}>
       <div className="grid grid-cols-1 md:grid-cols-2">
         <Planeacion />
-        <CursosPlaneados />
+        <CursosPlaneados
+          grupos={grupos}
+          actualizarGrupos={actualizarGrupos}
+          cursosParaNuevoGrupo={cursosParaNuevoGrupo}
+          setCursosParaNuevoGrupo={setCursosParaNuevoGrupo}
+          crearGrupo={crearGrupo}
+        />
       </div>
     </CursoContext.Provider>
   )
+}
+
+function obtenerNombreUnico(nombreBase: string, grupos: GrupoCurso[]): string {
+  const nombres = new Set(grupos.map((grupo) => grupo.nombre.trim().toLocaleLowerCase()));
+  let nombre = nombreBase;
+  let sufijo = 2;
+  while (nombres.has(nombre.toLocaleLowerCase())) {
+    nombre = `${nombreBase} (${sufijo})`;
+    sufijo++;
+  }
+  return nombre;
 }
 
 /*  Sección de planeación de cursos  Incluye la búsqueda de cursos y la visualización de los cursos encontrados y seleccionados*/
@@ -288,22 +343,197 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
 }
 
 /*  Cursos planificados por el usuario*/
-function CursosPlaneados() {
+function CursosPlaneados({
+  grupos,
+  actualizarGrupos,
+  cursosParaNuevoGrupo,
+  setCursosParaNuevoGrupo,
+  crearGrupo,
+}: {
+  grupos: GrupoCurso[];
+  actualizarGrupos: (grupos: GrupoCurso[]) => void;
+  cursosParaNuevoGrupo: string[];
+  setCursosParaNuevoGrupo: (cursos: string[]) => void;
+  crearGrupo: () => void;
+}) {
   const { cursosGuardados } = useContext(CursoContext)
+  const [grupoEditando, setGrupoEditando] = useState<number | null>(null)
+  const [errorNombreGrupo, setErrorNombreGrupo] = useState<number | null>(null)
+  const cursos = Object.keys(cursosGuardados).sort()
 
   return (
     <div className="mx-auto w-[80%] min-w-44 pt-8">
       <h2 className="text-2xl font-semibold">Tus cursos planeados</h2>
       <p className="text-lg my-2">Aquí puedes ver los cursos que has elegido</p>
-      {Object.keys(cursosGuardados).map((codigo) => (
-        <CursoPlaneado codigo={codigo} secciones={cursosGuardados[codigo]} key={codigo} />
+      {cursos.map((codigo) => (
+        <CursoPlaneado
+          codigo={codigo}
+          secciones={cursosGuardados[codigo]}
+          grupos={grupos}
+          cursosSeleccionados={cursosParaNuevoGrupo}
+          setCursosSeleccionados={setCursosParaNuevoGrupo}
+          key={codigo}
+        />
       ))}
+
+      <section className="my-6 rounded border border-gray-400 p-4">
+        <h3 className="text-xl font-semibold">Crear un grupo</h3>
+        <p className="my-2">Selecciona uno o más cursos. De cada grupo se incluirá como máximo un curso en cada horario (útil para electivas).</p>
+        {cursos.length === 0 && <p>Planea cursos para poder agruparlos.</p>}
+        <button
+          type="button"
+          disabled={cursosParaNuevoGrupo.length < 1}
+          onClick={crearGrupo}
+          className="mt-2 rounded border-2 border-black bg-yellow-300 px-4 py-2 text-black transition-colors hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Crear grupo con seleccionados ({cursosParaNuevoGrupo.length})
+        </button>
+      </section>
+
+      <section className="my-6">
+        <h3 className="text-xl font-semibold">Grupos</h3>
+        {grupos.length === 0 && <p className="my-2">Aún no has creado grupos.</p>}
+        {grupos.map((grupo, indiceGrupo) => (
+          <div key={indiceGrupo} className="my-3 rounded border border-gray-400 p-4">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <label className="sr-only" htmlFor={`nombre-grupo-${indiceGrupo}`}>
+                  Nombre del grupo {indiceGrupo + 1}
+                </label>
+                <input
+                  id={`nombre-grupo-${indiceGrupo}`}
+                  value={grupo.nombre}
+                  onChange={(event) => {
+                    const nombre = event.target.value;
+                    const nombreNormalizado = nombre.trim().toLocaleLowerCase();
+                    const duplicado = grupos.some(
+                      (otro, indice) =>
+                        indice !== indiceGrupo &&
+                        otro.nombre.trim().toLocaleLowerCase() === nombreNormalizado,
+                    );
+                    if (!nombreNormalizado || duplicado) {
+                      setErrorNombreGrupo(indiceGrupo);
+                      return;
+                    }
+                    setErrorNombreGrupo(null);
+                    actualizarGrupos(
+                      grupos.map((actual, indice) =>
+                        indice === indiceGrupo ? { ...actual, nombre } : actual,
+                      ),
+                    );
+                  }}
+                  className="w-full rounded border border-gray-400 bg-transparent px-2 py-1 font-semibold"
+                  aria-invalid={errorNombreGrupo === indiceGrupo}
+                />
+                {errorNombreGrupo === indiceGrupo && (
+                  <span className="text-sm text-red-600" role="alert">
+                    Escribe un nombre no vacío y distinto al de los demás grupos.
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setGrupoEditando(grupoEditando === indiceGrupo ? null : indiceGrupo)
+                  }
+                  className="rounded border border-black bg-yellow-300 px-3 py-1 text-black hover:bg-yellow-400"
+                  aria-expanded={grupoEditando === indiceGrupo}
+                >
+                  {grupoEditando === indiceGrupo ? "Listo" : "Editar"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    actualizarGrupos(grupos.filter((_, indice) => indice !== indiceGrupo));
+                    setGrupoEditando(null);
+                    setErrorNombreGrupo(null);
+                  }}
+                  className="rounded border border-black bg-yellow-300 px-3 py-1 text-black hover:bg-yellow-400"
+                  aria-label={`Eliminar grupo ${indiceGrupo + 1}`}
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+            {grupoEditando === indiceGrupo ? (
+              <div>
+                <p className="mb-2 text-sm">Cursos del grupo:</p>
+                <div className="flex flex-wrap gap-2">
+                  {grupo.cursos.slice().sort((a, b) => a.localeCompare(b)).map((curso) => (
+                    <span key={curso} className="inline-flex items-center gap-2 rounded bg-gray-200 px-2 py-1 text-black dark:bg-neutral-600 dark:text-white">
+                      {curso}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          actualizarGrupos(
+                            grupos.map((actual, indice) =>
+                              indice === indiceGrupo
+                                ? { ...actual, cursos: actual.cursos.filter((codigo) => codigo !== curso) }
+                                : actual,
+                            ),
+                          )
+                        }
+                        aria-label={`Quitar ${curso} de ${grupo.nombre}`}
+                        className="font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <label className="mt-3 flex flex-col gap-1">
+                  Agregar curso
+                  <select
+                    className="rounded border border-gray-500 bg-white p-2 text-black"
+                    value=""
+                    onChange={(event) => {
+                      const curso = event.target.value;
+                      if (!curso) return;
+                      actualizarGrupos(
+                        grupos.map((actual, indice) =>
+                          indice === indiceGrupo
+                            ? { ...actual, cursos: [...actual.cursos, curso] }
+                            : actual,
+                        ),
+                      );
+                    }}
+                  >
+                    <option value="">Selecciona un curso...</option>
+                    {cursos
+                      .filter((curso) => !grupo.cursos.includes(curso))
+                      .map((curso) => <option key={curso} value={curso}>{curso}</option>)}
+                  </select>
+                </label>
+              </div>
+            ) : (
+              <p>
+                {grupo.cursos.length > 0
+                  ? grupo.cursos.slice().sort((a, b) => a.localeCompare(b)).join(" · ")
+                  : "Sin cursos"}
+              </p>
+            )}
+          </div>
+        ))}
+      </section>
     </div>
   )
 }
 
 /*  Curso planificado por el usuario*/
-function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; secciones: string[] }>) {
+function CursoPlaneado({
+  codigo,
+  secciones,
+  grupos,
+  cursosSeleccionados,
+  setCursosSeleccionados,
+}: Readonly<{
+  codigo: string;
+  secciones: string[];
+  grupos: GrupoCurso[];
+  cursosSeleccionados: string[];
+  setCursosSeleccionados: (cursos: string[]) => void;
+}>) {
   const { setCursosGuardados, setCursoABuscar } = useContext(CursoContext)
 
   const handleBusqueda = () => {
@@ -343,6 +573,30 @@ function CursoPlaneado({ codigo, secciones }: Readonly<{ codigo: string; seccion
       </div>
       <h3 className="text-lg font-semibold">{codigo}</h3>
       <p className="text-muted-foreground dark:text-neutral-300">Secciones: {seccionesMostradas}</p>
+      <div className="flex flex-wrap justify-center gap-1">
+      {grupos.map((grupo, indice) =>
+        grupo.cursos.includes(codigo) ? (
+          <span key={indice} className="rounded bg-yellow-200 px-2 py-1 text-sm text-black">
+            {grupo.nombre}
+          </span>
+        ) : null,
+      )}
+      </div>
+      <label className="mx-auto mt-2 flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={cursosSeleccionados.includes(codigo)}
+          onChange={() =>
+            setCursosSeleccionados(
+              cursosSeleccionados.includes(codigo)
+                ? cursosSeleccionados.filter((curso) => curso !== codigo)
+                : [...cursosSeleccionados, codigo],
+            )
+          }
+          aria-label={`Seleccionar ${codigo} para crear un grupo`}
+        />
+        Seleccionar para agrupar
+      </label>
     </div>
   )
 }
