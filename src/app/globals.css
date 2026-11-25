@@ -94,4 +94,28 @@
   .accent-mark {
     @apply bg-slate-950 text-white dark:bg-amber-300 dark:text-slate-950;
   }
+
+  .react-flow .graph-flow-controls {
+    z-index: 20;
+  }
+
+  .graph-flow-controls .react-flow__controls-button {
+    border: 1px solid rgb(203 213 225);
+    background-color: rgb(255 255 255);
+    color: rgb(30 41 59);
+  }
+
+  .graph-flow-controls .react-flow__controls-button:hover {
+    background-color: rgb(241 245 249);
+  }
+
+  .dark .graph-flow-controls .react-flow__controls-button {
+    border-color: rgb(255 255 255 / 20%);
+    background-color: rgb(38 38 38);
+    color: rgb(248 250 252);
+  }
+
+  .dark .graph-flow-controls .react-flow__controls-button:hover {
+    background-color: rgb(64 64 64);
+  }
 }
