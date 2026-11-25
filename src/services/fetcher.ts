@@ -90,7 +90,7 @@ function obtenerDuracionSeccion(seccion: SeccionAPI) {
   @param informacionSeccion La información de la sección
 */
 function crearSeccionDeCurso(curso: Curso, informacionSeccion: SeccionAPI) {
-  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0]?.date_ini), new Date(informacionSeccion.schedules[0]?.date_fin), curso, obtenerDuracionSeccion(informacionSeccion) ,informacionSeccion.term);
+  let seccion = new Seccion(informacionSeccion.nrc, informacionSeccion.section, informacionSeccion.title, informacionSeccion.maxenrol, informacionSeccion.enrolled, informacionSeccion.campus, new Date(informacionSeccion.schedules[0]?.date_ini), new Date(informacionSeccion.schedules[0]?.date_fin), curso, obtenerDuracionSeccion(informacionSeccion), informacionSeccion.term, informacionSeccion.ptrm);
   cargarProfesoresSeccion(seccion, informacionSeccion.instructors);
   cargarHorariosSeccion(seccion, informacionSeccion.schedules);
   return seccion;

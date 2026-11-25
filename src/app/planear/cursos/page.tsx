@@ -25,6 +25,7 @@ import type Seccion from "@/models/Seccion"
 import Tooltip from "@/components/tooltip"
 import CasillasDias from "@/components/casillasDias"
 import BotonPrimario from "@/components/BotonPrimario"
+import PrerrequisitosDialog from "@/components/PrerrequisitosDialog"
 
 /*  Contexto que comparte los estados y funciones que se comparten entre los componentes de la página de cursos*/
 const CursoContext = createContext<EstadosCursos>({
@@ -413,6 +414,7 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
             <span className="max-w-full truncate">{seccion.profesores.map((profesor) => profesor.nombre).join(", ")}</span>
           )}
         </div>
+        <PrerrequisitosDialog seccion={seccion} />
         <div className="mt-1.5">
           <div className="mb-1 flex justify-between text-[11px] text-slate-500 dark:text-slate-400">
             <span>Cupos ocupados</span>
