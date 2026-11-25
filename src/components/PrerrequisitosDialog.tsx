@@ -2,21 +2,22 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { AlertCircle, LoaderCircle, Network, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Seccion from "@/models/Seccion";
 import {
-  obtenerRequisitosDeCurso,
   obtenerRequisitosDeSeccion,
-  type Requisito,
+  type DetalleRequisitosSeccion,
 } from "@/services/prerrequisitos";
-import GrafoPrerrequisitos, { type EstadoExpansion } from "./GrafoPrerrequisitos";
+import GrafoPrerrequisitos from "./GrafoPrerrequisitos";
+
+type VistaPrerrequisitos = "grafo" | "plano";
 
 export default function PrerrequisitosDialog({ seccion }: { seccion: Seccion }) {
   const [abierto, setAbierto] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
-  const [requisitos, setRequisitos] = useState<Requisito | null>(null);
-  const [expansiones, setExpansiones] = useState<Record<string, EstadoExpansion>>({});
+  const [detalle, setDetalle] = useState<DetalleRequisitosSeccion | null>(null);
+  const [vista, setVista] = useState<VistaPrerrequisitos>("grafo");
   const [intento, setIntento] = useState(0);
   const codigoRaiz = `${seccion.curso.programa} ${seccion.curso.curso}`;
 
@@ -27,7 +28,7 @@ export default function PrerrequisitosDialog({ seccion }: { seccion: Seccion }) 
     setError("");
     obtenerRequisitosDeSeccion(seccion.periodo, seccion.ptrm, seccion.nrc)
       .then((resultado) => {
-        if (!cancelado) setRequisitos(resultado);
+        if (!cancelado) setDetalle(resultado);
       })
       .catch((fallo: unknown) => {
         if (!cancelado) setError(fallo instanceof Error ? fallo.message : "No se pudieron cargar los prerrequisitos.");
@@ -37,28 +38,6 @@ export default function PrerrequisitosDialog({ seccion }: { seccion: Seccion }) 
       });
     return () => { cancelado = true; };
   }, [abierto, intento, seccion.nrc, seccion.periodo, seccion.ptrm]);
-
-  const expandir = useCallback(async (ruta: string, codigo: string, ancestros: string[]) => {
-    if (ancestros.includes(codigo)) return;
-    setExpansiones((actuales) => ({ ...actuales, [ruta]: { estado: "cargando" } }));
-    try {
-      const resultado = await obtenerRequisitosDeCurso(seccion.periodo, codigo);
-      setExpansiones((actuales) => ({
-        ...actuales,
-        [ruta]: resultado
-          ? { estado: "cargado", requisitos: resultado.requisitos }
-          : { estado: "sin-oferta" },
-      }));
-    } catch (fallo) {
-      setExpansiones((actuales) => ({
-        ...actuales,
-        [ruta]: {
-          estado: "error",
-          mensaje: fallo instanceof Error ? fallo.message : "Error al consultar el curso.",
-        },
-      }));
-    }
-  }, [seccion.periodo]);
 
   return (
     <Dialog.Root open={abierto} onOpenChange={setAbierto}>
@@ -78,7 +57,7 @@ export default function PrerrequisitosDialog({ seccion }: { seccion: Seccion }) 
             <div>
               <Dialog.Title className="text-lg font-bold">Prerrequisitos de {codigoRaiz}</Dialog.Title>
               <Dialog.Description className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                NRC {seccion.nrc} · Período {seccion.periodo}. Expande cursos para explorar sus requisitos.
+                NRC {seccion.nrc} · Período {seccion.periodo}. Se muestran los prerrequisitos de esta sección.
               </Dialog.Description>
             </div>
             <Dialog.Close asChild>
@@ -92,10 +71,34 @@ export default function PrerrequisitosDialog({ seccion }: { seccion: Seccion }) 
             </Dialog.Close>
           </header>
 
-          <div className="flex flex-wrap gap-3 border-b border-slate-200 px-4 py-2 text-xs dark:border-white/10 sm:px-6">
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-sm bg-sky-400" /> Y: debes cumplir todos</span>
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-sm bg-orange-400" /> O: basta con uno</span>
-          </div>
+          {!cargando && !error && detalle?.requisitos && (
+            <div className="flex items-center gap-1 border-b border-slate-200 px-4 py-2 dark:border-white/10 sm:px-6" role="group" aria-label="Formato de prerrequisitos">
+              <button
+                type="button"
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                  vista === "grafo"
+                    ? "bg-slate-900 text-white dark:bg-amber-300 dark:text-slate-950"
+                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
+                }`}
+                aria-pressed={vista === "grafo"}
+                onClick={() => setVista("grafo")}
+              >
+                Grafo
+              </button>
+              <button
+                type="button"
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                  vista === "plano"
+                    ? "bg-slate-900 text-white dark:bg-amber-300 dark:text-slate-950"
+                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
+                }`}
+                aria-pressed={vista === "plano"}
+                onClick={() => setVista("plano")}
+              >
+                Lista
+              </button>
+            </div>
+          )}
 
           <main className="relative min-h-0 flex-1">
             {cargando && (
@@ -111,16 +114,31 @@ export default function PrerrequisitosDialog({ seccion }: { seccion: Seccion }) 
                 </button>
               </div>
             )}
-            {!cargando && !error && !requisitos && (
+            {!cargando && !error && !detalle?.requisitos && (
               <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">La API no registra prerrequisitos para este curso.</p>
             )}
-            {!cargando && requisitos && (
-              <GrafoPrerrequisitos
-                raiz={codigoRaiz}
-                requisitos={requisitos}
-                expansiones={expansiones}
-                expandir={expandir}
-              />
+            {!cargando && detalle?.requisitos && vista === "grafo" && (
+              <GrafoPrerrequisitos raiz={codigoRaiz} requisitos={detalle.requisitos} />
+            )}
+            {!cargando && detalle?.requisitos && vista === "plano" && (
+              <div className="h-full overflow-auto p-4 sm:p-6">
+                <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
+                  <thead className="sticky top-0 bg-slate-900 text-white dark:bg-neutral-800">
+                    <tr>
+                      <th scope="col" className="w-1/3 px-3 py-2 font-semibold">Prerrequisito</th>
+                      <th scope="col" className="px-3 py-2 font-semibold">Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {detalle.plano.map((fila, indice) => (
+                      <tr key={`${fila.prerrequisito}-${indice}`} className="border-b border-slate-200 align-top dark:border-white/10">
+                        <td className="whitespace-pre-wrap break-words px-3 py-2 font-medium">{fila.prerrequisito}</td>
+                        <td className="whitespace-pre-wrap break-words px-3 py-2 text-slate-600 dark:text-slate-300">{fila.descripcion}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </main>
         </Dialog.Content>

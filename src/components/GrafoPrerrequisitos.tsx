@@ -7,12 +7,12 @@ import {
   Position,
   ReactFlow,
   ReactFlowProvider,
+  useReactFlow,
   type Edge,
   type Node,
   type NodeProps,
 } from "@xyflow/react";
-import { AlertCircle, ChevronDown, LoaderCircle } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import type { Requisito } from "@/services/prerrequisitos";
 
 import "@xyflow/react/dist/style.css";
@@ -20,23 +20,13 @@ import "@xyflow/react/dist/style.css";
 const PROFUNDIDAD_MAXIMA = 5;
 const NODOS_MAXIMOS = 80;
 
-export type EstadoExpansion =
-  | { estado: "cargando" }
-  | { estado: "sin-oferta" }
-  | { estado: "cargado"; requisitos: Requisito | null }
-  | { estado: "error"; mensaje: string };
-
 type DatosNodoCurso = {
   tipo: "curso";
   codigo: string;
   descripcion: string;
-  ruta: string;
-  ancestros: string[];
-  profundidad: number;
-  estado?: EstadoExpansion;
-  alExpandir: (ruta: string, codigo: string, ancestros: string[]) => void;
+  raiz: boolean;
 };
-type DatosNodoOperador = { tipo: "operador"; operador: "y" | "o"; descripcion?: string };
+type DatosNodoOperador = { tipo: "operador"; operador: "y" | "o" };
 type DatosNodoTexto = { tipo: "texto"; texto: string };
 type DatosNodo = DatosNodoCurso | DatosNodoOperador | DatosNodoTexto;
 type Nodo = Node<DatosNodo>;
@@ -49,47 +39,18 @@ const tiposNodo = {
 
 function NodoCurso({ data }: NodeProps<Nodo>) {
   if (data.tipo !== "curso") return null;
-  const ciclo = data.ancestros.includes(data.codigo);
-  const puedeExpandir = data.profundidad < PROFUNDIDAD_MAXIMA && !ciclo;
-  const estado = data.estado;
 
   return (
     <div className={`min-w-48 max-w-60 rounded-xl border p-3 shadow-sm ${
-      data.profundidad === 0
+      data.raiz
         ? "border-amber-500 bg-amber-50 dark:bg-amber-300/10"
         : "border-slate-200 bg-white dark:border-white/15 dark:bg-neutral-800"
     }`}>
       <Handle type="target" position={Position.Top} className="!border-0 !bg-transparent" />
+    <div className="flex flex-wrap items-baseline gap-x-2">
       <p className="text-sm font-bold">{data.codigo}</p>
-      {data.descripcion && <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{data.descripcion}</p>}
-      {ciclo ? (
-        <p className="mt-2 text-xs font-medium text-rose-700 dark:text-rose-300">Ciclo detectado</p>
-      ) : estado?.estado === "sin-oferta" ? (
-        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Sin oferta en este período</p>
-      ) : estado?.estado === "cargado" && !estado.requisitos ? (
-        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Sin prerrequisitos registrados</p>
-      ) : puedeExpandir && estado?.estado === "cargado" && estado.requisitos ? (
-        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Requisitos cargados</p>
-      ) : estado?.estado === "error" ? (
-        <p className="mt-2 text-xs text-rose-700 dark:text-rose-300">
-          <span className="flex items-center gap-1"><AlertCircle size={13} /> {estado.mensaje}</span>
-          {puedeExpandir && (
-            <button type="button" className="mt-1 underline" onClick={() => data.alExpandir(data.ruta, data.codigo, data.ancestros)}>
-              Reintentar
-            </button>
-          )}
-        </p>
-      ) : puedeExpandir && (estado?.estado === "cargando" || !estado) ? (
-        <button
-          type="button"
-          className="mt-2 inline-flex items-center gap-1 rounded-md bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-950 hover:bg-amber-200 disabled:opacity-60 dark:bg-amber-300/15 dark:text-amber-100"
-          onClick={() => data.alExpandir(data.ruta, data.codigo, data.ancestros)}
-          disabled={estado?.estado === "cargando"}
-        >
-          {estado?.estado === "cargando" ? <LoaderCircle size={13} className="animate-spin" /> : <ChevronDown size={13} />}
-          {estado?.estado === "cargando" ? "Cargando..." : "Explorar"}
-        </button>
-      ) : null}
+      {data.descripcion && <p className="text-xs text-slate-600 dark:text-slate-300">{data.descripcion}</p>}
+    </div>
       <Handle type="source" position={Position.Bottom} className="!border-0 !bg-transparent" />
     </div>
   );
@@ -105,8 +66,7 @@ function NodoOperador({ data }: NodeProps<Nodo>) {
         : "border-orange-300 bg-orange-100 text-orange-950 dark:border-orange-400/40 dark:bg-orange-400/15 dark:text-orange-100"
     }`}>
       <Handle type="target" position={Position.Top} className="!border-0 !bg-transparent" />
-      {esY ? "Y · todos" : "O · uno"}
-      {data.descripcion && <span className="block max-w-64 truncate text-[10px] font-normal normal-case" title={data.descripcion}>{data.descripcion}</span>}
+      {esY ? "Todos" : "Alguno"}
       <Handle type="source" position={Position.Bottom} className="!border-0 !bg-transparent" />
     </div>
   );
@@ -124,19 +84,10 @@ function NodoTexto({ data }: NodeProps<Nodo>) {
   );
 }
 
-type PropsGrafo = {
-  raiz: string;
-  requisitos: Requisito;
-  expansiones: Record<string, EstadoExpansion>;
-  expandir: (ruta: string, codigo: string, ancestros: string[]) => void;
-};
+type PropsGrafo = { raiz: string; requisitos: Requisito };
 
-function Grafo({
-  raiz,
-  requisitos,
-  expansiones,
-  expandir,
-}: PropsGrafo) {
+function Grafo({ raiz, requisitos }: PropsGrafo) {
+  const { fitView } = useReactFlow();
   const { nodes, edges } = useMemo(() => {
     const nodos: Nodo[] = [];
     const aristas: Edge[] = [];
@@ -147,7 +98,6 @@ function Grafo({
       requisito: Requisito,
       ruta: string,
       profundidad: number,
-      ancestros: string[],
     ): { id: string; columna: number } => {
       cantidadNodos++;
       if (cantidadNodos > NODOS_MAXIMOS || profundidad > PROFUNDIDAD_MAXIMA) {
@@ -168,7 +118,6 @@ function Grafo({
 
       if (requisito.tipo === "curso") {
         const id = `curso:${ruta}`;
-        const estado = expansiones[ruta];
         const columna = siguienteColumna++;
         nodos.push({
           id,
@@ -178,17 +127,9 @@ function Grafo({
             tipo: "curso",
             codigo: requisito.codigo,
             descripcion: requisito.descripcion,
-            ruta,
-            ancestros,
-            profundidad,
-            estado,
-            alExpandir: expandir,
+            raiz: false,
           },
         });
-        if (estado?.estado === "cargado" && estado.requisitos) {
-          const hijo = visitar(estado.requisitos, `${ruta}/requisitos`, profundidad + 1, [...ancestros, requisito.codigo]);
-          aristas.push({ id: `${id}->${hijo.id}`, source: id, target: hijo.id, type: "smoothstep" });
-        }
         return { id, columna };
       }
 
@@ -206,14 +147,14 @@ function Grafo({
 
       const id = `operador:${ruta}`;
       const hijos = requisito.hijos.map((hijo, indice) =>
-        visitar(hijo, `${ruta}/${indice}`, profundidad + 1, ancestros),
+        visitar(hijo, `${ruta}/${indice}`, profundidad + 1),
       );
       const columna = hijos.reduce((suma, hijo) => suma + hijo.columna, 0) / hijos.length;
       nodos.push({
         id,
         type: "operador",
         position: { x: columna * 240, y: profundidad * 145 },
-        data: { tipo: "operador", operador: requisito.tipo, descripcion: requisito.descripcion },
+        data: { tipo: "operador", operador: requisito.tipo },
       });
       hijos.forEach((hijo, indice) => aristas.push({
         id: `${id}->${indice}:${hijo.id}`,
@@ -224,7 +165,7 @@ function Grafo({
       return { id, columna };
     };
 
-    const resultado = visitar(requisitos, "raiz", 1, [raiz]);
+    const resultado = visitar(requisitos, "raiz", 1);
     nodos.push({
       id: "curso-raiz",
       type: "curso",
@@ -233,23 +174,25 @@ function Grafo({
         tipo: "curso",
         codigo: raiz,
         descripcion: "Curso consultado",
-        ruta: "curso-raiz",
-        ancestros: [],
-        profundidad: 0,
-        alExpandir: expandir,
+        raiz: true,
       },
     });
     aristas.push({ id: `curso-raiz->${resultado.id}`, source: "curso-raiz", target: resultado.id, type: "smoothstep" });
     return { nodes: nodos, edges: aristas };
-  }, [raiz, requisitos, expansiones, expandir]);
+  }, [raiz, requisitos]);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      void fitView({ padding: 0.2 });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [fitView, nodes]);
 
   return (
     <ReactFlow
       nodes={nodes}
       edges={edges}
       nodeTypes={tiposNodo}
-      fitView
-      fitViewOptions={{ padding: 0.2 }}
       minZoom={0.2}
       maxZoom={1.5}
       nodesDraggable={false}
@@ -258,7 +201,7 @@ function Grafo({
       proOptions={{ hideAttribution: true }}
     >
       <Background color="var(--flow-grid, #cbd5e1)" gap={24} />
-      <Controls />
+      <Controls className="graph-flow-controls" />
     </ReactFlow>
   );
 }

@@ -17,6 +17,11 @@ export type RequisitoSinInterpretar = {
 };
 
 export type Requisito = RequisitoCurso | RequisitoLogico | RequisitoSinInterpretar;
+export type RequisitoPlano = { prerrequisito: string; descripcion: string };
+export type DetalleRequisitosSeccion = {
+  requisitos: Requisito | null;
+  plano: RequisitoPlano[];
+};
 
 type Token = { tipo: "curso"; valor: string } | { tipo: "y" | "o" | "(" | ")"; valor: string };
 type DetalleRequisitosAPI = {
@@ -25,17 +30,99 @@ type DetalleRequisitosAPI = {
   ptrm: string;
   prereq: Array<{ code: string; descr: string }>;
 };
-type SeccionOferta = {
-  class: string;
-  course: string;
-  nrc: number;
-  term: string;
-  ptrm: string;
-};
-
 const API = "https://ofertadecursos.uniandes.edu.co/api";
-const cacheDetalles = new Map<string, Promise<Requisito | null>>();
-const cacheOfertas = new Map<string, Promise<SeccionOferta | null>>();
+const cacheDetalles = new Map<string, Promise<DetalleRequisitosSeccion>>();
+
+function extraerOperadores(requisito: Requisito): Array<"y" | "o"> {
+  if (requisito.tipo === "curso" || requisito.tipo === "sin-interpretar") return [];
+  const operadores: Array<"y" | "o"> = [];
+  requisito.hijos.forEach((hijo, indice) => {
+    if (indice > 0) operadores.push(requisito.tipo);
+    operadores.push(...extraerOperadores(hijo));
+  });
+  return operadores;
+}
+
+function extraerNombres(requisito: Requisito, descripcion: string): string[] | null {
+  const limpiarNombre = (fragmento: string): string => {
+    let nombre = fragmento.trim();
+    const balance = (texto: string) => {
+      let nivel = 0;
+      for (let indice = 0; indice < texto.length; indice++) {
+        const caracter = texto[indice];
+        if (caracter === "(") nivel++;
+        if (caracter === ")") nivel--;
+      }
+      return nivel;
+    };
+    while (nombre.startsWith("(") && balance(nombre) > 0) nombre = nombre.slice(1).trim();
+    while (nombre.endsWith(")") && balance(nombre) < 0) nombre = nombre.slice(0, -1).trim();
+    while (nombre.startsWith("(") && nombre.endsWith(")")) {
+      const interior = nombre.slice(1, -1);
+      if (balance(interior) !== 0) break;
+      nombre = interior.trim();
+    }
+    return nombre;
+  };
+
+  const operadores = extraerOperadores(requisito);
+  const ocurrencias: Array<{ tipo: "y" | "o"; inicio: number; fin: number }> = [];
+  const patron = /(^|[\s(])([YO])(?=$|[\s)])/gi;
+  let coincidencia: RegExpExecArray | null;
+  while ((coincidencia = patron.exec(descripcion)) !== null) {
+    const inicio = coincidencia.index + coincidencia[1].length;
+    ocurrencias.push({
+      tipo: coincidencia[2].toLowerCase() as "y" | "o",
+      inicio,
+      fin: inicio + coincidencia[2].length,
+    });
+  }
+
+  const buscar = (
+    indiceOperador: number,
+    indiceOcurrencia: number,
+    inicioFragmento: number,
+    nombres: string[],
+  ): string[] | null => {
+    if (indiceOperador === operadores.length) {
+      const ultimoNombre = limpiarNombre(descripcion.slice(inicioFragmento));
+      return ultimoNombre ? [...nombres, ultimoNombre] : null;
+    }
+
+    for (let indice = indiceOcurrencia; indice < ocurrencias.length; indice++) {
+      const ocurrencia = ocurrencias[indice];
+      if (ocurrencia.tipo !== operadores[indiceOperador]) continue;
+      const nombre = limpiarNombre(descripcion.slice(inicioFragmento, ocurrencia.inicio));
+      if (!nombre) continue;
+      const resultado = buscar(
+        indiceOperador + 1,
+        indice + 1,
+        ocurrencia.fin,
+        [...nombres, nombre],
+      );
+      if (resultado) return resultado;
+    }
+    return null;
+  };
+
+  return buscar(0, 0, 0, []);
+}
+
+function asignarDescripciones(requisito: Requisito, nombres: string[]): Requisito | null {
+  let indice = 0;
+  const visitar = (actual: Requisito): Requisito | null => {
+    if (actual.tipo === "curso") {
+      const descripcion = nombres[indice++];
+      return descripcion ? { ...actual, descripcion } : null;
+    }
+    if (actual.tipo === "sin-interpretar") return null;
+    const hijos = actual.hijos.map(visitar);
+    if (hijos.some((hijo) => !hijo)) return null;
+    return { ...actual, hijos: hijos as Requisito[] };
+  };
+  const resultado = visitar(requisito);
+  return resultado && indice === nombres.length ? resultado : null;
+}
 
 function tokenizar(expresion: string): Token[] {
   const patron = /\(|\)|\b(?:Y|O)\b|[A-Z][A-Z0-9]*(?:\s+\d{1,4})?/g;
@@ -92,7 +179,14 @@ export function interpretarExpresionDeRequisitos(expresion: string, descripcion:
     const resultado = parsearO();
     if (posicion !== tokens.length) throw new Error("La expresión contiene elementos adicionales.");
     if (resultado.tipo === "sin-interpretar") return resultado;
-    return { ...resultado, descripcion };
+    const nombres = extraerNombres(resultado, descripcion) || [];
+    const conDescripciones = nombres.length > 0
+      ? asignarDescripciones(resultado, nombres)
+      : null;
+    if (!conDescripciones) return { ...resultado, descripcion };
+    return conDescripciones.tipo === "curso"
+      ? conDescripciones
+      : { ...conDescripciones, descripcion };
   } catch {
     return { tipo: "sin-interpretar", codigo: expresion, descripcion };
   }
@@ -104,7 +198,7 @@ function agruparRequisitos(requisitos: Requisito[]): Requisito | null {
   return { tipo: "y", hijos: requisitos };
 }
 
-export async function obtenerRequisitosDeSeccion(term: string, ptrm: string, nrc: number | string): Promise<Requisito | null> {
+export async function obtenerRequisitosDeSeccion(term: string, ptrm: string, nrc: number | string): Promise<DetalleRequisitosSeccion> {
   const clave = `${term}:${ptrm}:${nrc}`;
   const existente = cacheDetalles.get(clave);
   if (existente) return existente;
@@ -118,9 +212,15 @@ export async function obtenerRequisitosDeSeccion(term: string, ptrm: string, nrc
       throw new Error("La API devolvió detalles de prerrequisitos con un formato inesperado.");
     }
     const detalles = datos as DetalleRequisitosAPI;
-    return agruparRequisitos(detalles.prereq.map((requisito) =>
-      interpretarExpresionDeRequisitos(requisito.code || "", requisito.descr || ""),
-    ));
+    return {
+      requisitos: agruparRequisitos(detalles.prereq.map((requisito) =>
+        interpretarExpresionDeRequisitos(requisito.code || "", requisito.descr || ""),
+      )),
+      plano: detalles.prereq.map((requisito) => ({
+        prerrequisito: requisito.code || "",
+        descripcion: requisito.descr || "",
+      })),
+    };
   })();
   cacheDetalles.set(clave, solicitud);
   try {
@@ -129,46 +229,4 @@ export async function obtenerRequisitosDeSeccion(term: string, ptrm: string, nrc
     cacheDetalles.delete(clave);
     throw error;
   }
-}
-
-export async function buscarOfertaDeCurso(term: string, codigo: string): Promise<SeccionOferta | null> {
-  const clave = `${term}:${codigo.replace(/\s+/g, "").toUpperCase()}`;
-  const existente = cacheOfertas.get(clave);
-  if (existente) return existente;
-
-  const solicitud = (async () => {
-    const parametros = new URLSearchParams({
-      term,
-      ptrm: "",
-      prefix: "",
-      attr: "",
-      nameInput: codigo,
-    });
-    const respuesta = await fetch(`${API}/courses?${parametros}`);
-    if (!respuesta.ok) throw new Error(`No se pudo buscar ${codigo} (HTTP ${respuesta.status}).`);
-    const datos: unknown = await respuesta.json();
-    if (!Array.isArray(datos)) throw new Error("La API devolvió una oferta con un formato inesperado.");
-    const objetivo = codigo.replace(/\s+/g, "").toUpperCase();
-    const secciones = datos as SeccionOferta[];
-    return secciones.find((seccion) =>
-      `${seccion.class}${seccion.course}`.replace(/\s+/g, "").toUpperCase() === objetivo,
-    ) || null;
-  })();
-  cacheOfertas.set(clave, solicitud);
-  try {
-    return await solicitud;
-  } catch (error) {
-    cacheOfertas.delete(clave);
-    throw error;
-  }
-}
-
-export async function obtenerRequisitosDeCurso(term: string, codigo: string): Promise<{
-  seccion: SeccionOferta;
-  requisitos: Requisito | null;
-} | null> {
-  const seccion = await buscarOfertaDeCurso(term, codigo);
-  if (!seccion) return null;
-  const requisitos = await obtenerRequisitosDeSeccion(seccion.term, seccion.ptrm, seccion.nrc);
-  return { seccion, requisitos };
 }
