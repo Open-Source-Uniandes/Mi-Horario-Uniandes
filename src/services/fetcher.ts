@@ -3,7 +3,7 @@ import Seccion from '@/models/Seccion';
 import Profesor from '@/models/Profesor';
 import BloqueTiempo from '@/models/BloqueTiempo';
 import { HorarioAPI, ProfesorAPI, SeccionAPI } from '@/types/ofertaDeCursosAPI'
-import { obtenerCursosGuardados } from './almacenamiento/almacenamientoCursos';
+import { obtenerCursosGuardados, type CursosGuardados } from './almacenamiento/almacenamientoCursos';
 import { obtenerPlanGuardado } from './almacenamiento/almacenamientoPlanes';
 import Horario from '@/models/Horario';
 
@@ -11,7 +11,16 @@ const API = 'https://ofertadecursos.uniandes.edu.co/api/courses';
 const API_POR_CURSO = (codigoCurso: string) => API + '?term=&ptrm=&prefix=&attr=&nameInput=' + codigoCurso.toUpperCase();
 const API_POR_ATRIBUTO = (atributo: string) => API + '?term=&ptrm=&prefix=&attr=&nameInput=&campus=&attrs=' + atributo.toUpperCase() + '&timeStart=&offset=0&limit=25';
 const API_POR_ATRIBUTO_Y_PROGRAMA = (atributo: string, programa: string) => API + '?term=&ptrm=&prefix=' + programa.toUpperCase() + '&attr=&nameInput=&campus=&attrs=' + atributo.toUpperCase() + '&timeStart=&offset=0&limit=25';
-const API_POR_CURSO_Y_PERIODO = (codigoCurso: string, periodo: string = '') =>  API + `?term=${periodo}&ptrm=&prefix=&attr=&nameInput=${codigoCurso.toUpperCase()}`;
+const API_POR_CURSO_Y_PERIODO = (codigoCurso: string, periodo: string = '') => {
+  const parametros = new URLSearchParams({
+    term: periodo,
+    ptrm: '',
+    prefix: '',
+    attr: '',
+    nameInput: codigoCurso.trim().toUpperCase(),
+  });
+  return `${API}?${parametros.toString()}`;
+};
 
 function listaDeBloquesEsIdentica(a: string[], b: string[]) {
   const sortedA = [...a].sort();
@@ -115,7 +124,14 @@ export async function crearCursosAPartirDePeticion(ruta: string){
   @param periodo El período del curso a buscar
 */
 export async function buscarCurso(nombreCursoABuscar: string, periodo: string = '') {
-  return await crearCursosAPartirDePeticion(API_POR_CURSO_Y_PERIODO(nombreCursoABuscar, periodo));
+  const cursos = await crearCursosAPartirDePeticion(API_POR_CURSO_Y_PERIODO(nombreCursoABuscar.trim(), periodo));
+  if (!periodo) return cursos;
+
+  Object.keys(cursos).forEach((codigo) => {
+    cursos[codigo].secciones = cursos[codigo].secciones.filter((seccion) => seccion.periodo === periodo);
+    if (cursos[codigo].secciones.length === 0) delete cursos[codigo];
+  });
+  return cursos;
 }
 
 export const atributosEspeciales: string[] = ["EPSI", "INGL", "ECUR", "BLEND", "SEMP", "VIRT"];
@@ -139,8 +155,8 @@ export async function obtenerSeccionesPorAtributoYPrograma(atributo: string, pro
 
   @returns Los cursos guardados por el usuario
 */
-async function obtenerCursosAPartirDeSecciones(cursosGuardados: { [codigoCurso: string]: string[] }) {
-  const promesasCursosActualizados = Object.keys(cursosGuardados).map(nombreCurso => buscarCurso(nombreCurso));
+async function obtenerCursosAPartirDeSecciones(cursosGuardados: CursosGuardados) {
+  const promesasCursosActualizados = Object.entries(cursosGuardados).map(([nombreCurso, curso]) => buscarCurso(nombreCurso, curso.periodo));
   const cursosActualizados = await Promise.all(promesasCursosActualizados);
   let cursosPorNombre: {[codigoCurso: string]: Curso} = {};
   cursosActualizados.forEach(cursoActualizado => {
@@ -153,7 +169,7 @@ async function obtenerCursosAPartirDeSecciones(cursosGuardados: { [codigoCurso: 
   const cursos = Object.values(cursosPorNombre);
   cursos.forEach(curso => {
     const cursoId = curso.programa + curso.curso;
-    const idsGuardados = cursosGuardados[cursoId] || [];
+    const idsGuardados = cursosGuardados[cursoId]?.secciones || [];
     curso.secciones = curso.secciones.filter(seccion => {
       return idsGuardados.includes(seccion.idUnico);
     });

@@ -6,6 +6,7 @@
 
 import BloqueTiempo from "@/models/BloqueTiempo";
 import Seccion from "@/models/Seccion";
+import type { CursosGuardados } from "@/services/almacenamiento/almacenamientoCursos";
 
 /*
   Interfaz que define los estados y funciones que se comparten entre los componentes de la aplicación
@@ -22,8 +23,8 @@ export interface CursosPorAtributos {
   o que se quiera guardar una sección de un curso consultado en la sección de cursos planeados
 */
 export interface EstadosCursos {
-  cursosGuardados: { [codigo: string]: string[] },
-  setCursosGuardados: (cursos: { [codigo: string]: string[] }) => void,
+  cursosGuardados: CursosGuardados,
+  setCursosGuardados: (cursos: CursosGuardados) => void,
   cursoABuscar: string,
   setCursoABuscar: (curso: string) => void
 }
@@ -38,4 +39,3 @@ export interface EstadoBloques {
   bloquesGuardados: { [nombre: string]: BloqueTiempo[] }
   setBloquesGuardados: (bloques: { [nombre: string]: BloqueTiempo[] }) => void
 }
-

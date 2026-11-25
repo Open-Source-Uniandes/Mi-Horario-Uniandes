@@ -9,7 +9,10 @@ import {
   eliminarCursoGuardado,
   guardarSeccionDeCurso,
   añadirVariasSeccionesDeCurso,
+  periodoCompatibleConCursosGuardados,
+  type CursosGuardados,
 } from "@/services/almacenamiento/almacenamientoCursos"
+import { obtenerPeriodosAcademicos, type PeriodoAcademico } from "@/services/periodos"
 import {
   guardarGrupos,
   obtenerGruposGuardados,
@@ -33,7 +36,7 @@ const CursoContext = createContext<EstadosCursos>({
 
 /*  Página de planear cursos  Incluye la sección de planeación de cursos y la sección de cursos planeados*/
 export default function Cursos() {
-  const [cursosGuardados, setCursosGuardados] = useState<{ [codigo: string]: string[] }>({});
+  const [cursosGuardados, setCursosGuardados] = useState<CursosGuardados>({});
   const [cursoABuscar, setCursoABuscar] = useState("");
   const [grupos, setGrupos] = useState<GrupoCurso[]>([]);
   const [cursosParaNuevoGrupo, setCursosParaNuevoGrupo] = useState<string[]>([]);
@@ -103,22 +106,54 @@ function obtenerNombreUnico(nombreBase: string, grupos: GrupoCurso[]): string {
 function Planeacion() {
   const { cursoABuscar, setCursoABuscar } = useContext(CursoContext)
   const [cursosEncontrados, setCursosEncontrados] = useState<{ [codigo: string]: Curso }>({})
+  const [periodos, setPeriodos] = useState<PeriodoAcademico[]>([])
+  const [periodoSeleccionado, setPeriodoSeleccionado] = useState("")
+  const [errorPeriodos, setErrorPeriodos] = useState("")
+  const [errorBusqueda, setErrorBusqueda] = useState("")
   const [cargando, setCargando] = useState(false)
 
   useEffect(() => {
+    let cancelado = false
+    obtenerPeriodosAcademicos().then((periodosDisponibles) => {
+      if (cancelado) return
+      setPeriodos(periodosDisponibles)
+      setPeriodoSeleccionado(periodosDisponibles[periodosDisponibles.length - 1]?.codigo || "")
+    }).catch((error: unknown) => {
+      if (!cancelado) {
+        setErrorPeriodos(error instanceof Error ? error.message : "No se pudieron cargar los períodos.")
+      }
+    })
+    return () => { cancelado = true }
+  }, [])
+
+  useEffect(() => {
+    let cancelado = false
     const consultarCurso = async () => {
-      if (cursoABuscar) {
+      if (cursoABuscar && periodoSeleccionado) {
         setCargando(true)
         setCursosEncontrados({})
-        setCursosEncontrados(await buscarCurso(cursoABuscar))
-        setCargando(false)
+        setErrorBusqueda("")
+        try {
+          const cursos = await buscarCurso(cursoABuscar, periodoSeleccionado)
+          if (!cancelado) setCursosEncontrados(cursos)
+        } catch (error) {
+          if (!cancelado) {
+            setErrorBusqueda(error instanceof Error ? error.message : "No se pudo completar la búsqueda.")
+          }
+        } finally {
+          if (!cancelado) setCargando(false)
+        }
       }
     }
     consultarCurso()
-  }, [cursoABuscar])
+    return () => { cancelado = true }
+  }, [cursoABuscar, periodoSeleccionado])
 
+  const buscar = (valor: string) => {
+    setCursoABuscar(valor.trim().replace(/\s+/g, "_"))
+  }
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") setCursoABuscar((event.target as HTMLInputElement).value.trim().replaceAll(" ", "_"))
+    if (event.key === "Enter") buscar((event.target as HTMLInputElement).value)
   }
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -146,7 +181,7 @@ function Planeacion() {
         <div className="mt-2 flex justify-center">
           <BotonPrimario
             onClick={() => {
-              if (inputRef.current) setCursoABuscar(inputRef.current.value)
+              if (inputRef.current) buscar(inputRef.current.value)
             }}
           >
             Buscar
@@ -154,9 +189,33 @@ function Planeacion() {
         </div>
       </div>
 
+      {periodos.length > 0 && (
+        <div className="mb-4">
+          <label className="mb-1 block text-sm font-medium" htmlFor="semesterFilter">Período académico</label>
+          <select
+            className="field-theme h-11 w-full rounded-xl px-4 text-sm"
+            id="semesterFilter"
+            value={periodoSeleccionado}
+            onChange={(event) => setPeriodoSeleccionado(event.target.value)}
+          >
+            {periodos.map((periodo) => (
+              <option key={periodo.codigo} value={periodo.codigo}>{periodo.nombre}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {errorPeriodos && <p role="alert" className="mb-3 rounded-xl bg-rose-50 p-4 text-sm font-semibold text-rose-800 dark:bg-rose-400/10 dark:text-rose-200">{errorPeriodos}</p>}
       {cargando && <p className="rounded-xl bg-amber-50 p-4 text-sm font-semibold dark:bg-amber-300/10">Buscando cursos...</p>}
-      {cursoABuscar && !cargando && Object.keys(cursosEncontrados).length === 0 && (
+      {errorBusqueda && <p role="alert" className="mb-3 rounded-xl bg-rose-50 p-4 text-sm font-semibold text-rose-800 dark:bg-rose-400/10 dark:text-rose-200">{errorBusqueda}</p>}
+      {cursoABuscar && !cargando && !errorBusqueda && Object.keys(cursosEncontrados).length === 0 && (
         <p className="rounded-xl bg-slate-100 p-4 text-sm font-semibold text-slate-600 dark:bg-white/5 dark:text-slate-300">No se encontraron cursos</p>
+      )}
+
+      {cursoABuscar && !periodoCompatibleConCursosGuardados(periodoSeleccionado) && (
+        <p className="mb-3 rounded-xl bg-amber-50 p-4 text-sm font-semibold text-amber-900 dark:bg-amber-300/10 dark:text-amber-100">
+          Hay cursos guardados en otro período o con período sin definir. Puedes consultar, pero debes eliminarlos antes de agregar secciones.
+        </p>
       )}
 
       <DetallesCursosEncontrados cursos={Object.values(cursosEncontrados)} />
@@ -254,13 +313,19 @@ function BotonSeleccionarTodas({ curso }: Readonly<{ curso: Curso }>) {
     añadirVariasSeccionesDeCurso(
       curso.programa + curso.curso,
       curso.secciones.map((seccion) => seccion.idUnico),
+      curso.secciones[0]?.periodo || "",
     )
     setCursosGuardados(obtenerCursosGuardados())
   }
 
   return (
     <Tooltip mensaje="Seleccionar todas">
-      <button className="rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-white/10" onClick={handleClic}>
+      <button
+        className="rounded-lg p-1.5 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-white/10"
+        onClick={handleClic}
+        disabled={!periodoCompatibleConCursosGuardados(curso.secciones[0]?.periodo || "")}
+        title={!periodoCompatibleConCursosGuardados(curso.secciones[0]?.periodo || "") ? "Hay cursos guardados en otro período o con período sin definir" : "Seleccionar todas"}
+      >
         <Image className="icon-svg" src="/Mi-Horario-Uniandes/static/seleccionarTodas.svg" alt="Seleccionar todas" width={24} height={24} />
       </button>
     </Tooltip>
@@ -270,19 +335,26 @@ function BotonSeleccionarTodas({ curso }: Readonly<{ curso: Curso }>) {
 /*  Botón para seleccionar solo las secciones con cupo de un curso*/
 function BotonSeleccionarValidas({ curso }: Readonly<{ curso: Curso }>) {
   const { setCursosGuardados } = useContext(CursoContext)
+  const periodoCompatible = periodoCompatibleConCursosGuardados(curso.secciones[0]?.periodo || "")
   const handleClic = () => {
     añadirVariasSeccionesDeCurso(
       curso.programa + curso.curso,
       curso.secciones
         .filter((seccion) => seccion.cuposTomados < seccion.cuposMaximos)
         .map((seccion) => seccion.idUnico),
+      curso.secciones[0]?.periodo || "",
     )
     setCursosGuardados(obtenerCursosGuardados())
   }
 
   return (
     <Tooltip mensaje="Seleccionar con cupo">
-      <button className="rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-white/10" onClick={handleClic}>
+      <button
+        className="rounded-lg p-1.5 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-white/10"
+        onClick={handleClic}
+        disabled={!periodoCompatible}
+        title={!periodoCompatible ? "Hay cursos guardados en otro período o con período sin definir" : "Seleccionar con cupo"}
+      >
         <Image
           className="icon-svg"
           src="/Mi-Horario-Uniandes/static/seleccionarValidas.svg"
@@ -316,8 +388,10 @@ function BotonEliminarTodas({ curso }: Readonly<{ curso: Curso }>) {
 /*  Sección individual en formato dropdown*/
 function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
   const { setCursosGuardados } = useContext(CursoContext);
+  const seccionGuardada = cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico)
+  const puedeAgregarSeccion = periodoCompatibleConCursosGuardados(seccion.periodo)
   const handleAñadir = () => {
-    guardarSeccionDeCurso(seccion.curso.programa + seccion.curso.curso, seccion.idUnico);
+    guardarSeccionDeCurso(seccion.curso.programa + seccion.curso.curso, seccion.idUnico, seccion.periodo);
     setCursosGuardados(obtenerCursosGuardados());
   }
   const descripcionPorDuracion = new Map<string, string>([
@@ -364,12 +438,13 @@ function SeccionDeCurso({ seccion }: Readonly<{ seccion: Seccion }>) {
       </div>
       <button
         type="button"
-        className="accent-control flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold"
+        className="accent-control flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold disabled:cursor-not-allowed disabled:opacity-40"
         onClick={handleAñadir}
-        aria-label={cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "Quitar sección" : "Añadir sección"}
-        title={cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "Quitar sección" : "Añadir sección"}
+        disabled={!seccionGuardada && !puedeAgregarSeccion}
+        aria-label={seccionGuardada ? "Quitar sección" : "Añadir sección"}
+        title={seccionGuardada ? "Quitar sección" : puedeAgregarSeccion ? "Añadir sección" : "Hay cursos guardados en otro período o con período sin definir"}
       >
-        {cursoTieneSeccionGuardada(seccion.curso.programa + seccion.curso.curso, seccion.idUnico) ? "−" : "+"}
+        {seccionGuardada ? "−" : "+"}
       </button>
     </div>
   )
@@ -413,7 +488,8 @@ function CursosPlaneados({
       {cursos.map((codigo) => (
         <CursoPlaneado
           codigo={codigo}
-          secciones={cursosGuardados[codigo]}
+          secciones={cursosGuardados[codigo].secciones}
+          periodo={cursosGuardados[codigo].periodo}
           grupos={grupos}
           cursosSeleccionados={cursosParaNuevoGrupo}
           setCursosSeleccionados={setCursosParaNuevoGrupo}
@@ -743,12 +819,14 @@ function ResumenCursosGrupo({ grupo }: { grupo: GrupoCurso }) {
 function CursoPlaneado({
   codigo,
   secciones,
+  periodo,
   grupos,
   cursosSeleccionados,
   setCursosSeleccionados,
 }: Readonly<{
   codigo: string;
   secciones: string[];
+  periodo: string;
   grupos: GrupoCurso[];
   cursosSeleccionados: string[];
   setCursosSeleccionados: (cursos: string[]) => void;
@@ -791,7 +869,7 @@ function CursoPlaneado({
         />
       </div>
       <h3 className="col-start-1 row-start-1 text-sm font-bold">{codigo}</h3>
-      <p className="col-start-1 row-start-2 text-xs text-slate-500 dark:text-slate-400">Secciones: {seccionesMostradas}</p>
+      <p className="col-start-1 row-start-2 text-xs text-slate-500 dark:text-slate-400">Período {periodo || "sin definir"} · Secciones: {seccionesMostradas}</p>
       <div className="col-span-2 mt-1 flex flex-wrap gap-1">
       {grupos.map((grupo, indice) =>
         grupo.cursos.includes(codigo) ? (
