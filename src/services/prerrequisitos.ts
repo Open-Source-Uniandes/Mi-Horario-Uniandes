@@ -33,11 +33,23 @@ type DetalleRequisitosAPI = {
 const API = "https://ofertadecursos.uniandes.edu.co/api";
 const cacheDetalles = new Map<string, Promise<DetalleRequisitosSeccion>>();
 
-function extraerOperadores(requisito: Requisito): Array<"y" | "o"> {
+type OperadorRequisito = {
+  tipo: "y" | "o";
+  izquierdaEsGrupo: boolean;
+  derechaEsGrupo: boolean;
+};
+
+function extraerOperadores(requisito: Requisito): OperadorRequisito[] {
   if (requisito.tipo === "curso" || requisito.tipo === "sin-interpretar") return [];
-  const operadores: Array<"y" | "o"> = [];
+  const operadores: OperadorRequisito[] = [];
   requisito.hijos.forEach((hijo, indice) => {
-    if (indice > 0) operadores.push(requisito.tipo);
+    if (indice > 0) {
+      operadores.push({
+        tipo: requisito.tipo,
+        izquierdaEsGrupo: requisito.hijos[indice - 1].tipo === "y" || requisito.hijos[indice - 1].tipo === "o",
+        derechaEsGrupo: hijo.tipo === "y" || hijo.tipo === "o",
+      });
+    }
     operadores.push(...extraerOperadores(hijo));
   });
   return operadores;
@@ -78,34 +90,52 @@ function extraerNombres(requisito: Requisito, descripcion: string): string[] | n
     });
   }
 
+  const cache = new Map<string, { nombres: string[]; puntuacion: number } | null>();
   const buscar = (
     indiceOperador: number,
     indiceOcurrencia: number,
     inicioFragmento: number,
-    nombres: string[],
-  ): string[] | null => {
+  ): { nombres: string[]; puntuacion: number } | null => {
+    const clave = `${indiceOperador}:${indiceOcurrencia}:${inicioFragmento}`;
+    if (cache.has(clave)) return cache.get(clave) || null;
     if (indiceOperador === operadores.length) {
       const ultimoNombre = limpiarNombre(descripcion.slice(inicioFragmento));
-      return ultimoNombre ? [...nombres, ultimoNombre] : null;
+      const resultado = ultimoNombre ? { nombres: [ultimoNombre], puntuacion: 0 } : null;
+      cache.set(clave, resultado);
+      return resultado;
     }
 
+    let mejorResultado: { nombres: string[]; puntuacion: number } | null = null;
     for (let indice = indiceOcurrencia; indice < ocurrencias.length; indice++) {
       const ocurrencia = ocurrencias[indice];
-      if (ocurrencia.tipo !== operadores[indiceOperador]) continue;
+      const operador = operadores[indiceOperador];
+      if (ocurrencia.tipo !== operador.tipo) continue;
       const nombre = limpiarNombre(descripcion.slice(inicioFragmento, ocurrencia.inicio));
       if (!nombre) continue;
       const resultado = buscar(
         indiceOperador + 1,
         indice + 1,
         ocurrencia.fin,
-        [...nombres, nombre],
       );
-      if (resultado) return resultado;
+      if (!resultado) continue;
+
+      const antesDelOperador = descripcion.slice(0, ocurrencia.inicio).trimEnd();
+      const despuesDelOperador = descripcion.slice(ocurrencia.fin).trimStart();
+      const izquierdaEsGrupo = antesDelOperador.endsWith(")");
+      const derechaEsGrupo = despuesDelOperador.startsWith("(");
+      const puntuacion =
+        (izquierdaEsGrupo === operador.izquierdaEsGrupo ? 1 : -1)
+        + (derechaEsGrupo === operador.derechaEsGrupo ? 2 : -1)
+        + resultado.puntuacion;
+      if (!mejorResultado || puntuacion > mejorResultado.puntuacion) {
+        mejorResultado = { nombres: [nombre, ...resultado.nombres], puntuacion };
+      }
     }
-    return null;
+    cache.set(clave, mejorResultado);
+    return mejorResultado;
   };
 
-  return buscar(0, 0, 0, []);
+  return buscar(0, 0, 0)?.nombres || null;
 }
 
 function asignarDescripciones(requisito: Requisito, nombres: string[]): Requisito | null {

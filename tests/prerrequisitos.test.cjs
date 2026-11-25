@@ -156,4 +156,25 @@ describe("interpretarExpresionDeRequisitos", () => {
     assert.equal(cursos.find((curso) => curso.codigo === "MATE 1207").descripcion, "CÁLCULO VECTORIAL");
     assert.equal(cursos.find((curso) => curso.codigo === "ISIS 1106").descripcion, "LENGUAJES Y MÁQUINAS");
   });
+
+  it("keeps a Y in the first title for ISIS 3710 in term 202620", () => {
+    const resultado = interpretarExpresionDeRequisitos(
+      "ISIS 2503 Y (LENG 1156 O LENG 3001 O RLEC1 O RLEN1 O INGL4 O ENGL7) Y (ESCR 1102 O LITE 1622 O LENG 1512)",
+      "ARQUITECTURA Y DISEÑO DE SW Y (ENGLISH 06 O REQUISITO C1 LENG. PRIN. O RLEC1 O RLEN1 O INGL4 O ENGL7) Y (ESCRITURA UNIVERSITARIA II O ESCRITURA UNIVERSITARIA II O ESCRITURA UNIVERSITARIA II)",
+    );
+    const cursos = [];
+    const recopilar = (requisito) => {
+      if (requisito.tipo === "curso") {
+        cursos.push(requisito);
+      } else if (requisito.tipo === "y" || requisito.tipo === "o") {
+        requisito.hijos.forEach(recopilar);
+      }
+    };
+    recopilar(resultado);
+
+    assert.equal(cursos.find((curso) => curso.codigo === "ISIS 2503").descripcion, "ARQUITECTURA Y DISEÑO DE SW");
+    assert.equal(cursos.find((curso) => curso.codigo === "LENG 1156").descripcion, "ENGLISH 06");
+    assert.equal(cursos.find((curso) => curso.codigo === "LENG 3001").descripcion, "REQUISITO C1 LENG. PRIN.");
+    assert.equal(cursos.find((curso) => curso.codigo === "LITE 1622").descripcion, "ESCRITURA UNIVERSITARIA II");
+  });
 });
