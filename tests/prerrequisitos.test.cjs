@@ -177,4 +177,23 @@ describe("interpretarExpresionDeRequisitos", () => {
     assert.equal(cursos.find((curso) => curso.codigo === "LENG 3001").descripcion, "REQUISITO C1 LENG. PRIN.");
     assert.equal(cursos.find((curso) => curso.codigo === "LITE 1622").descripcion, "ESCRITURA UNIVERSITARIA II");
   });
+
+  it("matches the ISIS 4232 API description across nested prerequisite groups", () => {
+    const resultado = interpretarExpresionDeRequisitos(
+      "EXAL1 O EXDO1 O ((IIND 2106 O (MATE 2510 Y MATE 3520) O (MATE 1252 Y MATE 2509) O (MATE 1252 Y MATE 2506)) Y (ISIS 2007 O IIND 3312) Y (ISIS 2212 O ISIS 2503) Y ISIS 1611)",
+      "EXAL1 O EXDO1 O ((PROBABILIDAD Y ESTADÍSTICA I O (PROBABILIDAD (HONOR) Y ESTADÍSTICA MATEMÁTICA 1) O (CÁLCULO INTEGRAL-PROBABILIDAD Y ESTADÍSTICA (ECONOMÍA)) O (CÁLCULO INTEGRAL-PROBABILIDAD Y PROBABILIDAD Y ESTADIST.(ECON)) ) Y (DISEÑO PROD. E INNOVACIÓN TI O INNOVAC.EMPREND. EN INGE) Y (ARQUITECTURAS DE SOFTWARE ROBU O ARQUITECTURA Y DISEÑO DE SW) Y INTELIGENCIA ARTIFICIAL)",
+    );
+    const cursos = [];
+    const recopilar = (requisito) => {
+      if (requisito.tipo === "curso") {
+        cursos.push(requisito);
+      } else if (requisito.tipo === "y" || requisito.tipo === "o") {
+        requisito.hijos.forEach(recopilar);
+      }
+    };
+    recopilar(resultado);
+
+    assert.equal(cursos.find((curso) => curso.codigo === "ISIS 2503").descripcion, "ARQUITECTURA Y DISEÑO DE SW");
+    assert.equal(cursos.find((curso) => curso.codigo === "ISIS 1611").descripcion, "INTELIGENCIA ARTIFICIAL");
+  });
 });
