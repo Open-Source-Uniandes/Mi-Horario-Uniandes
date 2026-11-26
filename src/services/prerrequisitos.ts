@@ -33,12 +33,24 @@ type DetalleRequisitosAPI = {
 const API = "https://ofertadecursos.uniandes.edu.co/api";
 const cacheDetalles = new Map<string, Promise<DetalleRequisitosSeccion>>();
 
-function extraerOperadores(requisito: Requisito): Array<"y" | "o"> {
+type OperadorRequisito = {
+  tipo: "y" | "o";
+  izquierdaEsGrupo: boolean;
+  derechaEsGrupo: boolean;
+};
+
+function extraerOperadores(requisito: Requisito): OperadorRequisito[] {
   if (requisito.tipo === "curso" || requisito.tipo === "sin-interpretar") return [];
-  const operadores: Array<"y" | "o"> = [];
+  const operadores: OperadorRequisito[] = [];
   requisito.hijos.forEach((hijo, indice) => {
-    if (indice > 0) operadores.push(requisito.tipo);
     operadores.push(...extraerOperadores(hijo));
+    if (indice < requisito.hijos.length - 1) {
+      operadores.push({
+        tipo: requisito.tipo,
+        izquierdaEsGrupo: hijo.tipo === "y" || hijo.tipo === "o",
+        derechaEsGrupo: requisito.hijos[indice + 1].tipo === "y" || requisito.hijos[indice + 1].tipo === "o",
+      });
+    }
   });
   return operadores;
 }
@@ -78,42 +90,81 @@ function extraerNombres(requisito: Requisito, descripcion: string): string[] | n
     });
   }
 
+  type ResultadoEmparejamiento = {
+    puntuacion: number;
+    nombresPosibles: Set<string>[];
+  };
+  const cache = new Map<string, ResultadoEmparejamiento | null>();
   const buscar = (
     indiceOperador: number,
     indiceOcurrencia: number,
     inicioFragmento: number,
-    nombres: string[],
-  ): string[] | null => {
+  ): ResultadoEmparejamiento | null => {
+    const clave = `${indiceOperador}:${indiceOcurrencia}:${inicioFragmento}`;
+    if (cache.has(clave)) return cache.get(clave) || null;
     if (indiceOperador === operadores.length) {
       const ultimoNombre = limpiarNombre(descripcion.slice(inicioFragmento));
-      return ultimoNombre ? [...nombres, ultimoNombre] : null;
+      const resultado = ultimoNombre
+        ? { puntuacion: 0, nombresPosibles: [new Set([ultimoNombre])] }
+        : null;
+      cache.set(clave, resultado);
+      return resultado;
     }
 
+    let mejorResultado: ResultadoEmparejamiento | null = null;
     for (let indice = indiceOcurrencia; indice < ocurrencias.length; indice++) {
       const ocurrencia = ocurrencias[indice];
-      if (ocurrencia.tipo !== operadores[indiceOperador]) continue;
+      const operador = operadores[indiceOperador];
+      if (ocurrencia.tipo !== operador.tipo) continue;
       const nombre = limpiarNombre(descripcion.slice(inicioFragmento, ocurrencia.inicio));
       if (!nombre) continue;
       const resultado = buscar(
         indiceOperador + 1,
         indice + 1,
         ocurrencia.fin,
-        [...nombres, nombre],
       );
-      if (resultado) return resultado;
+      if (!resultado) continue;
+
+      const antesDelOperador = descripcion.slice(0, ocurrencia.inicio).trimEnd();
+      const despuesDelOperador = descripcion.slice(ocurrencia.fin).trimStart();
+      const izquierdaEsGrupo = antesDelOperador.endsWith(")");
+      const derechaEsGrupo = despuesDelOperador.startsWith("(");
+      const puntuacion =
+        (izquierdaEsGrupo === operador.izquierdaEsGrupo ? 1 : -1)
+        + (derechaEsGrupo === operador.derechaEsGrupo ? 2 : -1)
+        + resultado.puntuacion;
+      const nombresPosibles = [
+        new Set([nombre]),
+        ...resultado.nombresPosibles.map((opciones) => new Set(opciones)),
+      ];
+      if (!mejorResultado || puntuacion > mejorResultado.puntuacion) {
+        mejorResultado = {
+          puntuacion,
+          nombresPosibles,
+        };
+      } else if (puntuacion === mejorResultado.puntuacion) {
+        nombresPosibles.forEach((opciones, indice) => {
+          opciones.forEach((opcion) => mejorResultado?.nombresPosibles[indice].add(opcion));
+        });
+      }
     }
-    return null;
+    cache.set(clave, mejorResultado);
+    return mejorResultado;
   };
 
-  return buscar(0, 0, 0, []);
+  const resultado = buscar(0, 0, 0);
+  if (!resultado || (operadores.length > 0 && resultado.puntuacion <= 0)) return null;
+  return resultado.nombresPosibles.map((opciones) =>
+    opciones.size === 1 ? Array.from(opciones)[0] : "",
+  );
 }
 
 function asignarDescripciones(requisito: Requisito, nombres: string[]): Requisito | null {
   let indice = 0;
   const visitar = (actual: Requisito): Requisito | null => {
     if (actual.tipo === "curso") {
-      const descripcion = nombres[indice++];
-      return descripcion ? { ...actual, descripcion } : null;
+      const descripcion = nombres[indice++] ?? "";
+      return { ...actual, descripcion };
     }
     if (actual.tipo === "sin-interpretar") return null;
     const hijos = actual.hijos.map(visitar);
