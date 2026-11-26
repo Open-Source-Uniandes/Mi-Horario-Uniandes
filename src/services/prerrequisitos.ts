@@ -43,14 +43,14 @@ function extraerOperadores(requisito: Requisito): OperadorRequisito[] {
   if (requisito.tipo === "curso" || requisito.tipo === "sin-interpretar") return [];
   const operadores: OperadorRequisito[] = [];
   requisito.hijos.forEach((hijo, indice) => {
-    if (indice > 0) {
+    operadores.push(...extraerOperadores(hijo));
+    if (indice < requisito.hijos.length - 1) {
       operadores.push({
         tipo: requisito.tipo,
-        izquierdaEsGrupo: requisito.hijos[indice - 1].tipo === "y" || requisito.hijos[indice - 1].tipo === "o",
-        derechaEsGrupo: hijo.tipo === "y" || hijo.tipo === "o",
+        izquierdaEsGrupo: hijo.tipo === "y" || hijo.tipo === "o",
+        derechaEsGrupo: requisito.hijos[indice + 1].tipo === "y" || requisito.hijos[indice + 1].tipo === "o",
       });
     }
-    operadores.push(...extraerOperadores(hijo));
   });
   return operadores;
 }
@@ -90,22 +90,28 @@ function extraerNombres(requisito: Requisito, descripcion: string): string[] | n
     });
   }
 
-  const cache = new Map<string, { nombres: string[]; puntuacion: number } | null>();
+  type ResultadoEmparejamiento = {
+    puntuacion: number;
+    nombresPosibles: Set<string>[];
+  };
+  const cache = new Map<string, ResultadoEmparejamiento | null>();
   const buscar = (
     indiceOperador: number,
     indiceOcurrencia: number,
     inicioFragmento: number,
-  ): { nombres: string[]; puntuacion: number } | null => {
+  ): ResultadoEmparejamiento | null => {
     const clave = `${indiceOperador}:${indiceOcurrencia}:${inicioFragmento}`;
     if (cache.has(clave)) return cache.get(clave) || null;
     if (indiceOperador === operadores.length) {
       const ultimoNombre = limpiarNombre(descripcion.slice(inicioFragmento));
-      const resultado = ultimoNombre ? { nombres: [ultimoNombre], puntuacion: 0 } : null;
+      const resultado = ultimoNombre
+        ? { puntuacion: 0, nombresPosibles: [new Set([ultimoNombre])] }
+        : null;
       cache.set(clave, resultado);
       return resultado;
     }
 
-    let mejorResultado: { nombres: string[]; puntuacion: number } | null = null;
+    let mejorResultado: ResultadoEmparejamiento | null = null;
     for (let indice = indiceOcurrencia; indice < ocurrencias.length; indice++) {
       const ocurrencia = ocurrencias[indice];
       const operador = operadores[indiceOperador];
@@ -127,23 +133,38 @@ function extraerNombres(requisito: Requisito, descripcion: string): string[] | n
         (izquierdaEsGrupo === operador.izquierdaEsGrupo ? 1 : -1)
         + (derechaEsGrupo === operador.derechaEsGrupo ? 2 : -1)
         + resultado.puntuacion;
+      const nombresPosibles = [
+        new Set([nombre]),
+        ...resultado.nombresPosibles.map((opciones) => new Set(opciones)),
+      ];
       if (!mejorResultado || puntuacion > mejorResultado.puntuacion) {
-        mejorResultado = { nombres: [nombre, ...resultado.nombres], puntuacion };
+        mejorResultado = {
+          puntuacion,
+          nombresPosibles,
+        };
+      } else if (puntuacion === mejorResultado.puntuacion) {
+        nombresPosibles.forEach((opciones, indice) => {
+          opciones.forEach((opcion) => mejorResultado?.nombresPosibles[indice].add(opcion));
+        });
       }
     }
     cache.set(clave, mejorResultado);
     return mejorResultado;
   };
 
-  return buscar(0, 0, 0)?.nombres || null;
+  const resultado = buscar(0, 0, 0);
+  if (!resultado || (operadores.length > 0 && resultado.puntuacion <= 0)) return null;
+  return resultado.nombresPosibles.map((opciones) =>
+    opciones.size === 1 ? Array.from(opciones)[0] : "",
+  );
 }
 
 function asignarDescripciones(requisito: Requisito, nombres: string[]): Requisito | null {
   let indice = 0;
   const visitar = (actual: Requisito): Requisito | null => {
     if (actual.tipo === "curso") {
-      const descripcion = nombres[indice++];
-      return descripcion ? { ...actual, descripcion } : null;
+      const descripcion = nombres[indice++] ?? "";
+      return { ...actual, descripcion };
     }
     if (actual.tipo === "sin-interpretar") return null;
     const hijos = actual.hijos.map(visitar);

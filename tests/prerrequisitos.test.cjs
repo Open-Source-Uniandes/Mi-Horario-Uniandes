@@ -135,6 +135,22 @@ describe("interpretarExpresionDeRequisitos", () => {
     ]);
   });
 
+  it("does not assign titles when multiple equally likely matches exist", () => {
+    const resultado = interpretarExpresionDeRequisitos(
+      "ISIS 1201 O ISIS 1202",
+      "Curso A O Curso B O Curso C",
+    );
+
+    assert.deepEqual(resultado, {
+      tipo: "o",
+      descripcion: "Curso A O Curso B O Curso C",
+      hijos: [
+        { tipo: "curso", codigo: "ISIS 1201", descripcion: "" },
+        { tipo: "curso", codigo: "ISIS 1202", descripcion: "" },
+      ],
+    });
+  });
+
   it("extracts titles from the API format used by ISIS 3007", () => {
     const resultado = interpretarExpresionDeRequisitos(
       "(ISIS 3204 O ISIS 2311) Y (ISIS 2007 O IIND 3312) Y (ISIS 2203 O ISIS 1311) Y (ISIS 2503 O ISIS 2212) Y (ISIS 2403 O ISIS 2411) Y (ISIS 2304 O ISIS 1511) Y (ISIS 1105 O ISIS 2112) Y (ISIS 1106 O ISIS 2111) Y MATE 1207 Y (IIND 2106 O (MATE 2510 Y MATE 3520) O (MATE 1252 Y MATE 1506) O (MATE 1252 Y MATE 1509)) Y (IIND 2401 O ADMI 2204) Y (FISI 1528 O FISI 1028) Y (LENG 1156 O LENG 3001 O RLEC1 O RLEN1 O INGL4 O ENGL7) Y (ESCR 1102 O CCOM 1100)",
